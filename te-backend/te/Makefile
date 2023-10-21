@@ -22,6 +22,7 @@ server:
 
 build:
 	docker-compose build
+	docker-compose up
 
 run:
 	docker-compose up

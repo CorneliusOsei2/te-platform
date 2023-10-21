@@ -31,7 +31,9 @@ def get_current_user(
 ) -> models.User:
     try:
         payload = jwt.decode(
-            token=access_token, key=config.settings.SECRET_KEY, algorithms=["HS256"]
+            token=access_token,
+            key=config.settings.SECRET_KEY,
+            algorithms=["HS256"],
         )
         token_data = security.TokenPayload(**payload)
     except (JWTError, ValidationError):

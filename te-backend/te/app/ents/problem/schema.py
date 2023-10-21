@@ -4,13 +4,23 @@ from pydantic import BaseModel, EmailStr
 from enum import Enum
 
 
-class UserRoles(Enum):
-    mentee = "Mentee"
-    mentor = "Mentor"
-    admin = "Admin"
+class PostingRoles(Enum):
+    intern: str = "Intern"
+    new_grad: str = "New Grad"
 
 
-class UserBase(BaseModel):
+class PostingStatus(Enum):
+    not_applied: str = "Not applied"
+    submitted: str = "Submitted"
+    oa: str = "OA"
+    phone_interview: str = "Phone interview"
+    final_interview: str = "Final interview"
+    hr_call: str = "HR call"
+    offer: str = "Offer"
+    not_now: str = "Not now"
+
+
+class PostingBase(BaseModel):
     email: EmailStr
     first_name: str
     middle_name: str = ""
@@ -26,15 +36,15 @@ class UserBase(BaseModel):
     end_date: datetime = datetime.now()
 
 
-class UserCreate(UserBase):
+class PostingCreate(PostingBase):
     password: str
 
 
-class UserUpdate(UserBase):
+class PostingUpdate(PostingBase):
     ...
 
 
-class UserInDBBase(UserBase):
+class PostingInDBBase(PostingBase):
     id: int | None = None
     full_name: str = ""
 
@@ -42,9 +52,9 @@ class UserInDBBase(UserBase):
         orm_mode = True
 
 
-class UserInDB(UserInDBBase):
+class PostingInDB(PostingInDBBase):
     password: str
 
 
-class UserRead(UserInDBBase):
+class PostingRead(PostingInDBBase):
     ...

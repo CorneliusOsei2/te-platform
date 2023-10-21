@@ -7,60 +7,65 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.security import Token, security
-from app.ents.member import crud, dependencies, models, schema
+import app.ents.user.dependencies as user_dependencies
+import app.ents.user.schema as user_schema
+import app.ents.user.models as user_models
 
-router = APIRouter(prefix="/members")
+
+router = APIRouter(prefix="/users")
 
 
 @router.post("/login/access-token", response_model=Token)
 def login_access_token(
-    db: Session = Depends(dependencies.get_db),
+    db: Session = Depends(user_dependencies.get_db),
     data: OAuth2PasswordRequestForm = Depends(),
 ) -> Any:
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    member = crud.member.authenticate(
+    user = user.crud.authenticate(
         db, email=data.username, password=data.password
     )
-    if not member:
+    if not user:
         raise HTTPException(
             status_code=400, detail="Incorrect email or password"
         )
-    elif not crud.member.is_active(member):
+    elif not user.crud.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
     return {
         "access_token": security.create_access_token(
-            member.id, expires_delta=access_token_expires
+            user.id, expires_delta=access_token_expires
         ),
         "type": "bearer",
     }
 
 
-@router.post("/login/test-token", response_model=schema.MemberRead)
+@router.post("/login/test-token", response_model=user_schema.UserRead)
 def test_token(
-    current_member: models.Member = Depends(dependencies.get_current_member),
+    current_user: user_models.User = Depends(
+        user_dependencies.get_current_user
+    ),
 ) -> Any:
     """
     Test access token
     """
-    return current_member
+    return current_user
 
 
 # @router.post("/password-recovery/{email}", response_model=schema.Msg)
-# def recover_password(email: str, db: Session = Depends(dependencies.get_db)) -> Any:
+# def recover_password(email: str, db: Session = Depends(user_dependencies.get_db)) -> Any:
 #     """
 #     Password Recovery
 #     """
-#     member = crud.member.read_by_email(db, email=email)
+#     user = user.crud.read_by_email(db, email=email)
 
-#     if not member:
+#     if not user:
 #         raise HTTPException(
 #             status_code=404,
-#             detail="The member with this username does not exist in the system.",
+#             detail="The user with this username does not exist in the system.",
 #         )
 #     password_reset_token = utils.generate_password_reset_token(email=email)
 #     utils.send_reset_password_email(
@@ -81,16 +86,16 @@ def test_token(
 #     email = utils.verify_password_reset_token(token)
 #     if not email:
 #         raise HTTPException(status_code=400, detail="Invalid token")
-#     member = crud.member.read_by_email(db, email=email)
-#     if not member:
+#     user = user.crud.read_by_email(db, email=email)
+#     if not user:
 #         raise HTTPException(
 #             status_code=404,
-#             detail="The member with this username does not exist in the system.",
+#             detail="The user with this username does not exist in the system.",
 #         )
-#     elif not crud.member.is_active(member):
-#         raise HTTPException(status_code=400, detail="Inactive member")
+#     elif not user.crud.is_active(user):
+#         raise HTTPException(status_code=400, detail="Inactive user")
 #     hashed_password = get_password_hash(new_password)
-#     member.hashed_password = hashed_password  # type: ignore  Column--warning
-#     db.add(member)
+#     user.hashed_password = hashed_password  # type: ignore  Column--warning
+#     db.add(user)
 #     db.commit()
 #     return {"schemas.Msg": "Password updated successfully"}

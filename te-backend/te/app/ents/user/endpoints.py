@@ -1,146 +1,109 @@
 from typing import Any
 
-from fastapi import APIRouter, Body, Depends, HTTPException
-from pydantic.networks import EmailStr
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
-from app.ents.user import crud, dependencies, models, schema
-from app.ents.user.login import login_access_token
-from app.utilities import utils
+from app.ents import user
+import app.ents.user.models as user_models
+import app.ents.user.crud as user_crud
+import app.ents.user.schema as user_schema
+import app.ents.user.dependencies as user_dependencies
+import app.ents.user.auth as user_auth
 
 router = APIRouter(prefix="/users")
 
 
 @router.post("/login")
-def login_user(token=Depends(login_access_token)) -> Any:
+def login_user(
+    response: Response, token=Depends(user_auth.login_access_token)
+) -> Any:
     """
-    Retrieve Individual Clients.
+    Log User in.
     """
+    # response.headers[
+    #     "Authorization"
+    # ] = f'{token.get("type")} {token.get("access_token")}'
+    response.set_cookie(
+        key="access_token", value=token.get("access_token"), samesite=None
+    )
     return token
 
 
-@router.get("/individual", response_model=list[schema.UserRead])
-def get_users(
-    db: Session = Depends(dependencies.get_db),
+@router.get(".members.list", response_model=list[user_schema.UserRead])
+def get_mentees(
+    db: Session = Depends(user_dependencies.get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: models.User = Depends(dependencies.get_current_active_superuser),
+    # _: str = Depends(dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Individual Clients.
+    Retrieve Users.
     """
-    users = crud.user.read_multi_with_role(
-        db, role=schema.Role.individualClient.value, skip=skip, limit=limit
-    )
+    users = user_crud.read_mentees_multi(db, skip=skip, limit=limit)
     return users
 
 
-@router.get("/business", response_model=list[schema.UserRead])
-def get_business_clients(
-    db: Session = Depends(dependencies.get_db),
+@router.get(".mentors.list", response_model=list[user_schema.UserRead])
+def get_mentors(
+    db: Session = Depends(user_dependencies.get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: models.User = Depends(dependencies.get_current_active_superuser),
+    # _: str = Depends(dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Business Clients.
+    Retrieve Users.
     """
-    business_clients = crud.user.read_multi_with_role(
-        db, role=schema.Role.businessClient.value, skip=skip, limit=limit
-    )
-    return business_clients
+    users = user_crud.read_mentors_multi(db, skip=skip, limit=limit)
+    return users
 
 
-@router.post("/", response_model=schema.UserRead)
+@router.post(".create", response_model=user_schema.UserRead)
 def create_user(
     *,
-    db: Session = Depends(dependencies.get_db),
-    user_in: schema.UserCreate,
-    current_user: models.User = Depends(dependencies.get_current_active_superuser),
+    db: Session = Depends(user_dependencies.get_db),
+    data: user_schema.UserCreate,
+    # _=Depends(get_current_user),
 ) -> Any:
     """
-    Create a Client.
+    Create an User.
     """
-    user = crud.user.read_by_email(db, email=user_in.email)
-    if user:
+    if user_crud.read_by_email(db, email=data.email):
         raise HTTPException(
             status_code=400,
-            detail="The user with this username already exists in the system.",
+            detail={
+                "error": {
+                    "email": user.email,
+                    "message": "The user with this email already exists!",
+                }
+            },
         )
-    user = crud.user.create(db, obj_in=user_in)
-    if settings.EMAILS_ENABLED and user_in.email:
-        utils.send_new_account_email(
-            email_to=user_in.email, username=user_in.email, password=user_in.password
-        )
+
+    user = user_crud.create(db, data=data)
     return user
 
 
-@router.post("/open", response_model=schema.UserRead)
-def create_user_open(
-    *,
-    db: Session = Depends(dependencies.get_db),
-    password: str = Body(...),
-    email: EmailStr = Body(...),
-    full_name: str = Body(None),
-    role: schema.Role = Body(...),
-) -> Any:
-    """
-    Create new user without the need to be logged in.
-    """
-    if not settings.USERS_OPEN_REGISTRATION:
-        raise HTTPException(
-            status_code=403,
-            detail="Open user registration is forbidden on this server",
-        )
-    user = crud.user.read_by_email(db, email=email)
-    if user:
-        raise HTTPException(
-            status_code=400,
-            detail="The user with this username already exists in the system",
-        )
-    user_in = schema.UserCreate(
-        password=password, email=email, full_name=full_name, role=role.value
-    )
-    user = crud.user.create(db, obj_in=user_in)
-    return user
-
-
-@router.get("/{user_id}", response_model=schema.UserRead)
-def read_user_by_id(
-    user_id: int,
-    current_user: models.User = Depends(dependencies.get_current_active_user),
-    db: Session = Depends(dependencies.get_db),
-) -> Any:
-    """
-    Get a specific user by id.
-    """
-    user = crud.user.read(db, id=user_id)
-    if user == current_user:
-        return user
-    if not crud.user.is_superuser(current_user):
-        raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
-        )
-    return user
-
-
-@router.put("/{user_id}", response_model=schema.UserRead)
+@router.put(".info/{user_id}", response_model=user_schema.UserRead)
 def update_user(
     *,
-    db: Session = Depends(dependencies.get_db),
-    user_id: int,
-    user_in: schema.UserUpdate,
-    current_user: models.User = Depends(dependencies.get_current_active_superuser),
+    db: Session = Depends(user_dependencies.get_db),
+    data: user_schema.UserUpdate,
+    current_user: user_models.User = Depends(
+        user_dependencies.get_current_user
+    ),
 ) -> Any:
     """
-    Update a user.
+    Update User.
     """
-    user = crud.user.read(db, id=user_id)
-    if not user:
+    if not user_crud.read_by_id(db, id=user.id):
         raise HTTPException(
             status_code=404,
-            detail="The user with this username does not exist in the system",
+            detail={
+                "error": {
+                    "email": user.email,
+                    "message": "The user with this user name does not exist in the system",
+                }
+            },
         )
-    user = crud.user.update(db, db_obj=user, obj_in=user_in)
+    user = user_crud.update(db, db_obj=user, data=data)
     return user
