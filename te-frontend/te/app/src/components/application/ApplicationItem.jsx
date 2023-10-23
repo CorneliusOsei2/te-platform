@@ -17,7 +17,7 @@ function classNames(...classes) {
 const ApplicationItem = ({ application }) => {
     return (
         <>
-            <li key={application.id} className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8">
+            <li key={application.id} className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 hover:bg-gray-100">
                 <div className="min-w-0 flex-auto">
                     <div className="flex items-center gap-x-3">
                         <div className="flex-none rounded-full p-1">

@@ -1,8 +1,4 @@
-import { Fragment, useState, useEffect } from 'react'
-import {
-    XMarkIcon
-} from '@heroicons/react/24/outline'
-import { Dialog, Transition } from '@headlessui/react'
+import { useState, useEffect } from 'react'
 import axios from 'axios';
 import axiosInstance from '../../axiosConfig';
 

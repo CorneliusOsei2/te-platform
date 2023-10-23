@@ -79,7 +79,7 @@ const CreateCompany = ({ setAddCompany }) => {
 
     return (
         <>
-            <div className="ml-6">
+            <div className="ml-6 mr-6">
                 <div className=" absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                     <button
                         type="button"
@@ -91,9 +91,6 @@ const CreateCompany = ({ setAddCompany }) => {
                     </button>
                 </div>
                 <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                        Hello
-                    </div>
                     <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                         <h3 as="h3" className="text-base font-semibold leading-6 text-gray-900">
                             Add a company.
@@ -107,21 +104,21 @@ const CreateCompany = ({ setAddCompany }) => {
                                         </label>
                                         <Typeahead companyName={"companyName"} value={companyName} data={data} handler={({ _, value }) => setCompanyName(value)} />
                                     </div>
-                                    <div className="mt-6">
+                                    <div className="mt-6 ">
                                         <label htmlFor="companyDomain" className="block text-sm font-medium leading-6 text-gray-900">
                                             Domain
                                             <span className="flex select-none items-center  text-gray-500 sm:text-sm">Eg: microsoft.com, thehive.ai</span>
                                         </label>
-                                        <div className="relative ">
-                                            <input
-                                                type="text"
-                                                companyName="companyDomain"
-                                                id="companyDomain"
-                                                value={companyDomain}
-                                                onChange={(e) => setCompanyDomain(e.target.value)}
-                                                className="block w-full rounded-t-md  border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6"
-                                            />
-                                        </div>
+                                        {/* <div className="relative w-full "> */}
+                                        <input
+                                            type="text"
+                                            companyName="companyDomain"
+                                            id="companyDomain"
+                                            value={companyDomain}
+                                            onChange={(e) => setCompanyDomain(e.target.value)}
+                                            className="block w-full rounded-t-md  border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6"
+                                        />
+                                        {/* </div> */}
                                     </div>
                                 </div>
 

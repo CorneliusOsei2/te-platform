@@ -8,30 +8,27 @@ import {
 } from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
 
-import { BriefcaseIcon, DocumentIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { BriefcaseIcon, DocumentIcon, PlusIcon, ComputerDesktopIcon } from '@heroicons/react/20/solid'
 import Applications from '../application/Applications'
 import Sidebar from './Sidebar'
 import SortDropdown from '../custom/SortDropdown'
 import CreateCompany from '../company/CreateCompany'
+import ResumeAndCoverLetter from './ResumeAndCoverLetter'
+import UserActivity from './HomeActivity'
 
 
 const navigation = [
-    { name: 'Applications', href: '#', icon: BriefcaseIcon, current: true },
-    { name: 'Resume', href: '#', icon: DocumentIcon, current: false },
-    { name: 'Other files', href: '#', icon: FolderIcon, current: false },
+    { name: 'Applications', href: '#', icon: BriefcaseIcon },
+    { name: 'Resume and Cover letter', href: '#', icon: DocumentIcon },
+    { name: 'Referrals', href: '#', icon: FolderIcon },
+    { name: 'Opportunities', href: '#', icon: ComputerDesktopIcon },
+    { name: 'Other files', href: '#', icon: FolderIcon },
 ]
-const teams = [
-    { id: 1, name: 'Planetaria', href: '#', initial: 'P', current: false },
-    { id: 2, name: 'Protocol', href: '#', initial: 'P', current: false },
-    { id: 3, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
-]
-
-
-
 
 
 const UserHome = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [content, setContent] = useState("Resume and Cover letter")
 
     return (
         <>
@@ -84,12 +81,14 @@ const UserHome = () => {
                     </Dialog>
                 </Transition.Root>
 
-                <Sidebar navigation={navigation} />
+                <Sidebar navigation={navigation} content={content} setContent={setContent} />
 
-                <div className="xl:pl-72">
-                    <main className="lg:pr-96">
-                        <Applications />
+                <div className="lg:pl-72 ">
+                    <main className="lg:pr-72 bg-slate-100  h-screen">
+                        {content == "Applications" && <Applications />}
+                        {content == "Resume and Cover letter" && <ResumeAndCoverLetter />}
                     </main>
+
                 </div>
             </div>
         </>
