@@ -3,10 +3,10 @@
 # Let the DB start
 python ./app/prestart/db_start.py
 
-# alembic revision --autogenerate -m "Tables revision"
+alembic revision --autogenerate -m "Tables revision"
 
 # Run migrations
-# alembic upgrade head
+alembic upgrade head
 
 # # Create initial data in DB
 python ./app/prestart/initial_data.py

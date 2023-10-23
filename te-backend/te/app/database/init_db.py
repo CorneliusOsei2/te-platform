@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 
 import app.ents.user.crud as user_crud
 import app.ents.user.schema as user_schema
-
 from app.core.config import settings
 from app.database.base import Base
 from app.database.session import engine
@@ -14,7 +13,7 @@ from app.database.session import engine
 
 def init_db(db: Session) -> None:
     # * If creating without Alembic
-    Base.metadata.create_all(bind=engine)
+    # Base.metadata.create_all(bind=engine)
 
     superuser = user_crud.read_by_email(
         db=db, email=settings.FIRST_SUPERUSER_EMAIL
@@ -26,6 +25,6 @@ def init_db(db: Session) -> None:
             last_name=settings.FIRST_SUPERUSER_LAST_NAME,
             password=settings.FIRST_SUPERUSER_PASSWORD,
             is_superuser=True,
-            role=user_schema.UserRoles.admin.value,
+            role=user_schema.UserRoles.admin,
         )
         superuser = user_crud.create(db, data=user_in)

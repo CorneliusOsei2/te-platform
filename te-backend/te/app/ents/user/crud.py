@@ -2,9 +2,9 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.core.security import security
 import app.ents.user.models as user_models
 import app.ents.user.schema as user_schema
+from app.core.security import security
 
 
 def read_by_email(db: Session, *, email: str) -> user_models.User | None:
@@ -19,27 +19,34 @@ def read_by_id(db: Session, *, id: int) -> user_models.User | None:
     return db.query(user_models.User).filter(user_models.User.id == id).first()
 
 
-def read_mentors_multi(
+def read_mentees(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[user_models.User]:
     return (
         db.query(user_models.User)
-        .filter(role == user_schema.UserRoles.mentor.value)
+        .filter(user_models.User.role == user_schema.UserRoles.mentee)
         .offset(skip)
         .limit(limit)
         .all()
     )
-    
-def read_mentors_multi(
+
+
+def read_mentors(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[user_models.User]:
     return (
         db.query(user_models.User)
-        .filter(role == user_schema.UserRoles.mentee.value)
+        .filter(user_models.User.role == user_schema.UserRoles.mentor)
         .offset(skip)
         .limit(limit)
         .all()
     )
+
+
+def read_users(
+    db: Session, *, skip: int = 0, limit: int = 100
+) -> list[user_models.User]:
+    return db.query(user_models.User).offset(skip).limit(limit).all()
 
 
 def get_full_name(data: user_schema.UserCreate) -> str:

@@ -1,7 +1,7 @@
 from datetime import datetime
+from enum import Enum
 
 from pydantic import BaseModel, EmailStr
-from enum import Enum
 
 
 class UserRoles(Enum):
@@ -22,6 +22,7 @@ class UserBase(BaseModel):
     university: str = ""
     mentor_id: int | None = None
     is_active: bool = True
+    role: UserRoles = UserRoles.mentee
     start_date: datetime = datetime.now()
     end_date: datetime = datetime.now()
 

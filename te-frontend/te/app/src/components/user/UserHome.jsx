@@ -8,10 +8,11 @@ import {
 } from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
 
-import { BriefcaseIcon, DocumentIcon } from '@heroicons/react/20/solid'
-import Applications from './Applications'
+import { BriefcaseIcon, DocumentIcon, PlusIcon } from '@heroicons/react/20/solid'
+import Applications from '../application/Applications'
 import Sidebar from './Sidebar'
 import SortDropdown from '../custom/SortDropdown'
+import CreateCompany from '../company/CreateCompany'
 
 
 const navigation = [
@@ -25,29 +26,9 @@ const teams = [
     { id: 3, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
 ]
 
-const applications = [
-    {
-        id: 1,
-        href: '#',
-        company: 'Microsoft',
-        role: 'Software Engineer Intern',
-        statusText: 'Applied 1m 32s ago',
-        notes: 'Deploys from GitHub',
-        status: 'offer',
-    },
-    {
-        id: 2,
-        href: '#',
-        company: 'Microsoft',
-        role: 'Software Engineer Intern',
-        statusText: 'Applied 1m 32s ago',
-        notes: 'Next interview on Monday God willing!',
-        status: 'interview',
-    },
-]
 
 
-const sortOptions = ["Company Name", "Date Added", "Status"]
+
 
 const UserHome = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -92,7 +73,7 @@ const UserHome = () => {
                                         <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
                                             <button type="button" className="-m-2.5 p-2.5" onClick={() => setSidebarOpen(false)}>
                                                 <span className="sr-only">Close sidebar</span>
-                                                <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                                                <XMarkIcon className="h-6 w-6 text-black" aria-hidden="true" />
                                             </button>
                                         </div>
                                     </Transition.Child>
@@ -107,13 +88,7 @@ const UserHome = () => {
 
                 <div className="xl:pl-72">
                     <main className="lg:pr-96">
-                        <header className="flex items-center justify-between border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-                            <h1 className="text-base font-semibold leading-7 text-black">Applications</h1>
-                            <SortDropdown sortOptions={sortOptions} />
-
-                        </header>
-
-                        <Applications apps={applications} />
+                        <Applications />
                     </main>
                 </div>
             </div>

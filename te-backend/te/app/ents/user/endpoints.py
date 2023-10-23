@@ -4,12 +4,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
-from app.ents import user
-import app.ents.user.models as user_models
-import app.ents.user.crud as user_crud
-import app.ents.user.schema as user_schema
-import app.ents.user.dependencies as user_dependencies
+import app.ents.base.dependencies as base_dependencies
 import app.ents.user.auth as user_auth
+import app.ents.user.crud as user_crud
+import app.ents.user.dependencies as user_dependencies
+import app.ents.user.models as user_models
+import app.ents.user.schema as user_schema
+from app.ents import user
 
 router = APIRouter(prefix="/users")
 
@@ -30,9 +31,9 @@ def login_user(
     return token
 
 
-@router.get(".members.list", response_model=list[user_schema.UserRead])
+@router.get(".mentees.list", response_model=list[user_schema.UserRead])
 def get_mentees(
-    db: Session = Depends(user_dependencies.get_db),
+    db: Session = Depends(base_dependencies.get_db),
     skip: int = 0,
     limit: int = 100,
     # _: str = Depends(dependencies.get_current_user),
@@ -40,13 +41,13 @@ def get_mentees(
     """
     Retrieve Users.
     """
-    users = user_crud.read_mentees_multi(db, skip=skip, limit=limit)
+    users = user_crud.read_mentees(db, skip=skip, limit=limit)
     return users
 
 
 @router.get(".mentors.list", response_model=list[user_schema.UserRead])
 def get_mentors(
-    db: Session = Depends(user_dependencies.get_db),
+    db: Session = Depends(base_dependencies.get_db),
     skip: int = 0,
     limit: int = 100,
     # _: str = Depends(dependencies.get_current_user),
@@ -54,14 +55,28 @@ def get_mentors(
     """
     Retrieve Users.
     """
-    users = user_crud.read_mentors_multi(db, skip=skip, limit=limit)
+    users = user_crud.read_mentors(db, skip=skip, limit=limit)
+    return users
+
+
+@router.get(".list", response_model=list[user_schema.UserRead])
+def get_users(
+    db: Session = Depends(base_dependencies.get_db),
+    skip: int = 0,
+    limit: int = 100,
+    # _: str = Depends(dependencies.get_current_user),
+) -> Any:
+    """
+    Retrieve Users.
+    """
+    users = user_crud.read_users(db, skip=skip, limit=limit)
     return users
 
 
 @router.post(".create", response_model=user_schema.UserRead)
 def create_user(
     *,
-    db: Session = Depends(user_dependencies.get_db),
+    db: Session = Depends(base_dependencies.get_db),
     data: user_schema.UserCreate,
     # _=Depends(get_current_user),
 ) -> Any:
@@ -86,7 +101,7 @@ def create_user(
 @router.put(".info/{user_id}", response_model=user_schema.UserRead)
 def update_user(
     *,
-    db: Session = Depends(user_dependencies.get_db),
+    db: Session = Depends(base_dependencies.get_db),
     data: user_schema.UserUpdate,
     current_user: user_models.User = Depends(
         user_dependencies.get_current_user

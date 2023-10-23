@@ -9,10 +9,10 @@ from sqlalchemy import (
     Table,
 )
 from sqlalchemy.orm import relationship
+from sqlalchemy.types import Enum
 
-from app.database.base_class import Base
 import app.ents.user.schema as user_schema
-from enum import Enum
+from app.database.base_class import Base
 
 
 class Resume(Base):
@@ -21,14 +21,8 @@ class Resume(Base):
     date = Column(DateTime, nullable=False)
     reviewed = Column(Boolean, nullable=False)
     notes = Column(String, nullable=False)
-
-
-users_resumes = Table(
-    "users_resumes",
-    Base.metadata,
-    Column("user_id", ForeignKey("users.id", ondelete="CASCADE")),
-    Column("resume_id", ForeignKey("resumes.id", ondelete="CASCADE")),
-)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="resumes")
 
 
 class User(Base):
@@ -50,11 +44,9 @@ class User(Base):
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
     role = Column(Enum(user_schema.UserRoles), nullable=False)
-    resumes = relationship(
-        "Resume",
-        secondary=users_resumes,
-        cascade="delete, save-update, merge",
-    )
+    resumes = relationship("Resume", back_populates="user")
+    applications = relationship("Application", back_populates="user")
+    
 
     def __init__(
         self,
@@ -73,6 +65,7 @@ class User(Base):
         start_date,
         end_date,
         is_active,
+        role,
     ) -> None:
         self.image = image
         self.first_name = first_name
@@ -89,3 +82,4 @@ class User(Base):
         self.mentor_id = mentor_id
         self.start_date = start_date
         self.end_date = end_date
+        self.role = role

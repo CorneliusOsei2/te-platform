@@ -1,7 +1,13 @@
 from typing import Any, Optional, Union
 
-from pydantic import (AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn,
-                      validator)
+from pydantic import (
+    AnyHttpUrl,
+    BaseSettings,
+    EmailStr,
+    HttpUrl,
+    PostgresDsn,
+    validator,
+)
 
 
 class Settings(BaseSettings):
@@ -61,6 +67,8 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_LAST_NAME: str
     FIRST_SUPERUSER_PASSWORD: str
     USERS_OPEN_REGISTRATION: bool
+
+    CLEAR_BIT_BASE_URL: str = "https://logo.clearbit.com/"
 
     class Config:
         env_file = ".env"

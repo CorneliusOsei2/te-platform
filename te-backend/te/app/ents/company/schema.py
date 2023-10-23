@@ -1,49 +1,74 @@
 from datetime import datetime
-
-from pydantic import BaseModel, EmailStr
 from enum import Enum
 
+from pydantic import BaseModel, EmailStr
 
-class PostingRoles(Enum):
+
+class JobRoles(Enum):
     intern: str = "Intern"
     new_grad: str = "New Grad"
 
 
-class PostingStatus(Enum):
-    not_applied: str = "Not applied"
+class ApplicationStatuses(Enum):
     submitted: str = "Submitted"
     oa: str = "OA"
     phone_interview: str = "Phone interview"
     final_interview: str = "Final interview"
-    hr_call: str = "HR call"
+    hr_call: str = "HR"
+    recruiter_call: str = "Recruiter call"
     offer: str = "Offer"
     not_now: str = "Not now"
+
+
+class LocationBase(BaseModel):
+    country: str
+    city: str = ""
+
+
+class ApplicationBase(BaseModel):
+    title: str
+    notes: str = ""
+    recruiter_name: str = ""
+    recruiter_email: str = ""
+    active: bool = True
+    date: datetime = None
+    role: JobRoles
+    status: ApplicationStatuses
+
+
+class ApplicationCreate(ApplicationBase):
+    company: str
+    location: LocationBase
 
 
 class CompanyBase(BaseModel):
     name: str
     image: str = ""
-    location: str = ""
 
 
 class CompanyCreate(CompanyBase):
-    ...
+    domain: str
+    location: LocationBase
 
 
-class CompanyUpdate(CompanyBase):
-    ...
+class CompanyReadBase(CompanyBase):
+    id: int
+    domain: str
 
 
-class CompanyInDBBase(CompanyBase):
-    id: int | None = None
-
-    class Config:
-        orm_mode = True
+class LocationRead(LocationBase):
+    id: int
 
 
-class CompanyInDB(CompanyInDBBase):
-    ...
+class CompanyRead(CompanyReadBase):
+    locations: list[LocationRead]
 
 
-class CompanyRead(CompanyInDBBase):
-    ...
+class ApplicationReadBase(ApplicationBase):
+    id: int
+
+
+class ApplicationRead(ApplicationBase):
+    id: int
+    company: CompanyReadBase
+    location: LocationRead

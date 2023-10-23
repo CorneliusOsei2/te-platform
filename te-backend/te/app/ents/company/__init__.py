@@ -1,2 +1,2 @@
-from .endpoints import router as endpoints_router
+from .endpoints import company_router, application_router
 from .schema import CompanyRead

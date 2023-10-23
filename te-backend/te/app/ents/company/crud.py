@@ -1,51 +1,139 @@
 from typing import Any
-
+from datetime import datetime
 from sqlalchemy.orm import Session
 
+import app.ents.company.models as company_models
+import app.ents.company.schema as company_schema
 from app.core.security import security
 from app.ents.base import crud_base
-from app.ents.user import models, schema
+from app.core.config import settings
 
 
-def read_by_email(db: Session, *, email: str) -> models.User | None:
-    return db.query(models.User).filter(models.User.email == email).first()
-
-
-def read_multi(
-    db: Session, *, skip: int = 0, limit: int = 100
-) -> list[models.User]:
-    return db.query(models.User).offset(skip).limit(limit).all()
-
-
-def get_full_name(data: schema.UserCreate) -> str:
-    return f"{data.first_name} {data.middle_name} {data.last_name}"
-
-
-def create(db: Session, *, data: schema.UserCreate) -> models.User:
-    data.password = security.get_password_hash(data.password)
-    user = models.User(
-        **(data.dict()),
-        full_name=self.get_full_name(data),
+def read_company_by_name(
+    db: Session, *, name: str
+) -> company_models.Company | None:
+    return (
+        db.query(company_models.Company)
+        .filter(company_models.Company.name == name)
+        .first()
     )
 
-    db.add(user)
+
+def read_company_multi(
+    db: Session, *, skip: int = 0, limit: int = 100
+) -> list[company_models.Company]:
+    return db.query(company_models.Company).offset(skip).limit(limit).all()
+
+
+def create_company(
+    db: Session, *, data: company_schema.CompanyCreate
+) -> company_models.Company:
+    company = company_models.Company(**(data.dict(exclude={"location"})))
+    company.image = (
+        (settings.CLEAR_BIT_BASE_URL + data.domain) if data.domain else ""
+    )
+    location = company_models.Location(**data.location.dict())
+    company.locations.append(location)
+
+    db.add(location)
+    db.add(company)
     db.commit()
-    db.refresh(user)
-    return user
+    db.refresh(company)
+    return company
 
 
-def update(
+def add_location(
     db: Session,
     *,
-    db_obj: models.User,
-    data: schema.UserUpdate | dict[str, Any],
-) -> models.User:
-    if isinstance(data, dict):
-        update_data = data
-    else:
-        update_data = data.dict(exclude_unset=True)
-    if update_data["password"]:
-        hashed_password = security.get_password_hash(update_data["password"])
-        del update_data["password"]
-        update_data["hashed_password"] = hashed_password
-    return super().update(db, db_obj=db_obj, data=update_data)
+    company: company_models.Company,
+    data: company_schema.LocationBase,
+):
+    location = company_models.Location(**data.dict())
+    company.locations.append(location)
+
+    db.add(location)
+    db.add(company)
+    db.commit()
+    db.refresh(location)
+    db.refresh(company)
+    return company
+
+
+def create_application(
+    db: Session, *, data: company_schema.ApplicationCreate
+) -> company_models.Company:
+    location = None
+    company = read_company_by_name(db, name=data.company)
+    if not company:
+        company = create_company(
+            db,
+            data=company_schema.CompanyCreate(
+                **{
+                    "name": data.company,
+                    "location": {
+                        "country": data.location.country,
+                        "city": data.location.city,
+                    },
+                    "domain": "",
+                }
+            ),
+        )
+        location = company.locations[0]
+
+    if not location:
+        for loc in company.locations:
+            if (
+                loc.country == data.location.country
+                and loc.city == data.location.city
+            ):
+                location = loc
+                break
+            if loc.country == data.location.country:
+                location = loc
+
+        if not location:
+            location = add_location(
+                db, company=company, data=data.location
+            ).locations[-1]
+
+    application = company_models.Application(
+        **(data.dict(exclude={"company", "location"}))
+    )
+
+    print(
+        f"""
+        {location}
+        """
+    )
+    application.company = company
+    application.location = location
+    application.date = datetime.now()
+
+    db.add(application)
+    db.commit()
+    db.refresh(application)
+
+    return application
+
+
+def read_application_multi(
+    db: Session, *, skip: int = 0, limit: int = 100
+) -> list[company_models.Application]:
+    return db.query(company_models.Application).offset(skip).limit(limit).all()
+
+
+# def update(
+#     db: Session,
+#     *,
+#     db_obj: company_models.Company,
+#     data: company_schema.CompanyUpdate | dict[str, Any],
+# ) -> company_models.Company:
+#     if isinstance(data, dict):
+#         update_data = data
+#     else:
+#         update_data = data.dict(exclude_unset=True)
+#     if update_data["password"]:
+#         hashed_password = security.get_password_hash(update_data["password"])
+#         del update_data["password"]
+#         update_data["hashed_password"] = hashed_password
+#     return super().update(db, db_obj=db_obj, data=update_data)

@@ -4,10 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
-import app.ents.user.crud as user_crud
-import app.ents.problem.schema as problem_schema
 import app.ents.problem.crud as problem_crud
-
+import app.ents.problem.schema as problem_schema
+import app.ents.user.crud as user_crud
 
 router = APIRouter(prefix="/problems")
 

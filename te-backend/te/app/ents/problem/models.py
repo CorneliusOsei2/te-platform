@@ -1,17 +1,10 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    Table,
-)
+from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
+                        String, Table)
 from sqlalchemy.orm import relationship
-from app.ents.problems.schema import PlatformRoles
-from app.database.base_class import Base
+from sqlalchemy.types import Enum
 
+from app.database.base_class import Base
+from app.ents.problems.schema import PlatformRoles
 
 problems_platforms = Table(
     "problems_platforms",
