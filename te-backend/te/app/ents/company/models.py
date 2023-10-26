@@ -2,38 +2,16 @@ from sqlalchemy import (
     Boolean,
     Column,
     DateTime,
-    Float,
     ForeignKey,
     Integer,
     String,
-    Table,
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Enum
 
 import app.ents.company.schema as company_schema
+import app.ents.application.schema as application_schema
 from app.database.base_class import Base
-
-
-class Application(Base):
-    __tablename__ = "applications"
-    id = Column(Integer, primary_key=True, index=True)
-    date = Column(DateTime, nullable=False)
-    notes = Column(String, nullable=False)
-    recruiter_name = Column(String, nullable=False)
-    recruiter_email = Column(String, nullable=False)
-    role = Column(Enum(company_schema.JobRoles), nullable=False)
-    title = Column(String, nullable=False)
-    status = Column(Enum(company_schema.ApplicationStatuses), nullable=False)
-    active = Column(Boolean, nullable=False)
-
-    # Relationships
-    user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="applications")
-    company_id = Column(Integer, ForeignKey("companies.id"), nullable=False)
-    company = relationship("Company", back_populates="applications")
-    location_id = Column(Integer, ForeignKey("locations.id"), nullable=False)
-    location = relationship("Location", back_populates="application")
 
 
 class Posting(Base):
@@ -47,7 +25,9 @@ class Posting(Base):
     recruiter_email = Column(String, nullable=False)
     active = Column(Boolean, nullable=False)
     role = Column(Enum(company_schema.JobRoles), nullable=False)
-    status = Column(Enum(company_schema.ApplicationStatuses), nullable=False)
+    status = Column(
+        Enum(application_schema.ApplicationStatuses), nullable=False
+    )
 
     # Relationships
     company_id = Column(Integer, ForeignKey("companies.id"))
@@ -60,9 +40,23 @@ class Location(Base):
     country = Column(String, nullable=False)
     city = Column(String, nullable=False)
     companies = relationship(
-        "Company", secondary="companies_locations", back_populates="locations"
+        "Company",
+        secondary="companies_locations_rel",
+        back_populates="locations",
     )
     application = relationship("Application", back_populates="location")
+
+
+class ReferralMaterials(Base):
+    __tablename__ = "referral_materials"
+    id = Column(Integer, primary_key=True, index=True)
+    resume = Column(Boolean, nullable=False, default=True)
+    essay = Column(Boolean, nullable=False, default=True)
+    contact = Column(Boolean, nullable=False, default=True)
+
+    # Relationships
+    company_id = Column(Integer, ForeignKey("companies.id"))
+    company = relationship("Company", back_populates="referral_materials")
 
 
 class Company(Base):
@@ -71,16 +65,24 @@ class Company(Base):
     image = Column(String, nullable=True)
     name = Column(String, index=True, nullable=False)
     domain = Column(String, nullable=True)
+    can_refer = Column(Boolean, nullable=True)
 
     # Relationships
+    users = relationship("User", back_populates="company")
+    referral_materials = relationship(
+        "ReferralMaterials", back_populates="company", uselist=False
+    )
     postings = relationship("Posting", back_populates="company")
     applications = relationship("Application", back_populates="company")
     locations = relationship(
-        "Location", secondary="companies_locations", back_populates="companies"
+        "Location",
+        secondary="companies_locations_rel",
+        back_populates="companies",
     )
 
 
-class CompanyLocation(Base):
-    __tablename__ = "companies_locations"
+class CompanyLocationRel(Base):
+    __tablename__ = "companies_locations_rel"
+    __table_args__ = {"extend_existing": True}
     company_id = Column(Integer, ForeignKey("companies.id"), primary_key=True)
     location_id = Column(Integer, ForeignKey("locations.id"), primary_key=True)

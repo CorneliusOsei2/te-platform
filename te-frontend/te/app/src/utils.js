@@ -19,4 +19,8 @@ const sortByField = (list, field, order = 'asc') => {
     });
 }
 
-export default sortByField;
+const copyTextToClipboard = async (text) => {
+    await navigator.clipboard.writeText(text)
+}
+
+module.exports =  {sortByField, copyTextToClipboard};

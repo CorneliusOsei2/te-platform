@@ -8,27 +8,39 @@ import {
 } from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
 
-import { BriefcaseIcon, DocumentIcon, PlusIcon, ComputerDesktopIcon } from '@heroicons/react/20/solid'
+import { BriefcaseIcon, DocumentIcon, CodeBracketIcon, ComputerDesktopIcon } from '@heroicons/react/20/solid'
 import Applications from '../application/Applications'
 import Sidebar from './Sidebar'
-import SortDropdown from '../custom/SortDropdown'
-import CreateCompany from '../company/CreateCompany'
-import ResumeAndCoverLetter from './ResumeAndCoverLetter'
-import UserActivity from './HomeActivity'
+import ResumeAndEssay from '../resume/ResumeAndEssay'
+import Referrals from '../referral/Referrals'
 
 
 const navigation = [
     { name: 'Applications', href: '#', icon: BriefcaseIcon },
-    { name: 'Resume and Cover letter', href: '#', icon: DocumentIcon },
+    { name: 'Resume and Essay', href: '#', icon: DocumentIcon },
     { name: 'Referrals', href: '#', icon: FolderIcon },
     { name: 'Opportunities', href: '#', icon: ComputerDesktopIcon },
+    { name: 'Practice Problems', href: '#', icon: CodeBracketIcon },
     { name: 'Other files', href: '#', icon: FolderIcon },
 ]
 
 
 const UserHome = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [content, setContent] = useState("Resume and Cover letter")
+    const [content, setContent] = useState("Resume and Essay")
+
+    const [essay, setEssay] = useState("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+    const [resume, setResume] = useState("https://www.corneliusboateng.com/static/media/resume.cae3234606b994411a41.pdf");
+
+    const updateEssayRequest = (essay) => {
+        axiosInstance.post(`/users.${user_id}.applications.essay.update`, { "essay": essay })
+            .then((response) => {
+                setEssay(response.data)
+            })
+            .catch((error) => {
+                console.log("Error!");
+            })
+    }
 
     return (
         <>
@@ -84,9 +96,18 @@ const UserHome = () => {
                 <Sidebar navigation={navigation} content={content} setContent={setContent} />
 
                 <div className="lg:pl-72 ">
-                    <main className="lg:pr-72 bg-slate-100  h-screen">
+                    <main className="  h-screen">
                         {content == "Applications" && <Applications />}
-                        {content == "Resume and Cover letter" && <ResumeAndCoverLetter />}
+
+                        {content == "Resume and Essay" &&
+                            <ResumeAndEssay
+                                essay={essay}
+                                setEssay={setEssay}
+                                resume={resume}
+                                updateEssayRequest={updateEssayRequest}
+                            />}
+
+                        {content == "Referrals" && <Referrals essay={essay} resume={resume} />}
                     </main>
 
                 </div>

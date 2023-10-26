@@ -7,7 +7,7 @@ import CreateApplication from './CreateApplication'
 import ApplicationItem from './ApplicationItem'
 import axiosInstance from '../../axiosConfig'
 
-import sortByField from '../../utils'
+import { sortByField } from '../../utils'
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
@@ -48,12 +48,12 @@ const Applications = () => {
 
     return (
         <>
-            <div className="">
+            <div className="lg:pr-72">
                 <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-                    <h1 className="text-base ml-4  font-semibold leading-7 text-black">Applications</h1>
+                    <h1 className="text-base ml-4  font-semibold leading-7 text-cyan-800">Applications</h1>
                     <button
                         type="button"
-                        className="rounded-full bg-green-500 p-1 text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        className="rounded-full bg-green-500 p-1 text-gray-900 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         onClick={() => setAddApplication(true)}
                     >
                         <PlusIcon className="h-5 w-5" aria-hidden="true" />
@@ -69,8 +69,8 @@ const Applications = () => {
                     </ul>
                 }
 
-                {/* {addApplication && <CreateApplication setAddCompany={setAddApplication} />} */}
-                {addApplication && <CreateCompany setAddCompany={setAddApplication} />}
+                {addApplication && <CreateApplication setAddCompany={setAddApplication} />}
+                {/* {addApplication && <CreateCompany setAddCompany={setAddApplication} />} */}
             </div >
         </>
     )

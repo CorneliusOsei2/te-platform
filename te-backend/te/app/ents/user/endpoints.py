@@ -88,7 +88,7 @@ def create_user(
             status_code=400,
             detail={
                 "error": {
-                    "email": user.email,
+                    "email": data.email,
                     "message": "The user with this email already exists!",
                 }
             },

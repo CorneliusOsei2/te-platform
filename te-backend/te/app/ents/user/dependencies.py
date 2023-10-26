@@ -16,11 +16,19 @@ reusable_oauth2 = OAuth2PasswordBearer(
 )
 
 
-
-
-
 def get_current_user(
-    db: Session = Depends(base_dependencies.get_db), access_token: str = Cookie()
+    db: Session = Depends(base_dependencies.get_db),
+    user_id: int = 1,
+) -> user_models.User:
+    user = user_crud.read_by_id(db, id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+def get_current_user_PRO(
+    db: Session = Depends(base_dependencies.get_db),
+    access_token: str = Cookie(),
 ) -> user_models.User:
     try:
         payload = jwt.decode(

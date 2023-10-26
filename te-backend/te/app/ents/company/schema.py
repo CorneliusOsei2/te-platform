@@ -1,7 +1,6 @@
-from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 
 class JobRoles(Enum):
@@ -9,36 +8,15 @@ class JobRoles(Enum):
     new_grad: str = "New Grad"
 
 
-class ApplicationStatuses(Enum):
-    submitted: str = "Submitted"
-    oa: str = "OA"
-    phone_interview: str = "Phone interview"
-    final_interview: str = "Final interview"
-    hr_call: str = "HR"
-    recruiter_call: str = "Recruiter call"
-    offer: str = "Offer"
-    not_now: str = "Not now"
-
-
 class LocationBase(BaseModel):
     country: str
     city: str = ""
 
 
-class ApplicationBase(BaseModel):
-    title: str
-    notes: str = ""
-    recruiter_name: str = ""
-    recruiter_email: str = ""
-    active: bool = True
-    date: datetime = None
-    role: JobRoles
-    status: ApplicationStatuses
-
-
-class ApplicationCreate(ApplicationBase):
-    company: str
-    location: LocationBase
+class ReferralMaterials(BaseModel):
+    resume: bool = True
+    essay: bool = True
+    contact: bool = True
 
 
 class CompanyBase(BaseModel):
@@ -49,6 +27,7 @@ class CompanyBase(BaseModel):
 class CompanyCreate(CompanyBase):
     domain: str
     location: LocationBase
+    referral_materials: ReferralMaterials = None
 
 
 class CompanyReadBase(CompanyBase):
@@ -62,13 +41,4 @@ class LocationRead(LocationBase):
 
 class CompanyRead(CompanyReadBase):
     locations: list[LocationRead]
-
-
-class ApplicationReadBase(ApplicationBase):
-    id: int
-
-
-class ApplicationRead(ApplicationBase):
-    id: int
-    company: CompanyReadBase
-    location: LocationRead
+    referral_materials: ReferralMaterials
