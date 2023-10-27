@@ -5,9 +5,7 @@ import app.ents.company.schema as company_schema
 from app.core.config import settings
 
 
-def read_company_by_name(
-    db: Session, *, name: str
-) -> company_models.Company | None:
+def read_company_by_name(db: Session, *, name: str) -> company_models.Company | None:
     return (
         db.query(company_models.Company)
         .filter(company_models.Company.name == name)
@@ -27,9 +25,7 @@ def create_company(
     company = company_models.Company(
         **(data.dict(exclude={"location", "referral_materials"}))
     )
-    company.image = (
-        (settings.CLEAR_BIT_BASE_URL + data.domain) if data.domain else ""
-    )
+    company.image = (settings.CLEAR_BIT_BASE_URL + data.domain) if data.domain else ""
     location = company_models.Location(**data.location.dict())
     company.locations.append(location)
 

@@ -1,5 +1,13 @@
-from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
-                        String, Table)
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Enum
 

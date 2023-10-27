@@ -5,11 +5,11 @@ from jose.exceptions import JWTError
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-import app.ents.base.dependencies as base_dependencies
 import app.ents.user.crud as user_crud
 import app.ents.user.models as user_models
 import app.ents.user.schema as user_schema
 from app.core import config, security
+import app.database.session as session
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{config.settings.API_STR}/login/access-token"
@@ -17,17 +17,7 @@ reusable_oauth2 = OAuth2PasswordBearer(
 
 
 def get_current_user(
-    db: Session = Depends(base_dependencies.get_db),
-    user_id: int = 1,
-) -> user_models.User:
-    user = user_crud.read_by_id(db, id=user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-
-
-def get_current_user_PRO(
-    db: Session = Depends(base_dependencies.get_db),
+    db: Session = Depends(session.get_db),
     access_token: str = Cookie(),
 ) -> user_models.User:
     try:

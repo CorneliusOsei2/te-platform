@@ -3,42 +3,8 @@ import Essay from "./Essay";
 import { ExclamationTriangleIcon, MagnifyingGlassIcon, DocumentIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import axiosInstance from "../../axiosConfig";
 
-const ResumeAndEssay = ({ essay, setEssay, resume, updateEssayRequest }) => {
+const ResumeAndEssay = ({ resumes, essay, uploadResumeRequest, updateEssayRequest }) => {
     const [showResume, setShowResume] = useState(true);
-    let user_id = 1;
-
-    useEffect(() => {
-        axiosInstance.get(`/users.${user_id}.materials`)
-            .then((response) => {
-                setEssay(response.data["essay"])
-                setEssay(response.data["resume"])
-            })
-            .catch((error) => {
-                console.log("Error!");
-            })
-    }, [])
-
-    const uploadResumeRequest = () => {
-        axiosInstance.get(`/users.${user_id}.resumes.create`)
-            .then((response) => {
-                setEssay(response.data)
-            })
-            .catch((error) => {
-                console.log("Error!");
-            })
-    }
-
-
-
-    useEffect(() => {
-        axiosInstance.get(`/users.${user_id}.essays.create`)
-            .then((response) => {
-                setEssay(response.data)
-            })
-            .catch((error) => {
-                console.log("Error!");
-            })
-    }, [])
 
     return (
         <>
@@ -67,7 +33,7 @@ const ResumeAndEssay = ({ essay, setEssay, resume, updateEssayRequest }) => {
                                 <button
                                     type="button"
                                     className="flex rounded-full mx-auto text-red-600 bg-red-400/10 ring-red-400/30 ring-1 ring-inset ring-red-500  px-4 py-2.5 text-xs font-semibold  shadow-sm hover:bg-red-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                                    onClick={() => setShowResume(!showResume)}>
+                                    onClick={uploadResumeRequest}>
                                     Upload new resume <DocumentIcon className="ml-3 h-5 w-5" />
                                 </button>
                             </div>
@@ -84,13 +50,14 @@ const ResumeAndEssay = ({ essay, setEssay, resume, updateEssayRequest }) => {
                     </div>
 
                     <div className="w-full  lg:col-span-7 xl:relative xl:inset-0  xl:mr-6 h-screen">
-                        {!showResume && <button
-                            type="button"
-                            className="rounded-full mx-auto text-blue-600 bg-blue-400/10 ring-blue-400/30 ring-1 ring-inset ring-blue-500  px-4 py-2.5 text-sm font-semibold  shadow-sm hover:bg-blue-500 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-                            onClick={() => setShowResume(!showResume)}
-                        >
-                            Show current resume.
-                        </button>}
+                        {resumes.map((resume) => {
+                            <div>
+                                <a href={resume.link}>
+                                    <img width="100" height="100" src="https://img.icons8.com/plasticine/100/pdf.png" alt="pdf" />
+                                </a>
+                            </div>
+                        })
+                        }
 
                         {showResume &&
                             <div className="h-full   flex flex-col justify-center">

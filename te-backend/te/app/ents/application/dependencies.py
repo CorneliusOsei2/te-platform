@@ -4,9 +4,7 @@ import app.ents.application.models as application_models
 
 
 def parse_application(application: application_models.Application):
-    application_base = application_schema.ApplicationReadBase(
-        **vars(application)
-    )
+    application_base = application_schema.ApplicationReadBase(**vars(application))
     new_application = application_schema.ApplicationRead(
         **application_base.dict(),
         company=company_schema.CompanyReadBase(**vars(application.company)),

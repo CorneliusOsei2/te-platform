@@ -4,37 +4,29 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+import app.database.session as session
 
-import app.ents.base.dependencies as base_dependencies
-import app.ents.user.dependencies as user_dependencies
-import app.ents.user.models as user_models
-import app.ents.user.schema as user_schema
 from app.core.config import settings
 from app.core.security import Token, security
+from app.database.session import get_db
 
 router = APIRouter(prefix="/users")
 
 
 @router.post("/login/access-token", response_model=Token)
 def login_access_token(
-    db: Session = Depends(base_dependencies.get_db),
+    db: Session = Depends(session.get_db),
     data: OAuth2PasswordRequestForm = Depends(),
 ) -> Any:
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    user = user.crud.authenticate(
-        db, email=data.username, password=data.password
-    )
+    user = user.crud.authenticate(db, email=data.username, password=data.password)
     if not user:
-        raise HTTPException(
-            status_code=400, detail="Incorrect email or password"
-        )
+        raise HTTPException(status_code=400, detail="Incorrect email or password")
     elif not user.crud.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
-    access_token_expires = timedelta(
-        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-    )
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
         "access_token": security.create_access_token(
             user.id, expires_delta=access_token_expires
@@ -43,20 +35,20 @@ def login_access_token(
     }
 
 
-@router.post("/login/test-token", response_model=user_schema.UserRead)
-def test_token(
-    current_user: user_models.User = Depends(
-        user_dependencies.get_current_user
-    ),
-) -> Any:
-    """
-    Test access token
-    """
-    return current_user
+# @router.post("/login/test-token", response_model=user_schema.UserRead)
+# def test_token(
+#     current_user: user_models.User = Depends(
+#         base_dependencies.get_current_user
+#     ),
+# ) -> Any:
+#     """
+#     Test access token
+#     """
+#     return current_user
 
 
 # @router.post("/password-recovery/{email}", response_model=schema.Msg)
-# def recover_password(email: str, db: Session = Depends(user_dependencies.get_db)) -> Any:
+# def recover_password(email: str, db: Session = Depends(base_dependencies.get_current_user_db)) -> Any:
 #     """
 #     Password Recovery
 #     """

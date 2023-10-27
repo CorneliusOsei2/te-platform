@@ -53,12 +53,15 @@ def get_full_name(data: user_schema.UserCreate) -> str:
     return f"{data.first_name} {data.middle_name} {data.last_name}"
 
 
-def create(db: Session, *, data: user_schema.UserCreate) -> user_models.User:
+def create_user(
+    db: Session, *, data: user_schema.UserCreate
+) -> user_models.User:
     data.password = security.get_password_hash(data.password)
     user = user_models.User(
         **(data.dict()),
-        full_name=get_full_name(data),
     )
+
+    user.full_name = get_full_name(data)
 
     db.add(user)
     db.commit()
@@ -66,18 +69,18 @@ def create(db: Session, *, data: user_schema.UserCreate) -> user_models.User:
     return user
 
 
-def update(
-    db: Session,
-    *,
-    db_obj: user_models.User,
-    data: user_schema.UserUpdate | dict[str, Any],
-) -> user_models.User:
-    if isinstance(data, dict):
-        update_data = data
-    else:
-        update_data = data.dict(exclude_unset=True)
-    if update_data["password"]:
-        hashed_password = security.get_password_hash(update_data["password"])
-        del update_data["password"]
-        update_data["hashed_password"] = hashed_password
-    return super().update(db, db_obj=db_obj, data=update_data)
+# def update(
+#     db: Session,
+#     *,
+#     db_obj: user_models.User,
+#     data: user_schema.UserUpdate | dict[str, Any],
+# ) -> user_models.User:
+#     if isinstance(data, dict):
+#         update_data = data
+#     else:
+#         update_data = data.dict(exclude_unset=True)
+#     if update_data["password"]:
+#         hashed_password = security.get_password_hash(update_data["password"])
+#         del update_data["password"]
+#         update_data["hashed_password"] = hashed_password
+#     return super().update(db, db_obj=db_obj, data=update_data)

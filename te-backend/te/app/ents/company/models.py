@@ -25,9 +25,7 @@ class Posting(Base):
     recruiter_email = Column(String, nullable=False)
     active = Column(Boolean, nullable=False)
     role = Column(Enum(company_schema.JobRoles), nullable=False)
-    status = Column(
-        Enum(application_schema.ApplicationStatuses), nullable=False
-    )
+    status = Column(Enum(application_schema.ApplicationStatuses), nullable=False)
 
     # Relationships
     company_id = Column(Integer, ForeignKey("companies.id"))

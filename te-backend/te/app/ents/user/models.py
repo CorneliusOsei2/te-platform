@@ -31,11 +31,12 @@ class User(Base):
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
     role = Column(Enum(user_schema.UserRoles), nullable=False)
+    essay = Column(String, index=True, nullable=True)
 
-    #Relationships
+    # Relationships
     mentor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     company = relationship("Company", back_populates="users")
     company_id = Column(Integer, ForeignKey("companies.id"), nullable=True)
-    application_materials = relationship("ApplicationMaterials", back_populates="user")
+    resumes = relationship("Resume", back_populates="user")
+    other_files = relationship("OtherFiles", back_populates="user")
     applications = relationship("Application", back_populates="user")
-    

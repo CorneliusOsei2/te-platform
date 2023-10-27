@@ -4,12 +4,23 @@ from enum import Enum
 from pydantic import BaseModel
 import app.ents.company.schema as company_schema
 
+
 class Essay(BaseModel):
     essay: str
-    
-class Resume(BaseModel):
-    resume: str
-    
+
+
+class File(BaseModel):
+    date: datetime
+    link: str
+    title: str
+    reviewed: bool
+
+
+class File(BaseModel):
+    resumes: list[File]
+    other_files: list[File]
+
+
 class ApplicationStatuses(Enum):
     submitted: str = "Submitted"
     oa: str = "OA"

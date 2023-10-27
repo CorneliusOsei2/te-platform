@@ -36,16 +36,24 @@ class Application(Base):
     location = relationship("Location", back_populates="application")
 
 
-
-class ApplicationMaterials(Base):
-    __tablename__ = "application_materials"
-    __table_args__ = {'extend_existing': True}
+class Resume(Base):
+    __tablename__ = "resumes"
+    __table_args__ = {"extend_existing": True}
     id = Column(Integer, primary_key=True, index=True)
     date = Column(DateTime, nullable=False)
-    resume = Column(String, nullable=False)
-    resume_reviewed = Column(Boolean, nullable=False)
-    essay = Column(String, nullable=False)
-    essay_reviewed = Column(Boolean, nullable=False)
+    link = Column(String, nullable=False)
+    title = Column(String, nullable=False)
+    reviewed = Column(Boolean, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="application_materials")
-    
+    user = relationship("User", back_populates="resumes")
+
+
+class OtherFiles(Base):
+    __tablename__ = "other_files"
+    __table_args__ = {"extend_existing": True}
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(DateTime, nullable=False)
+    link = Column(String, nullable=False)
+    title = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="other_files")

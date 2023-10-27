@@ -2,6 +2,8 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from app.database.session import get_db
+import app.database.session as session
 
 import app.ents.base.dependencies as base_dependencies
 import app.ents.company.dependencies as company_dependencies
@@ -28,7 +30,7 @@ router = APIRouter(prefix="/companies")
 @router.post(".create", response_model=company_schema.CompanyRead)
 def create_company(
     *,
-    db: Session = Depends(base_dependencies.get_db),
+    db: Session = Depends(session.get_db),
     data: company_schema.CompanyCreate,
     # _=Depends(get_current_user),
 ) -> Any:
@@ -43,9 +45,7 @@ def create_company(
                 for location in company.locations
             )
         ):
-            company = company_crud.add_location(
-                db, company=company, data=data.location
-            )
+            company = company_crud.add_location(db, company=company, data=data.location)
             return company_dependencies.parse_company(company)
         else:
             raise HTTPException(
@@ -63,7 +63,7 @@ def create_company(
 
 @router.get(".list", response_model=list[company_schema.CompanyRead])
 def get_companies(
-    db: Session = Depends(base_dependencies.get_db),
+    db: Session = Depends(session.get_db),
     skip: int = 0,
     limit: int = 100,
     # _: str = Depends(dependencies.get_current_user),
@@ -72,9 +72,7 @@ def get_companies(
     Retrieve Companies.
     """
     companies = company_crud.read_company_multi(db, skip=skip, limit=limit)
-    return [
-        company_dependencies.parse_company(company) for company in companies
-    ]
+    return [company_dependencies.parse_company(company) for company in companies]
 
 
 # @router.put(".info/{company_id}", response_model=company_schema.CompanyRead)

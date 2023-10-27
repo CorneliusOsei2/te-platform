@@ -6,11 +6,10 @@ def parse_company(company):
     new_company = company_schema.CompanyRead(
         **company_base.dict(),
         locations=[
-            company_schema.LocationRead(**vars(loc))
-            for loc in company.locations
+            company_schema.LocationRead(**vars(loc)) for loc in company.locations
         ],
         referral_materials=company_schema.ReferralMaterials(
             **vars(company.referral_materials)
-        )
+        ),
     )
     return new_company

@@ -7,11 +7,12 @@ import {
 
 } from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
+import axiosInstance from "../../axiosConfig"
 
 import { BriefcaseIcon, DocumentIcon, CodeBracketIcon, ComputerDesktopIcon } from '@heroicons/react/20/solid'
 import Applications from '../application/Applications'
 import Sidebar from './Sidebar'
-import ResumeAndEssay from '../resume/ResumeAndEssay'
+import ResumeAndEssay from '../resume_and_essay/ResumeAndEssay'
 import Referrals from '../referral/Referrals'
 
 
@@ -24,6 +25,7 @@ const navigation = [
     { name: 'Other files', href: '#', icon: FolderIcon },
 ]
 
+let user_id = 1;
 
 const UserHome = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -36,6 +38,16 @@ const UserHome = () => {
         axiosInstance.post(`/users.${user_id}.applications.essay.update`, { "essay": essay })
             .then((response) => {
                 setEssay(response.data)
+            })
+            .catch((error) => {
+                console.log("Error!");
+            })
+    }
+
+    const updateResumeRequest = (essay) => {
+        axiosInstance.post(`/users.${user_id}.applications.essay.update`, { "essay": essay })
+            .then((response) => {
+                setResume(response.data)
             })
             .catch((error) => {
                 console.log("Error!");
@@ -105,6 +117,7 @@ const UserHome = () => {
                                 setEssay={setEssay}
                                 resume={resume}
                                 updateEssayRequest={updateEssayRequest}
+                                updateResumeRequest={updateResumeRequest}
                             />}
 
                         {content == "Referrals" && <Referrals essay={essay} resume={resume} />}
