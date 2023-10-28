@@ -1,4 +1,4 @@
-from fastapi import Cookie, Depends, HTTPException, status
+from fastapi import Cookie, Depends, HTTPException, status, Header
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from jose.exceptions import JWTError
@@ -18,7 +18,7 @@ reusable_oauth2 = OAuth2PasswordBearer(
 
 def get_current_user(
     db: Session = Depends(session.get_db),
-    access_token: str = Cookie(),
+    access_token: str = Header(),
 ) -> user_models.User:
     try:
         payload = jwt.decode(

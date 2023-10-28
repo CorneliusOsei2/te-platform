@@ -8,22 +8,25 @@ import app.database.session as session
 import app.ents.user.auth as user_auth
 import app.ents.user.crud as user_crud
 import app.ents.user.dependencies as user_dependencies
+import app.ents.user.models as user_models
 import app.ents.user.schema as user_schema
 
 router = APIRouter(prefix="/users")
 
 
 @router.post("/login")
-def login_user(response: Response, token=Depends(user_auth.login_access_token)) -> Any:
+def login_user(
+    response: Response, token=Depends(user_auth.login_access_token)
+) -> Any:
     """
     Log User in.
     """
-    # response.headers[
-    #     "Authorization"
-    # ] = f'{token.get("type")} {token.get("access_token")}'
-    response.set_cookie(
-        key="access_token", value=token.get("access_token"), samesite=None
-    )
+    response.headers[
+        "Authorization"
+    ] = f'{token.get("type")} {token.get("access_token")}'
+    # response.set_cookie(
+    #     key="access_token", value=token.get("access_token"), samesite=None
+    # )
     return token
 
 
@@ -32,10 +35,10 @@ def get_mentees(
     db: Session = Depends(session.get_db),
     skip: int = 0,
     limit: int = 100,
-    # _: str = Depends(dependencies.get_current_user),
+    _: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Users.
+    Retrieve all active mentees.
     """
     users = user_crud.read_mentees(db, skip=skip, limit=limit)
     return users
@@ -46,10 +49,10 @@ def get_mentors(
     db: Session = Depends(session.get_db),
     skip: int = 0,
     limit: int = 100,
-    # _: str = Depends(dependencies.get_current_user),
+    _: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Users.
+    Retrieve all active mentors.
     """
     users = user_crud.read_mentors(db, skip=skip, limit=limit)
     return users
@@ -60,10 +63,10 @@ def get_users(
     db: Session = Depends(session.get_db),
     skip: int = 0,
     limit: int = 100,
-    # _: str = Depends(dependencies.get_current_user),
+    _: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Users.
+    Retrieve all active users.
     """
     users = user_crud.read_users(db, skip=skip, limit=limit)
     return users
@@ -74,7 +77,6 @@ def create_user(
     *,
     db: Session = Depends(session.get_db),
     data: user_schema.UserCreate,
-    # _=Depends(get_current_user),
 ) -> Any:
     """
     Create an User.
@@ -90,8 +92,7 @@ def create_user(
             },
         )
 
-    user = user_crud.create_user(db, data=data)
-    return user_dependencies.parse_user(user)
+    return user_crud.create_user(db, data=data)
 
 
 # @router.put(".info/{user_id}", response_model=user_schema.UserRead)

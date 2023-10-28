@@ -51,15 +51,24 @@ const ResumeAndEssay = ({ resumes, essay, uploadResumeRequest, updateEssayReques
 
                     <div className="w-full  lg:col-span-7 xl:relative xl:inset-0  xl:mr-6 h-screen">
                         {resumes.map((resume) => {
-                            <div>
+                            return (<div>
                                 <a href={resume.link}>
                                     <img width="100" height="100" src="https://img.icons8.com/plasticine/100/pdf.png" alt="pdf" />
                                 </a>
-                            </div>
+                            </div>)
                         })
                         }
 
-                        {showResume &&
+                        {resumes.map((resume) => {
+                            return (<div>
+                                <a href={resume.link}>
+                                    <img width="100" height="100" src="https://img.icons8.com/plasticine/100/pdf.png" alt="pdf" />
+                                </a>
+                            </div>)
+                        })
+                        }
+
+                        {/* {showResume &&
                             <div className="h-full   flex flex-col justify-center">
                                 <button
                                     type="button"
@@ -76,7 +85,7 @@ const ResumeAndEssay = ({ resumes, essay, uploadResumeRequest, updateEssayReques
                                         </div>
                                     }
                                 </div>
-                            </div>}
+                            </div>} */}
                     </div>
 
                 </div>

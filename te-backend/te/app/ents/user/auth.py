@@ -9,6 +9,7 @@ import app.database.session as session
 from app.core.config import settings
 from app.core.security import Token, security
 from app.database.session import get_db
+import app.ents.user.crud as user_crud
 
 router = APIRouter(prefix="/users")
 
@@ -21,12 +22,20 @@ def login_access_token(
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    user = user.crud.authenticate(db, email=data.username, password=data.password)
+    user = user_crud.authenticate(
+        db, email=data.username, password=data.password
+    )
     if not user:
-        raise HTTPException(status_code=400, detail="Incorrect email or password")
+        raise HTTPException(
+            status_code=400, detail="Incorrect email or password"
+        )
     elif not user.crud.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    access_token_expires = timedelta(
+        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+
     return {
         "access_token": security.create_access_token(
             user.id, expires_delta=access_token_expires

@@ -9,11 +9,11 @@ import app.ents.application.crud as application_crud
 import app.ents.application.schema as application_schema
 import app.utilities.response as custom_response
 
-router = APIRouter(prefix="/users.{user_id}.applications")
-router = APIRouter(prefix="/users.applications")
+user_app_router = APIRouter(prefix="/users.{user_id}.applications")
+app_router = APIRouter(prefix="/users.applications")
 
 
-@router.post(".create", response_model=application_schema.ApplicationRead)
+@app_router.post(".create", response_model=application_schema.ApplicationRead)
 def create_application(
     *,
     db: Session = Depends(session.get_db),
@@ -29,8 +29,10 @@ def create_application(
     return application_dependencies.parse_application(application)
 
 
-@router.get(".list", response_model=list[application_schema.ApplicationRead])
-def get_applications(
+@app_router.get(
+    ".list", response_model=list[application_schema.ApplicationRead]
+)
+def get_all_applications(
     db: Session = Depends(session.get_db),
     skip: int = 0,
     limit: int = 100,
@@ -49,8 +51,10 @@ def get_applications(
     ]
 
 
-@router.get(".list", response_model=list[application_schema.ApplicationRead])
-def get_application_files(
+@user_app_router.get(
+    ".list", response_model=list[application_schema.ApplicationRead]
+)
+def get_user_application_files(
     db: Session = Depends(session.get_db),
     user=Depends(user_dependencies.get_current_user),
 ) -> Any:
@@ -66,7 +70,7 @@ def get_application_files(
     )
 
 
-@router.get(
+@user_app_router.get(
     ".essays.update",
     response_model=list[custom_response.Response],
 )

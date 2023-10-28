@@ -12,7 +12,7 @@ import axiosInstance from "../../axiosConfig"
 import { BriefcaseIcon, DocumentIcon, CodeBracketIcon, ComputerDesktopIcon } from '@heroicons/react/20/solid'
 import Applications from '../application/Applications'
 import Sidebar from './Sidebar'
-import ResumeAndEssay from '../resume_and_essay/ResumeAndEssay'
+import ResumeAndEssay from '../files/ResumeAndEssay'
 import Referrals from '../referral/Referrals'
 
 
@@ -32,7 +32,7 @@ const UserHome = () => {
     const [content, setContent] = useState("Resume and Essay")
 
     const [essay, setEssay] = useState("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-    const [resume, setResume] = useState("https://www.corneliusboateng.com/static/media/resume.cae3234606b994411a41.pdf");
+    const [resumes, setResumes] = useState(["https://www.corneliusboateng.com/static/media/resume.cae3234606b994411a41.pdf"]);
 
     const updateEssayRequest = (essay) => {
         axiosInstance.post(`/users.${user_id}.applications.essay.update`, { "essay": essay })
@@ -47,7 +47,9 @@ const UserHome = () => {
     const updateResumeRequest = (essay) => {
         axiosInstance.post(`/users.${user_id}.applications.essay.update`, { "essay": essay })
             .then((response) => {
-                setResume(response.data)
+                let tmp = resumes;
+                tmp.push(response.data);
+                setResumes(tmp);
             })
             .catch((error) => {
                 console.log("Error!");
@@ -109,18 +111,18 @@ const UserHome = () => {
 
                 <div className="lg:pl-72 ">
                     <main className="  h-screen">
-                        {content == "Applications" && <Applications />}
+                        {content === "Applications" && <Applications />}
 
-                        {content == "Resume and Essay" &&
+                        {content === "Resume and Essay" &&
                             <ResumeAndEssay
                                 essay={essay}
                                 setEssay={setEssay}
-                                resume={resume}
+                                resumes={resumes}
                                 updateEssayRequest={updateEssayRequest}
                                 updateResumeRequest={updateResumeRequest}
                             />}
 
-                        {content == "Referrals" && <Referrals essay={essay} resume={resume} />}
+                        {content === "Referrals" && <Referrals essay={essay} resumes={resumes} />}
                     </main>
 
                 </div>
