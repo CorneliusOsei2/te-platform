@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 from sqlalchemy.orm import Session
 
@@ -14,7 +14,9 @@ import app.utilities.response as custom_response
 def read_application_multi(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[application_models.Application]:
-    return db.query(application_models.Application).offset(skip).limit(limit).all()
+    return (
+        db.query(application_models.Application).offset(skip).limit(limit).all()
+    )
 
 
 def create_application(
@@ -40,7 +42,10 @@ def create_application(
 
     if not location:
         for loc in company.locations:
-            if loc.country == data.location.country and loc.city == data.location.city:
+            if (
+                loc.country == data.location.country
+                and loc.city == data.location.city
+            ):
                 location = loc
                 break
             if loc.country == data.location.country:
@@ -57,7 +62,7 @@ def create_application(
 
     application.company = company
     application.location = location
-    application.date = datetime.now()
+    application.date = date.today().strftime("%Y-%m-%d")
 
     application.user_id = user_id
 

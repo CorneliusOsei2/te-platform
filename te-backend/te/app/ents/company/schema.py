@@ -41,4 +41,20 @@ class LocationRead(LocationBase):
 
 class CompanyRead(CompanyReadBase):
     locations: list[LocationRead]
+
+
+class ReferralRequest(BaseModel):
+    company_id: int
+    role: str
+    notes: str
+
+
+class ReferralStatuses(Enum):
+    requested = "Requested"
+    approved = "Approved"
+    review = "In review"
+
+
+class CompanyReadForReferrals(CompanyReadBase):
+    countries: set[str]
     referral_materials: ReferralMaterials

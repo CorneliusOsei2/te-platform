@@ -1,4 +1,7 @@
 import { CheckCircleIcon } from '@heroicons/react/20/solid'
+import { Fragment, useEffect, useState } from 'react'
+import axiosInstance from '../../axiosConfig'
+import { useAuth } from '../AuthContext'
 
 const companies = [
     {
@@ -14,6 +17,24 @@ const companies = [
 ]
 
 const Referrals = ({ essay, resume }) => {
+    const { accessToken } = useAuth();
+    const [companies, setCompanies] = useState([]);
+
+    useEffect(() => {
+        axiosInstance.get("/applications.list", {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        })
+            .then((response) => {
+                setCompanies(response.data["companies"].filter((comp) => comp.can_refer === true))
+            })
+            .catch((error) => {
+                console.log(accessToken)
+                console.log(error);
+            })
+    }, [accessToken])
+
     return (
         <>
             <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">

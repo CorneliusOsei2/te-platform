@@ -2,7 +2,7 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.core.security import security
+import app.core.security as security
 from app.ents.base import crud_base
 from app.ents.user import models, schema
 

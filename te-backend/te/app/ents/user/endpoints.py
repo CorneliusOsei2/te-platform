@@ -14,19 +14,13 @@ import app.ents.user.schema as user_schema
 router = APIRouter(prefix="/users")
 
 
-@router.post("/login")
+@router.post(".login")
 def login_user(
     response: Response, token=Depends(user_auth.login_access_token)
 ) -> Any:
     """
     Log User in.
     """
-    response.headers[
-        "Authorization"
-    ] = f'{token.get("type")} {token.get("access_token")}'
-    # response.set_cookie(
-    #     key="access_token", value=token.get("access_token"), samesite=None
-    # )
     return token
 
 
@@ -40,8 +34,8 @@ def get_mentees(
     """
     Retrieve all active mentees.
     """
-    users = user_crud.read_mentees(db, skip=skip, limit=limit)
-    return users
+    mentees = user_crud.read_mentees(db, skip=skip, limit=limit)
+    return [user_schema.UserRead(**vars(mentor)) for mentor in mentees]
 
 
 @router.get(".mentors.list", response_model=list[user_schema.UserRead])
@@ -54,8 +48,8 @@ def get_mentors(
     """
     Retrieve all active mentors.
     """
-    users = user_crud.read_mentors(db, skip=skip, limit=limit)
-    return users
+    mentors = user_crud.read_mentors(db, skip=skip, limit=limit)
+    return [user_schema.UserRead(**vars(mentor)) for mentor in mentors]
 
 
 @router.get(".list", response_model=list[user_schema.UserRead])

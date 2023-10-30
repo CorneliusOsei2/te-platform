@@ -8,10 +8,9 @@ import {
 } from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
 import axiosInstance from "../../axiosConfig"
-
 import { BriefcaseIcon, DocumentIcon, CodeBracketIcon, ComputerDesktopIcon } from '@heroicons/react/20/solid'
 import Applications from '../application/Applications'
-import Sidebar from './Sidebar'
+import Sidebar from '../custom/Sidebar'
 import ResumeAndEssay from '../files/ResumeAndEssay'
 import Referrals from '../referral/Referrals'
 
@@ -25,34 +24,35 @@ const navigation = [
     { name: 'Other files', href: '#', icon: FolderIcon },
 ]
 
-let user_id = 1;
 
-const UserHome = () => {
+const Workspace = ({ setLogin }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [content, setContent] = useState("Resume and Essay")
 
-    const [essay, setEssay] = useState("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-    const [resumes, setResumes] = useState(["https://www.corneliusboateng.com/static/media/resume.cae3234606b994411a41.pdf"]);
+    const [essay, setEssay] = useState("");
+    const [resumes, setResumes] = useState([]);
+
+    localStorage.setItem('prevPage', "/workspace");
 
     const updateEssayRequest = (essay) => {
-        axiosInstance.post(`/users.${user_id}.applications.essay.update`, { "essay": essay })
+        axiosInstance.post(`/applications.essay.update`, { "essay": essay })
             .then((response) => {
                 setEssay(response.data)
             })
             .catch((error) => {
-                console.log("Error!");
+                console.log(error);
             })
     }
 
     const updateResumeRequest = (essay) => {
-        axiosInstance.post(`/users.${user_id}.applications.essay.update`, { "essay": essay })
+        axiosInstance.post(`/applications.essay.update`, { "essay": essay })
             .then((response) => {
                 let tmp = resumes;
                 tmp.push(response.data);
                 setResumes(tmp);
             })
             .catch((error) => {
-                console.log("Error!");
+                console.log(error);
             })
     }
 
@@ -107,22 +107,22 @@ const UserHome = () => {
                     </Dialog>
                 </Transition.Root>
 
-                <Sidebar navigation={navigation} content={content} setContent={setContent} />
+                <Sidebar navigation={navigation} content={content} setContent={setContent} setLogin={setLogin} />
 
                 <div className="lg:pl-72 ">
                     <main className="  h-screen">
-                        {content === "Applications" && <Applications />}
-
-                        {content === "Resume and Essay" &&
-                            <ResumeAndEssay
-                                essay={essay}
-                                setEssay={setEssay}
-                                resumes={resumes}
-                                updateEssayRequest={updateEssayRequest}
-                                updateResumeRequest={updateResumeRequest}
-                            />}
-
-                        {content === "Referrals" && <Referrals essay={essay} resumes={resumes} />}
+                        {content === "Applications" ? <Applications />
+                            :
+                            content === "Resume and Essay" ?
+                                <ResumeAndEssay
+                                    essay={essay}
+                                    setEssay={setEssay}
+                                    resumes={resumes}
+                                    updateEssayRequest={updateEssayRequest}
+                                    updateResumeRequest={updateResumeRequest}
+                                />
+                                :
+                                content === "Referrals" ? <Referrals essay={essay} resumes={resumes} /> : <></>}
                     </main>
 
                 </div>
@@ -132,4 +132,4 @@ const UserHome = () => {
 }
 
 
-export default UserHome;
+export default Workspace;

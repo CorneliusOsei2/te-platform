@@ -1,4 +1,3 @@
-from datetime import datetime
 from enum import Enum
 
 from pydantic import BaseModel
@@ -10,7 +9,7 @@ class Essay(BaseModel):
 
 
 class File(BaseModel):
-    date: datetime
+    date: str
     link: str
     title: str
     reviewed: bool
@@ -38,7 +37,7 @@ class ApplicationBase(BaseModel):
     recruiter_name: str = ""
     recruiter_email: str = ""
     active: bool = True
-    date: datetime = None
+    date: str = None
     role: company_schema.JobRoles
     status: ApplicationStatuses
 

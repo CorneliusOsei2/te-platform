@@ -10,7 +10,7 @@ import app.ents.application.schema as application_schema
 import app.utilities.response as custom_response
 
 user_app_router = APIRouter(prefix="/users.{user_id}.applications")
-app_router = APIRouter(prefix="/users.applications")
+app_router = APIRouter(prefix="/applications")
 
 
 @app_router.post(".create", response_model=application_schema.ApplicationRead)

@@ -1,7 +1,6 @@
 from sqlalchemy import (
     Boolean,
     Column,
-    DateTime,
     Float,
     ForeignKey,
     Integer,
@@ -32,7 +31,7 @@ problems_companies = Table(
 class Platform(Base):
     __tablename__ = "platforms"
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(DateTime, nullable=False)
+    date = Column(String, nullable=False)
     notes = Column(String, nullable=False)
 
 

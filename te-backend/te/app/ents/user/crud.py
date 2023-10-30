@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 import app.ents.user.models as user_models
 import app.ents.user.schema as user_schema
-from app.core.security import security
+import app.core.security as security
 
 
 def read_by_email(db: Session, *, email: str) -> user_models.User | None:
@@ -17,6 +17,9 @@ def read_by_email(db: Session, *, email: str) -> user_models.User | None:
 
 def read_by_id(db: Session, *, id: int) -> user_models.User | None:
     return db.query(user_models.User).filter(user_models.User.id == id).first()
+
+def is_active(db: Session, *, user:  user_models.User) ->bool:
+    return user.is_active
 
 
 def read_mentees(
@@ -61,6 +64,7 @@ def create_user(
         **(data.dict()),
     )
 
+    print(f"\nHashed password is =========== {data.password}\n")
     user.full_name = get_full_name(data)
 
     db.add(user)

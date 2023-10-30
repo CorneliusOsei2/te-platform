@@ -1,7 +1,6 @@
 from sqlalchemy import (
     Boolean,
     Column,
-    DateTime,
     ForeignKey,
     Integer,
     String,
@@ -18,13 +17,15 @@ from app.database.base_class import Base
 class Application(Base):
     __tablename__ = "applications"
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(DateTime, nullable=False)
+    date = Column(String, nullable=False)
     notes = Column(String, nullable=False)
     recruiter_name = Column(String, nullable=False)
     recruiter_email = Column(String, nullable=False)
     role = Column(Enum(company_schema.JobRoles), nullable=False)
     title = Column(String, nullable=False)
-    status = Column(Enum(application_schema.ApplicationStatuses), nullable=False)
+    status = Column(
+        Enum(application_schema.ApplicationStatuses), nullable=False
+    )
     active = Column(Boolean, nullable=False)
 
     # Relationships
@@ -40,7 +41,7 @@ class Resume(Base):
     __tablename__ = "resumes"
     __table_args__ = {"extend_existing": True}
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(DateTime, nullable=False)
+    date = Column(String, nullable=False)
     link = Column(String, nullable=False)
     title = Column(String, nullable=False)
     reviewed = Column(Boolean, nullable=False)
@@ -52,7 +53,7 @@ class OtherFiles(Base):
     __tablename__ = "other_files"
     __table_args__ = {"extend_existing": True}
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(DateTime, nullable=False)
+    date = Column(String, nullable=False)
     link = Column(String, nullable=False)
     title = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"))

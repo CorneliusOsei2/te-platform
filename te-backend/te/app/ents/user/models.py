@@ -1,7 +1,6 @@
 from sqlalchemy import (
     Boolean,
     Column,
-    DateTime,
     ForeignKey,
     Integer,
     String,
@@ -28,8 +27,8 @@ class User(Base):
     date_of_birth = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
     university = Column(String, nullable=False)
-    start_date = Column(DateTime, nullable=False)
-    end_date = Column(DateTime, nullable=False)
+    start_date = Column(String, nullable=False)
+    end_date = Column(String, nullable=False)
     role = Column(Enum(user_schema.UserRoles), nullable=False)
     essay = Column(String, index=True, nullable=True)
 
@@ -40,3 +39,4 @@ class User(Base):
     resumes = relationship("Resume", back_populates="user")
     other_files = relationship("OtherFiles", back_populates="user")
     applications = relationship("Application", back_populates="user")
+    referrals = relationship("Referral", back_populates="user")

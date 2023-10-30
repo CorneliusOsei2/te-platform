@@ -3,13 +3,17 @@ import { Dialog, Transition } from '@headlessui/react'
 import {
     Bars3Icon,
     XMarkIcon,
+
 } from '@heroicons/react/24/outline'
+import { useAuth } from '../AuthContext'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const Sidebar = ({ navigation, content, setContent }) => {
+
+const Sidebar = ({ navigation, content, setContent, setLogin }) => {
+    const { accessToken, logout } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false)
     return (
         <>
@@ -143,10 +147,14 @@ const Sidebar = ({ navigation, content, setContent }) => {
                                     </ul>
                                 </li>
 
-                                <li className="-mx-6 mt-auto">
+                                <li className="-mx-6 mt-auto flex">
+
+                                </li>
+
+                                <li className='flex justify-between'>
                                     <a
-                                        href="#"
-                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                                        href="/"
+                                        className="flex items-center gap-x-4 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-50"
@@ -156,6 +164,22 @@ const Sidebar = ({ navigation, content, setContent }) => {
                                         <span className="sr-only">Your profile</span>
                                         <span aria-hidden="true" className='text-gray-100'>Tom Cook</span>
                                     </a>
+
+                                    {!accessToken &&
+                                        <a className=" py-3 flex align-right right-0" href='/login'>
+                                            <span className="text-white mr-1">Login </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 text-white">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                            </svg>
+                                        </a>}
+
+                                    {accessToken &&
+                                        <button type='submit' className=" py-3 flex align-right right-0" onClick={logout}>
+                                            <span className="text-white mr-1">Logout </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 text-white">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                            </svg>
+                                        </button>}
                                 </li>
                             </ul>
                         </nav>
@@ -168,7 +192,7 @@ const Sidebar = ({ navigation, content, setContent }) => {
                         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     </button>
                     <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">Dashboard</div>
-                    <a href="#">
+                    <a href="/">
                         <span className="sr-only">Your profile</span>
                         <img
                             className="h-8 w-8 rounded-full bg-white-50"

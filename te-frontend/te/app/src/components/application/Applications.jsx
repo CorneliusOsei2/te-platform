@@ -8,26 +8,32 @@ import ApplicationItem from './ApplicationItem'
 import axiosInstance from '../../axiosConfig'
 
 import { sortByField } from '../../utils'
+import { useAuth } from '../AuthContext'
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
 const Applications = () => {
-    const [addApplication, setAddApplication] = useState(false);
     const [applications, setApplications] = useState([]);
+    const [addApplication, setAddApplication] = useState(false);
     const [sortBy, setSortBy] = useState("Company name")
+    const { accessToken } = useAuth();
 
     useEffect(() => {
-        axiosInstance.get("/applications.list")
+        axiosInstance.get("/applications.list", {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        })
             .then((response) => {
                 setApplications(response.data)
             })
             .catch((error) => {
-                console.log("Error!");
+                console.log(accessToken)
+                console.log(error);
             })
-    }, [])
+    }, [accessToken])
 
-
-    useEffect(() => {
+    const handleApplicationsSortBy = (sortBy) => {
         let sorted_applications = [];
         switch (sortBy) {
             case "Company name":
@@ -44,7 +50,9 @@ const Applications = () => {
                 break;
         }
         setApplications(sorted_applications);
-    }, [sortBy])
+
+    }
+
 
     return (
         <>
@@ -58,7 +66,7 @@ const Applications = () => {
                     >
                         <PlusIcon className="h-5 w-5" aria-hidden="true" />
                     </button>
-                    <SortDropdown sortOptions={sortOptions} setSortBy={setSortBy} />
+                    <SortDropdown sortOptions={sortOptions} handler={handleApplicationsSortBy} />
                 </header>
 
                 {

@@ -1,8 +1,13 @@
-from datetime import datetime
+from datetime import date
 from enum import Enum
 
 from pydantic import BaseModel, EmailStr
 import app.ents.application.schema as application_schema
+
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
 
 class UserRoles(Enum):
@@ -26,8 +31,8 @@ class UserBase(BaseModel):
     mentor_id: int | None = None
     is_active: bool = True
     role: UserRoles = UserRoles.mentee
-    start_date: datetime = datetime.now()
-    end_date: datetime = datetime.now()
+    start_date: str = date.today().strftime("%Y-%m-%d")
+    end_date: str = ""
 
 
 class UserCreate(UserBase):

@@ -8,7 +8,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const SortDropdown = ({ sortOptions, setSortBy }) => {
+const SortDropdown = ({ sortOptions, handler }) => {
     return (
         <>
             <Menu as="div" className="relative">
@@ -30,12 +30,12 @@ const SortDropdown = ({ sortOptions, setSortBy }) => {
                             <Menu.Item key={option}>
                                 {({ active }) => (
                                     <a
-                                        href="#"
+                                        href="/"
                                         className={classNames(
                                             active ? 'bg-gray-50' : '',
                                             'block px-3 py-1 text-sm leading-6 text-gray-900'
                                         )}
-                                        onClick={(e) => setSortBy(e.target.innerText)}
+                                        onClick={(e) => handler(e.target.innerText)}
                                     >
                                         {option}
                                     </a>

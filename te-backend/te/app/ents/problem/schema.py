@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from enum import Enum
 
 from pydantic import BaseModel, EmailStr
@@ -32,8 +32,8 @@ class PostingBase(BaseModel):
     university: str = ""
     mentor_id: int | None = None
     is_active: bool = True
-    start_date: datetime = datetime.now()
-    end_date: datetime = datetime.now()
+    start_date: str = date.today().strftime("%Y-%m-%d")
+    end_date: str = ""
 
 
 class PostingCreate(PostingBase):

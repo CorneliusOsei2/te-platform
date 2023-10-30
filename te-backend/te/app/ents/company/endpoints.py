@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.database.session import get_db
 import app.database.session as session
 
-import app.ents.base.dependencies as base_dependencies
+import app.ents.user.dependencies as user_dependencies
 import app.ents.company.dependencies as company_dependencies
 import app.ents.company.crud as company_crud
 import app.ents.company.schema as company_schema
@@ -45,7 +45,9 @@ def create_company(
                 for location in company.locations
             )
         ):
-            company = company_crud.add_location(db, company=company, data=data.location)
+            company = company_crud.add_location(
+                db, company=company, data=data.location
+            )
             return company_dependencies.parse_company(company)
         else:
             raise HTTPException(
@@ -72,7 +74,53 @@ def get_companies(
     Retrieve Companies.
     """
     companies = company_crud.read_company_multi(db, skip=skip, limit=limit)
-    return [company_dependencies.parse_company(company) for company in companies]
+    return [
+        company_dependencies.parse_company(company) for company in companies
+    ]
+
+
+@router.get(
+    ".referrals.list",
+    response_model=dict[str, list[company_schema.CompanyRead]],
+)
+def get_referral_companies(
+    db: Session = Depends(session.get_db),
+    skip: int = 0,
+    limit: int = 100,
+    user: str = Depends(user_dependencies.get_current_user),
+) -> Any:
+    """
+    Retrieve Companies.
+    """
+    companies = company_crud.read_referral_companies(db, skip=skip, limit=limit)
+    return {
+        "companies": [
+            company_dependencies.parse_company_for_referrals(company)
+            for company in companies
+        ]
+    }
+
+
+@router.post(
+    ".referrals.create",
+    response_model=dict[str, list[company_schema.CompanyRead]],
+)
+def request_referral(
+    *,
+    db: Session = Depends(session.get_db),
+    data: str,
+    user: str = Depends(user_dependencies.get_current_user),
+) -> Any:
+    """
+    Retrieve Companies.
+    """
+    companies = company_crud.request_referral(db, data=data, user_id=user.id)
+    return {
+        "companies": [
+            company_dependencies.parse_company_for_referrals(company)
+            for company in companies
+        ]
+    }
 
 
 # @router.put(".info/{company_id}", response_model=company_schema.CompanyRead)

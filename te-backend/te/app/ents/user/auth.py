@@ -7,31 +7,31 @@ from sqlalchemy.orm import Session
 import app.database.session as session
 
 from app.core.config import settings
-from app.core.security import Token, security
+import app.core.security as security
 from app.database.session import get_db
 import app.ents.user.crud as user_crud
+import app.ents.user.schema as user_schema
+
 
 router = APIRouter(prefix="/users")
 
 
-@router.post("/login/access-token", response_model=Token)
+@router.post("/login/access-token", response_model=security.Token)
 def login_access_token(
-    db: Session = Depends(session.get_db),
-    data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(session.get_db), data: user_schema.UserLogin = None
 ) -> Any:
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    user = user_crud.authenticate(
+    user = security.authenticate(
         db, email=data.username, password=data.password
     )
     if not user:
         raise HTTPException(
             status_code=400, detail="Incorrect email or password"
         )
-    elif not user.crud.is_active(user):
+    elif not user_crud.is_active(db, user=user):
         raise HTTPException(status_code=400, detail="Inactive user")
-
     access_token_expires = timedelta(
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
