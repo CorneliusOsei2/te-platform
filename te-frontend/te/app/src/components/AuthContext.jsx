@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthenticationContext = createContext();
 
@@ -18,6 +19,7 @@ const authReducer = (state, action) => {
 }
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(authReducer, { accessToken: null });
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('accessToken');
     dispatch({ type: 'logout' });
-
+    navigate("/");
   };
 
 

@@ -22,6 +22,7 @@ class ReferralMaterials(BaseModel):
 class CompanyBase(BaseModel):
     name: str
     image: str = ""
+    can_refer: bool = True
 
 
 class CompanyCreate(CompanyBase):
@@ -51,10 +52,17 @@ class ReferralRequest(BaseModel):
 
 class ReferralStatuses(Enum):
     requested = "Requested"
-    approved = "Approved"
+    completed = "Completed"
     review = "In review"
+
+
+class Referral(BaseModel):
+    user_id: int
+    role: str
+    status: ReferralStatuses
 
 
 class CompanyReadForReferrals(CompanyReadBase):
     countries: set[str]
     referral_materials: ReferralMaterials
+    referral: Referral | None

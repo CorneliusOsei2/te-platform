@@ -122,7 +122,7 @@ const Workspace = ({ setLogin }) => {
                                     updateResumeRequest={updateResumeRequest}
                                 />
                                 :
-                                content === "Referrals" ? <Referrals essay={essay} resumes={resumes} /> : <></>}
+                                content === "Referrals" ? <Referrals essay={essay} resumes={resumes} contact={""} /> : <></>}
                     </main>
 
                 </div>

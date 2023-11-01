@@ -1,39 +1,82 @@
-import { CheckCircleIcon } from '@heroicons/react/20/solid'
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useCallback } from 'react'
 import axiosInstance from '../../axiosConfig'
 import { useAuth } from '../AuthContext'
+import { useData } from '../DataContext'
 
-const companies = [
-    {
-        name: 'Lindsay Walton',
-        department: 'Optimization',
-        email: 'lindsay.walton@example.com',
-        role: 'Member',
-        image:
-            'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        requirements: ["Resume", "Essay / Cover letter"]
-    },
+const referral_statuses = {
+    "Requested": "bg-blue-50 text-blue-700  ring-blue-600/20",
+    "Completed": "bg-green-50 text-green-700  ring-green-600/20",
+    "In review": "bg-green-50 text-green-700  ring-green-600/20",
+}
 
-]
+const referral_action = (status, resumes, essay, contact) => {
+    if (status !== null) {
+        switch (status) {
+            case "Completed":
+                return "Referral completed. Hope you get the offer!";
+            case "Requested":
+                return "Request sent. Thank you!"
+            case "In review":
+                return "Please make sure all needed materials are uploaded."
+            default:
+                return ""
+        }
+    }
+    else {
+        if (!(resumes || essay || contact)) {
+            return "Please upload your resume, essay and contact before requesting."
+        }
+        else if (!(resumes || essay)) {
+            return "Please upload your resume and essay."
+        }
+        else if (!(resumes || contact)) {
+            return "Please upload your resume and contact."
+        }
+        else if (!(essay || contact)) {
+            return "Please upload your essay and contact."
+        }
+        else if (!resumes) {
+            return "Please upload your resume"
+        }
+        else if (!essay) {
+            return "Please upload your essay."
+        }
+        else if (!contact) {
+            return "Please upload your contact."
+        }
+    }
+}
 
-const Referrals = ({ essay, resume }) => {
+const classNames = (...classes) => {
+    return classes.filter(Boolean).join(' ')
+}
+
+const Referrals = ({ essay, resumes, contact }) => {
     const { accessToken } = useAuth();
-    const [companies, setCompanies] = useState([]);
+    const { fetchReferralCompanies, setFetchReferralCompanies, referralCompanies, setReferralCompanies } = useData();
 
-    useEffect(() => {
-        axiosInstance.get("/applications.list", {
+
+    const referralCompaniesRequest = useCallback(() => {
+        axiosInstance.get("companies.referrals.list", {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         })
             .then((response) => {
-                setCompanies(response.data["companies"].filter((comp) => comp.can_refer === true))
+                console.log(response.data.companies);
+                setReferralCompanies(response.data.companies);
             })
             .catch((error) => {
-                console.log(accessToken)
                 console.log(error);
-            })
-    }, [accessToken])
+            });
+    });
+
+    useEffect(() => {
+        if (fetchReferralCompanies) {
+            referralCompaniesRequest();
+            setFetchReferralCompanies(false);
+        }
+    }, [fetchReferralCompanies, referralCompaniesRequest, setFetchReferralCompanies]);
 
     return (
         <>
@@ -63,27 +106,39 @@ const Referrals = ({ essay, resume }) => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
-                                {companies.map((company) => (
+                                {referralCompanies.map((company) => (
                                     <tr key={company.email}>
                                         <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                             <div className="flex items-center">
-                                                <div className="h-11 w-11 flex-shrink-0">
-                                                    <img className="h-11 w-11 rounded-full" src={company.image} alt="" />
+                                                <div className="mr-3">
+                                                    <img className="h-5 w-5 rounded-full" src={company.image} alt="" />
                                                 </div>
                                                 <div className="font-medium text-gray-900">{company.name}</div>
                                             </div>
                                         </td>
                                         <td className="whitespace-nowrap text-left px-3 py-5 text-sm text-gray-500">
+                                            <ul>
+                                                {company.referral_materials.resume && <li>Resume</li>}
+                                                {company.referral_materials.essay && <li>Essay</li>}
+                                                {company.referral_materials.contact && <li>Phone number</li>}
+                                            </ul>
+                                        </td>
+                                        <td className="whitespace-nowrap text-left px-3 py-5 text-sm text-gray-500">
                                             {
-                                                company.requirements.map((req) => <div>{req}</div>)
+                                                company.referral ?
+                                                    <span className={classNames(referral_statuses[company.referral ? company.referral.status : "None"], "inline-flex text-left rounded-full  px-2 py-1 text-xs font-medium ring-1 ring-inset ")}>
+                                                        {company.referral.status}
+                                                        {company.role}
+                                                    </span>
+                                                    :
+                                                    <button className="inline-flex text-left rounded-full  px-2 py-1 text-xs font-medium ring-1 ring-inset" onClick={referralCompaniesRequest}>
+                                                        Request
+                                                    </button>
                                             }
                                         </td>
-                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                            <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                Active
-                                            </span>
+                                        <td className="whitespace-nowrap text-left px-3 py-5 text-sm text-gray-500">
+                                            <span>{referral_action(company.referral ? company.referral.status : null, resumes.length > 0, essay !== "", contact !== "")} </span>
                                         </td>
-                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{company.role}</td>
 
                                     </tr>
                                 ))}

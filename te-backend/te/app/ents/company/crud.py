@@ -81,19 +81,25 @@ def read_referral_companies(
 
 
 def request_referral(
-    db: Session, data: company_schema.ReferralRequest, user_id: int
-):
+    db: Session,
+    user_id: int,
+    company_id: int,
+    data: company_schema.ReferralRequest,
+) -> company_models.Referral:
     referral = company_models.Referral(
         user_id=user_id,
         company_id=data.company_id,
         role=data.role,
         notes=data.notes,
-        year=int(date.year),
+        year=date.today().year,
+        status=company_schema.ReferralStatuses.requested,
     )
 
     db.add(referral)
     db.commit()
     db.refresh(referral)
+
+    return referral
 
 
 # def update(

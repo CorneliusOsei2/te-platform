@@ -10,7 +10,7 @@ const statuses = {
     "Rejected": 'text-red-400 bg-red-400/10 ring-red-400/30',
 }
 
-function classNames(...classes) {
+const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ')
 }
 
