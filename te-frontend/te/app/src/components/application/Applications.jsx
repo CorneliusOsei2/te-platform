@@ -18,7 +18,7 @@ const Applications = () => {
     const { userId, accessToken } = useAuth();
     const { fetchApplications, setFetchApplications, applications, setApplications } = useData();
 
-    const applicationsRequest = useCallback(() => {
+    const getUserAapplicationsRequest = useCallback(() => {
         axiosInstance.get(`/users.${userId}.applications.list`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -35,10 +35,10 @@ const Applications = () => {
 
     useEffect(() => {
         if (fetchApplications && accessToken) {
-            applicationsRequest();
+            getUserAapplicationsRequest();
             setFetchApplications(false);
         }
-    }, [accessToken, applicationsRequest, fetchApplications, setApplications, setFetchApplications])
+    }, [accessToken, getUserAapplicationsRequest, fetchApplications, setApplications, setFetchApplications])
 
     const handleApplicationsSortBy = (sortBy) => {
         let sorted_applications = [];
