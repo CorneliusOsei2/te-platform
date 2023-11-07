@@ -1,33 +1,34 @@
 import { Fragment, useState } from 'react'
 import {
     FolderIcon,
-    ServerIcon,
-    SignalIcon,
     XMarkIcon,
 
 } from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
 import axiosInstance from "../../axiosConfig"
-import { BriefcaseIcon, DocumentIcon, CodeBracketIcon, ComputerDesktopIcon } from '@heroicons/react/20/solid'
+import { BriefcaseIcon, DocumentIcon, CodeBracketIcon, ComputerDesktopIcon, BookOpenIcon } from '@heroicons/react/20/solid'
 import Applications from '../application/Applications'
 import Sidebar from '../custom/Sidebar'
-import ResumeAndEssay from '../files/ResumeAndEssay'
+import FilesAndEssay from '../file/FilesAndEssay'
 import Referrals from '../referral/Referrals'
+import Learning from '../learning/Learning'
+import Tmp from '../application/ApplicationCreate'
 
 
 const navigation = [
-    { name: 'Applications', href: '#', icon: BriefcaseIcon },
-    { name: 'Resume and Essay', href: '#', icon: DocumentIcon },
-    { name: 'Referrals', href: '#', icon: FolderIcon },
-    { name: 'Opportunities', href: '#', icon: ComputerDesktopIcon },
-    { name: 'Practice Problems', href: '#', icon: CodeBracketIcon },
-    { name: 'Other files', href: '#', icon: FolderIcon },
+    { name: 'Applications', type: "app", icon: BriefcaseIcon },
+    { name: 'Resume and Essay', type: "app", icon: DocumentIcon },
+    { name: 'Referrals', type: "app", icon: FolderIcon },
+    { name: 'Opportunities', type: "app", icon: ComputerDesktopIcon },
+    { name: 'Learning', type: "learn", icon: BookOpenIcon },
+    { name: 'Practice', type: "learn", icon: CodeBracketIcon },
+    { name: 'Other files', type: "other", icon: FolderIcon },
 ]
 
 
 const Workspace = ({ setLogin }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [content, setContent] = useState("Resume and Essay")
+    const [content, setContent] = useState("Applications")
 
     const [essay, setEssay] = useState("");
     const [resumes, setResumes] = useState([]);
@@ -110,19 +111,17 @@ const Workspace = ({ setLogin }) => {
                 <Sidebar navigation={navigation} content={content} setContent={setContent} setLogin={setLogin} />
 
                 <div className="lg:pl-72 ">
-                    <main className="  h-screen">
+                    <main className="bg-white h-screen">
                         {content === "Applications" ? <Applications />
                             :
                             content === "Resume and Essay" ?
-                                <ResumeAndEssay
-                                    essay={essay}
-                                    setEssay={setEssay}
-                                    resumes={resumes}
+                                <FilesAndEssay
                                     updateEssayRequest={updateEssayRequest}
                                     updateResumeRequest={updateResumeRequest}
                                 />
                                 :
-                                content === "Referrals" ? <Referrals essay={essay} resumes={resumes} contact={""} /> : <></>}
+                                content === "Referrals" ? <Referrals essay={essay} resumes={resumes} contact={""} /> :
+                                    content === "Learning" ? <Learning /> : <Tmp />}
                     </main>
 
                 </div>

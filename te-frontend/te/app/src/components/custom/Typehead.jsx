@@ -4,10 +4,10 @@ import Autosuggest from 'react-autosuggest';
 
 const Typeahead = ({ name, value, data, handler }) => {
     const [suggestions, setSuggestions] = useState([]);
-    const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+    const [currentValue, setCurrentValue] = useState(value || "");
+
 
     const getSuggestions = (inputValue) => {
-
         const inputValueLowerCase = inputValue.trim().toLowerCase();
         return data.filter((entry) =>
             entry.toLowerCase().includes(inputValueLowerCase)
@@ -40,51 +40,63 @@ const Typeahead = ({ name, value, data, handler }) => {
     };
 
     const navigateSuggestions = (step) => {
-        const currentIndex = suggestions.indexOf(selectedSuggestion);
+        console.log(suggestions);
+        const currentIndex = suggestions.indexOf(currentValue);
         const newIndex = currentIndex + step;
 
         if (newIndex >= 0 && newIndex < suggestions.length) {
-            setSelectedSuggestion(suggestions[newIndex]);
+            setCurrentValue(suggestions[newIndex]);
+        }
+        else if (newIndex === suggestions.length) {
+            setCurrentValue(suggestions[0]);
+        }
+        else if (newIndex === -1) {
+            setCurrentValue(suggestions[suggestions.length - 1]);
         }
     };
 
-    const renderSuggestion = (suggestion) => {
-        const isSelected = suggestion === selectedSuggestion;
-        return (
-            <div className={`pl-2 ml  -2 z-10 relative group text-gray-500 ${isSelected ? ' text-blue-400 bg-blue-100' : 'bg-white'}`}>
-                <hr />
-                <li
-                    className={`py-2 cursor-pointer ${isSelected ? 'font-weight-700' : ''}`}
-                    onMouseEnter={() => setSelectedSuggestion(suggestion)}
-                >
-                    {suggestion}
-                </li>
-            </div>
-        );
-    };
 
     const inputProps = {
         name: name,
-        value: value,
-        onChange: (_, { newValue }) => { handler({ "name": name, "value": newValue }) },
-        className: "peer block w-full border-0 bg-gray-50 py-1.5 text-gray-900 focus:ring-0 sm:text-sm sm:leading-6",
+        value: currentValue,
+        onChange: (_, { newValue }) => {
+            setCurrentValue(newValue);
+            handler({ "name": name, "value": newValue });
+        },
+        className: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6",
         onKeyDown
     };
 
+
     return (
         <>
-            <div>
+            <div className='relative'>
                 <Autosuggest
                     suggestions={suggestions}
                     onSuggestionsFetchRequested={onSuggestionsFetchRequested}
                     onSuggestionsClearRequested={onSuggestionsClearRequested}
                     getSuggestionValue={getSuggestionValue}
-                    renderSuggestion={renderSuggestion}
+                    renderSuggestion={() => { }}
                     inputProps={inputProps}
                 />
+                {suggestions.length > 0 && (
+                    <ul className="suggestions-list mt-1 p-1 absolute w-full max-h-48 overflow-y-auto bg-white border border-gray-300 rounded-md shadow-md">
+                        {suggestions.map((suggestion, index) => (
+                            <li
+                                key={index}
+                                className={`py-2 cursor-pointer hover:text-sky-700 ${currentValue === suggestion ? 'text-sky-700' : ''}`}
+                                onMouseDown={() => {
+                                    setCurrentValue(suggestion);
+                                    handler({ "name": name, "value": suggestion });
+                                }}
+                            >
+                                {suggestion}
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
         </>
-
     );
 };
 

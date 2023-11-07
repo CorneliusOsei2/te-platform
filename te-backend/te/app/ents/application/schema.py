@@ -8,16 +8,31 @@ class Essay(BaseModel):
     essay: str
 
 
-class File(BaseModel):
+class FileBase(BaseModel):
+    name: str
     date: str
     link: str
-    title: str
     reviewed: bool
 
 
-class File(BaseModel):
-    resumes: list[File]
-    other_files: list[File]
+class File(FileBase):
+    id: int
+    file_id: str
+
+
+class FileRead(FileBase):
+    id: int
+
+
+class FilesRead(BaseModel):
+    resumes: list[FileRead]
+    other_files: list[FileRead]
+
+
+class FileUpload(BaseModel):
+    file_id: str
+    name: str
+    link: str
 
 
 class ApplicationStatuses(Enum):

@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react'
 import axiosInstance from '../../axiosConfig'
-import { useAuth } from '../AuthContext'
-import { useData } from '../DataContext'
+import { useAuth } from '../../context/AuthContext'
+import { useData } from '../../context/DataContext'
 
 const referral_statuses = {
     "Requested": "bg-blue-50 text-blue-700  ring-blue-600/20",
@@ -72,11 +72,11 @@ const Referrals = ({ essay, resumes, contact }) => {
     });
 
     useEffect(() => {
-        if (fetchReferralCompanies) {
+        if (fetchReferralCompanies && accessToken) {
             referralCompaniesRequest();
             setFetchReferralCompanies(false);
         }
-    }, [fetchReferralCompanies, referralCompaniesRequest, setFetchReferralCompanies]);
+    }, [accessToken, fetchReferralCompanies, referralCompaniesRequest, setFetchReferralCompanies]);
 
     return (
         <>
@@ -107,7 +107,7 @@ const Referrals = ({ essay, resumes, contact }) => {
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
                                 {referralCompanies.map((company) => (
-                                    <tr key={company.email}>
+                                    <tr key={company.name}>
                                         <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                             <div className="flex items-center">
                                                 <div className="mr-3">
@@ -118,7 +118,7 @@ const Referrals = ({ essay, resumes, contact }) => {
                                         </td>
                                         <td className="whitespace-nowrap text-left px-3 py-5 text-sm text-gray-500">
                                             <ul>
-                                                {company.referral_materials.resume && <li>Resume</li>}
+                                                {company.referral_materials.resume && <li key="resume">Resume</li>}
                                                 {company.referral_materials.essay && <li>Essay</li>}
                                                 {company.referral_materials.contact && <li>Phone number</li>}
                                             </ul>

@@ -17,7 +17,7 @@ def create(db: Session, *, data: schema.UserCreate) -> models.User:
     data.password = security.get_password_hash(data.password)
     user = models.User(
         **(data.dict()),
-        full_name=self.get_full_name(data),
+        full_name=self.get_user_full_name(data),
     )
 
     db.add(user)

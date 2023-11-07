@@ -27,7 +27,7 @@ router = APIRouter(prefix="/companies")
 #     return companies
 
 
-@router.post(".create", response_model=company_schema.CompanyRead)
+@router.post(".create", response_model=dict[str, company_schema.CompanyRead])
 def create_company(
     *,
     db: Session = Depends(session.get_db),
@@ -60,10 +60,10 @@ def create_company(
                 },
             )
     company = company_crud.create_company(db, data=data)
-    return company_dependencies.parse_company(company)
+    return {"company": company_dependencies.parse_company(company)}
 
 
-@router.get(".list", response_model=list[company_schema.CompanyRead])
+@router.get(".list", response_model=dict[str, list[company_schema.CompanyRead]])
 def get_companies(
     db: Session = Depends(session.get_db),
     skip: int = 0,
@@ -74,9 +74,11 @@ def get_companies(
     Retrieve Companies.
     """
     companies = company_crud.read_company_multi(db, skip=skip, limit=limit)
-    return [
-        company_dependencies.parse_company(company) for company in companies
-    ]
+    return {
+        "companies": [
+            company_dependencies.parse_company(company) for company in companies
+        ]
+    }
 
 
 @router.get(
@@ -151,7 +153,7 @@ def review_referral(
 #     """
 #     Update Company.
 #     """
-#     company = company.crud.read_by_id(db, id=company.id)
+#     company = company.crud.read_user_by_id(db, id=company.id)
 #     if not company:
 #         raise HTTPException(
 #             status_code=404,

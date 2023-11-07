@@ -1,37 +1,44 @@
-import { Fragment, useEffect, useState } from 'react'
-
+import { useCallback, useEffect, useState } from 'react'
 import { PlusIcon } from '@heroicons/react/20/solid'
-import SortDropdown from '../custom/SortDropdown'
-import CreateCompany from '../company/CreateCompany'
-import CreateApplication from './CreateApplication'
-import ApplicationItem from './ApplicationItem'
-import axiosInstance from '../../axiosConfig'
-
+import { useAuth } from '../../context/AuthContext'
+import { useData } from '../../context/DataContext'
 import { sortByField } from '../../utils'
-import { useAuth } from '../AuthContext'
+import axiosInstance from '../../axiosConfig'
+import SortDropdown from '../custom/SortDropdown'
+import ApplicationItem from './ApplicationItem'
+import Tmp from './ApplicationCreate'
+import ApplicationCreate from './ApplicationCreate'
+
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
 const Applications = () => {
-    const [applications, setApplications] = useState([]);
     const [addApplication, setAddApplication] = useState(false);
     const [sortBy, setSortBy] = useState("Company name")
-    const { accessToken } = useAuth();
+    const { userId, accessToken } = useAuth();
+    const { fetchApplications, setFetchApplications, applications, setApplications } = useData();
 
-    useEffect(() => {
-        axiosInstance.get("/applications.list", {
+    const applicationsRequest = useCallback(() => {
+        axiosInstance.get(`/users.${userId}.applications.list`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         })
             .then((response) => {
-                setApplications(response.data)
+                setApplications(response.data.applications)
             })
             .catch((error) => {
                 console.log(accessToken)
                 console.log(error);
             })
-    }, [accessToken])
+    });
+
+    useEffect(() => {
+        if (fetchApplications && accessToken) {
+            applicationsRequest();
+            setFetchApplications(false);
+        }
+    }, [accessToken, applicationsRequest, fetchApplications, setApplications, setFetchApplications])
 
     const handleApplicationsSortBy = (sortBy) => {
         let sorted_applications = [];
@@ -50,35 +57,36 @@ const Applications = () => {
                 break;
         }
         setApplications(sorted_applications);
-
     }
+
+
 
 
     return (
         <>
-            <div className="lg:pr-72">
+            <div className="lg:pr-72 ">
                 <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
                     <h1 className="text-base ml-4  font-semibold leading-7 text-cyan-800">Applications</h1>
                     <button
                         type="button"
-                        className="rounded-full bg-green-500 p-1 text-gray-900 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        className="mt-1 animate-bounce rounded-full bg-green-400 p-1 text-gray-900 shadow-sm hover:bg-green-600 hover:animate-none"
                         onClick={() => setAddApplication(true)}
                     >
-                        <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                        <PlusIcon className="h-5 w-5 " aria-hidden="true" />
                     </button>
                     <SortDropdown sortOptions={sortOptions} handler={handleApplicationsSortBy} />
                 </header>
 
-                {
-                    !addApplication && <ul role="list" className="Applications divide-y divide-white/5 list-none">
-                        {applications.map((application) => (
+                <ul className="Applications divide-y divide-white/5 list-none">
+                    {applications.map((application) => (
+                        <li key={application.id} className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 hover:bg-gray-100">
                             <ApplicationItem application={application} />
-                        ))}
-                    </ul>
-                }
+                        </li>
+                    ))}
+                </ul>
 
-                {addApplication && <CreateApplication setAddCompany={setAddApplication} />}
-                {/* {addApplication && <CreateCompany setAddCompany={setAddApplication} />} */}
+                {addApplication && <ApplicationCreate addApplication={addApplication} setAddApplication={setAddApplication} />}
+
             </div >
         </>
     )

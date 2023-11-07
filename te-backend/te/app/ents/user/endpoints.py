@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
@@ -21,7 +21,7 @@ def login_user(
     """
     Log User in.
     """
-    return token
+    return {"token": token}
 
 
 @router.get(
@@ -74,7 +74,7 @@ def get_users(
     return {"users": [user_schema.UserRead(**vars(user)) for user in users]}
 
 
-@router.post(".create", response_model=user_schema.UserRead)
+@router.post(".create", response_model=dict[str, user_schema.UserRead])
 def create_user(
     *,
     db: Session = Depends(session.get_db),
@@ -83,42 +83,29 @@ def create_user(
     """
     Create an User.
     """
-    if user_crud.read_by_email(db, email=data.email):
-        raise HTTPException(
-            status_code=400,
-            detail={
-                "error": {
-                    "email": data.email,
-                    "message": "The user with this email already exists!",
-                }
-            },
-        )
-
     new_user = user_crud.create_user(db, data=data)
-    return user_schema.UserRead(**vars(new_user))
+    return {"user": user_schema.UserRead(**vars(new_user))}
 
 
-# @router.put(".info/{user_id}", response_model=user_schema.UserRead)
-# def update_user(
-#     *,
-#     db: Session = Depends(session.get_db),
-#     data: user_schema.UserUpdate,
-#     current_user: user_models.User = Depends(
-#         base_dependencies.get_current_user
-#     ),
-# ) -> Any:
-#     """
-#     Update User.
-#     """
-#     if not user_crud.read_by_id(db, id=user.id):
-#         raise HTTPException(
-#             status_code=404,
-#             detail={
-#                 "error": {
-#                     "email": user.email,
-#                     "message": "The user with this user name does not exist in the system",
-#                 }
-#             },
-#         )
-#     user = user_crud.update(db, db_obj=user, data=data)
-#     return user
+@router.get(".{user_id}.essay", response_model=dict[str, str])
+def get_essay(
+    db: Session = Depends(session.get_db),
+    *,
+    user_id: int,
+    data: dict[str, str],
+    _: user_models.User = Depends(user_dependencies.get_current_user),
+):
+    essay = user_crud.read_user_essay(db, user_id=user_id, data=data)
+    return {"essay": essay}
+
+
+@router.post(".{user_id}.essay", response_model=dict[str, str])
+def update_essay(
+    db: Session = Depends(session.get_db),
+    *,
+    user_id: int,
+    data: dict[str, str],
+    _: user_models.User = Depends(user_dependencies.get_current_user),
+):
+    essay = user_crud.add_user_essay(db, user_id=user_id, data=data)
+    return {"essay": essay}

@@ -30,13 +30,14 @@ def login_access_token(
         raise HTTPException(
             status_code=400, detail="Incorrect email or password"
         )
-    elif not user_crud.is_active(db, user=user):
+    elif not user_crud.is_user_active(db, user=user):
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
     return {
+        "sub": user.id,
         "access_token": security.create_access_token(
             user.id, expires_delta=access_token_expires
         ),
@@ -61,7 +62,7 @@ def login_access_token(
 #     """
 #     Password Recovery
 #     """
-#     user = user.crud.read_by_email(db, email=email)
+#     user = user.crud.read_user_by_email(db, email=email)
 
 #     if not user:
 #         raise HTTPException(
@@ -87,13 +88,13 @@ def login_access_token(
 #     email = utils.verify_password_reset_token(token)
 #     if not email:
 #         raise HTTPException(status_code=400, detail="Invalid token")
-#     user = user.crud.read_by_email(db, email=email)
+#     user = user.crud.read_user_by_email(db, email=email)
 #     if not user:
 #         raise HTTPException(
 #             status_code=404,
 #             detail="The user with this username does not exist in the system.",
 #         )
-#     elif not user.crud.is_active(user):
+#     elif not user.crud.is_user_active(user):
 #         raise HTTPException(status_code=400, detail="Inactive user")
 #     hashed_password = get_password_hash(new_password)
 #     user.hashed_password = hashed_password  # type: ignore  Column--warning

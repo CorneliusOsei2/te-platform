@@ -16,32 +16,18 @@ const data = [
     // Add more company names to this array.
 ];
 
-const CreateApplication = ({ setAddCompany }) => {
+const ReferralCreate = ({ setAddCompany }) => {
     const [open, setOpen] = useState(true);
     const [countries, setCountries] = useState([]);
-    const [appData, setAppData] = useState({
+    const [referralData, setReferralData] = useState({
         company: "",
         role: "",
-        deadline: "",
         notes: "",
-        recruiter_name: "",
-        recruiter_email: ""
+        resume: "",
     })
 
-
-    useEffect(() => {
-        axios.get('https://restcountries.com/v3.1/all')
-            .then((response) => {
-                let data = response.data;
-                setCountries(data.map((ent) => ent["name"]["common"]));
-            })
-            .catch((error) => {
-                console.error('Error fetching countries:', error);
-            });
-    }, []);
-
-    const requestCreateApplication = () => {
-        axiosInstance.post("/companies.create", appData)
+    const requestReferral = () => {
+        axiosInstance.post("/companies.create", referralData)
             .then((response) => {
                 let data = response.data;
                 console.log(data)
@@ -68,7 +54,7 @@ const CreateApplication = ({ setAddCompany }) => {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                        <div className="fixed inset-0 bg-white  bg-opacity-75 transition-opacity" />
                     </Transition.Child>
 
                     <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -82,7 +68,7 @@ const CreateApplication = ({ setAddCompany }) => {
                                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
-                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                                <Dialog.Panel className="relative transform overflow-hidden bg-white rounded-lg border-4 border-sky-400 border-x-sky-700  px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                                     <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                                         <button
                                             type="button"
@@ -145,4 +131,4 @@ const CreateApplication = ({ setAddCompany }) => {
     )
 }
 
-export default CreateApplication;
+export default ReferralCreate;

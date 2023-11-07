@@ -1,11 +1,11 @@
 import './App.css';
 import Workspace from './components/user/Workspace'
-import { AuthProvider } from './components/AuthContext'
+import { AuthProvider } from './context/AuthContext'
 import Login from './components/user/Login';
 import { useState } from 'react'
 import Home from './components/home/Home';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { DataProvider } from './components/DataContext';
+import { DataProvider } from './context/DataContext'
 
 function App() {
   const [login, setLogin] = useState(false)

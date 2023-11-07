@@ -41,12 +41,14 @@ class Resume(Base):
     __tablename__ = "resumes"
     __table_args__ = {"extend_existing": True}
     id = Column(Integer, primary_key=True, index=True)
+    file_id = Column(String, nullable=False)
     date = Column(String, nullable=False)
     link = Column(String, nullable=False)
-    title = Column(String, nullable=False)
-    reviewed = Column(Boolean, nullable=False)
+    name = Column(String, nullable=False)
+    reviewed = Column(Boolean, nullable=False, default=False)
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="resumes")
+    active = Column(Boolean, nullable=False, default=True)
 
 
 class OtherFiles(Base):

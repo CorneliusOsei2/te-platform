@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 import app.ents.user.crud as user_crud
+import app.ents.user.models as user_models
 
 
 class Token(BaseModel):
@@ -65,8 +66,8 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def authenticate(db: Session, *, email: str, password: str):
-    user = user_crud.read_by_email(db, email=email)
+def authenticate(db: Session, *, email: str, password: str) -> user_models.User:
+    user = user_crud.read_user_by_email(db, email=email)
     if not user:
         return None
 

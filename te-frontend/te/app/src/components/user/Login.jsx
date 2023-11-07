@@ -1,6 +1,6 @@
 import axiosInstance from '../../axiosConfig';
 import { useState } from 'react';
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -17,8 +17,7 @@ const Login = () => {
             password: loginData.password
         })
             .then((response) => {
-                let data = response.data
-                login(data["access_token"]);
+                login(response.data.token.sub, response.data.token.access_token);
                 navigate(localStorage.getItem("prevPage") || "/");
             })
             .catch((error) => {

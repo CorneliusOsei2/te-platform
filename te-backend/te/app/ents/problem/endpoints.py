@@ -35,7 +35,7 @@ router = APIRouter(prefix="/problems")
 #     """
 #     Create an Proproblem.
 #     """
-#     problem = user_crud.read_by_email(db, email=data.email)
+#     problem = user_crud.read_user_by_email(db, email=data.email)
 #     if problem:
 #         raise HTTPException(
 #             status_code=400,
@@ -61,7 +61,7 @@ router = APIRouter(prefix="/problems")
 #     """
 #     Update Proproblem.
 #     """
-#     problem = problem.crud.read_by_id(db, id=problem.id)
+#     problem = problem.crud.read_user_by_id(db, id=problem.id)
 #     if not problem:
 #         raise HTTPException(
 #             status_code=404,

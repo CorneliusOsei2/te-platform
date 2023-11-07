@@ -16,7 +16,9 @@ def init_db(db: Session) -> None:
     # * If creating without Alembic
     # Base.metadata.create_all(bind=engine)
 
-    superuser = user_crud.read_by_email(db=db, email=settings.FIRST_SUPERUSER_EMAIL)
+    superuser = user_crud.read_user_by_email(
+        db=db, email=settings.FIRST_SUPERUSER_EMAIL
+    )
     if not superuser:
         user_in = user_schema.UserCreate(
             email=settings.FIRST_SUPERUSER_EMAIL,

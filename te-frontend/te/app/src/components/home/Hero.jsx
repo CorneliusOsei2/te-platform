@@ -6,7 +6,7 @@ function classNames(...classes) {
 
 const Hero = () => {
   return (
-    <div className={classNames('mx-auto max-w-7xl px-4 sm:px-6 lg:px-8')}>
+    <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-screen'>
       <h1 className="mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight text-gray-600 sm:text-7xl">
         Elevating {' '}
         <span className="relative whitespace-nowrap text-amber-500">

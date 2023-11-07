@@ -5,12 +5,11 @@ import {
     XMarkIcon,
 
 } from '@heroicons/react/24/outline'
-import { useAuth } from '../AuthContext'
+import { useAuth } from '../../context/AuthContext'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
-
 
 const Sidebar = ({ navigation, content, setContent, setLogin }) => {
     const { accessToken, logout } = useAuth();
@@ -69,32 +68,28 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                             /> */}
                                         </div>
                                         <nav className="flex flex-1 flex-col">
-                                            <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                                            <ul className="flex flex-1 flex-col gap-y-7">
                                                 <li>
-                                                    <ul role="list" className="-mx-2 space-y-1">
+                                                    <ul className="-mx-2 space-y-1">
                                                         {navigation.map((item) => (
-                                                            <li key={item.name}>
-                                                                <a
-                                                                    href={item.href}
+                                                            <li key={item.name} className={classNames(
+                                                                (item.name === content)
+                                                                    ? 'bg-gray-50  text-blue-400'
+                                                                    : ' text-blue-400 hover:bg-gray-50',
+                                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                                            )} onClick={(e) => { setContent(e.target.innerText) }}>
+                                                                <item.icon
                                                                     className={classNames(
-                                                                        (item.name == content)
-                                                                            ? 'bg-gray-50  text-blue-400'
-                                                                            : ' text-blue-400 hover:bg-gray-50',
-                                                                        'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                                                        (item.name === content) ? 'text-blue-500' : 'text-gray-400 group-hover:text-blue-500',
+                                                                        'h-6 w-6 shrink-0'
                                                                     )}
-                                                                    onClick={(e) => { setContent(e.target.innerText) }}
-                                                                >
-                                                                    <item.icon
-                                                                        className={classNames(
-                                                                            (item.name == content) ? 'text-blue-500' : 'text-gray-400 group-hover:text-blue-500',
-                                                                            'h-6 w-6 shrink-0'
-                                                                        )}
-                                                                        aria-hidden="true"
-                                                                    />
-                                                                    {item.name}
-                                                                </a>
+                                                                    aria-hidden="true"
+                                                                />
+                                                                {item.name}
                                                             </li>
                                                         ))}
+
+                                                        <hr />
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -108,48 +103,99 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
 
                 {/* Static sidebar for desktop */}
                 <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col bg-sky-900">
-                    {/* Sidebar component, swap this element with another sidebar if you like */}
                     <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200  px-6">
                         <div className="flex h-16 shrink-0 items-center">
-                            {/* <img
+                            <img
                                 className="h-8 w-auto"
-                                src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600"
+                                src="https://media.licdn.com/dms/image/C560BAQF-SVzS4qtXJQ/company-logo_100_100/0/1660174624525?e=1707350400&v=beta&t=IFZNDSfFIjzoJ6e657Oh4kEoyKRPvfnigmVojlINTC8"
                                 alt="Your Company"
-                            /> */}
+                            />
                         </div>
                         <nav className="flex flex-1 flex-col">
-                            <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                            <ul className="flex flex-1 flex-col gap-y-7">
                                 <li>
-                                    <ul role="list" className="-mx-2 space-y-1">
-                                        {navigation.map((item) => (
-                                            <li key={item.name} >
-                                                <a
-                                                    href={item.href}
+                                    <div className="relative mt-3 mb-3">
+                                        <div className="relative flex justify-start">
+                                            <span className="bg-sky-900 pr-2 text-sm text-gray-100">Learn</span>
+                                        </div>
+                                    </div>
+                                    <ul className="-mx-2 space-y-1">
+                                        {navigation.filter((item) => item.type === "learn").map((item) => (
+                                            <li key={item.name} className={classNames(
+                                                (item.name === content)
+                                                    ? 'bg-gray-50 text-sky-900'
+                                                    : 'text-gray-100 hover:text-sky-900 hover:bg-gray-300',
+                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                            )}
+                                                onClick={(e) => { setContent(e.target.innerText) }}>
+                                                <item.icon
                                                     className={classNames(
-                                                        (item.name == content)
-                                                            ? 'bg-gray-50 text-sky-900'
-                                                            : 'text-gray-100 hover:text-sky-900 hover:bg-gray-300',
-                                                        'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                                        (item.name === content) ? 'text-blue-500' : 'text-gray-100 group-hover:text-blue-500',
+                                                        'h-6 w-6 shrink-0'
                                                     )}
-                                                    onClick={(e) => { setContent(e.target.innerText) }}
-                                                >
-                                                    <item.icon
-                                                        className={classNames(
-                                                            (item.name == content) ? 'text-blue-500' : 'text-gray-100 group-hover:text-blue-500',
-                                                            'h-6 w-6 shrink-0'
-                                                        )}
-                                                        aria-hidden="true"
-                                                    />
-                                                    {item.name}
-                                                </a>
+                                                    aria-hidden="true"
+                                                />
+                                                {item.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className="relative mt-3 mb-3">
+                                        <div className="relative flex justify-start">
+                                            <span className="bg-sky-900 pr-2 text-sm text-gray-100">Apps</span>
+                                        </div>
+                                    </div>
+
+                                    <ul className="-mx-2 space-y-1">
+                                        {navigation.filter((item) => item.type === "app").map((item) => (
+                                            <li key={item.name} className={classNames(
+                                                (item.name === content)
+                                                    ? 'bg-gray-50 text-sky-900'
+                                                    : 'text-gray-100 hover:text-sky-900 hover:bg-gray-300',
+                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                            )}
+                                                onClick={(e) => { setContent(e.target.innerText) }}>
+                                                <item.icon
+                                                    className={classNames(
+                                                        (item.name === content) ? 'text-blue-500' : 'text-gray-100 group-hover:text-blue-500',
+                                                        'h-6 w-6 shrink-0'
+                                                    )}
+                                                    aria-hidden="true"
+                                                />
+                                                {item.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className="relative mt-3 mb-3">
+                                        <div className="relative flex justify-start">
+                                            <span className="bg-sky-900 pr-2 text-sm text-gray-100">Files</span>
+                                        </div>
+                                    </div>
+
+                                    <ul className="-mx-2 space-y-1">
+                                        {navigation.filter((item) => item.type === "other").map((item) => (
+                                            <li key={item.name} className={classNames(
+                                                (item.name === content)
+                                                    ? 'bg-gray-50 text-sky-900'
+                                                    : 'text-gray-100 hover:text-sky-900 hover:bg-gray-300',
+                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                            )}
+                                                onClick={(e) => { setContent(e.target.innerText) }}>
+                                                <item.icon
+                                                    className={classNames(
+                                                        (item.name === content) ? 'text-blue-500' : 'text-gray-100 group-hover:text-blue-500',
+                                                        'h-6 w-6 shrink-0'
+                                                    )}
+                                                    aria-hidden="true"
+                                                />
+                                                {item.name}
                                             </li>
                                         ))}
                                     </ul>
                                 </li>
 
-                                <li className="-mx-6 mt-auto flex">
-
-                                </li>
+                                <li className="-mx-6 mt-auto flex"></li>
 
                                 <li className='flex justify-between'>
                                     <a
@@ -168,16 +214,16 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                     {!accessToken &&
                                         <a className=" py-3 flex align-right right-0" href='/login'>
                                             <span className="text-white mr-1">Login </span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 text-white">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-white">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                                             </svg>
                                         </a>}
 
                                     {accessToken &&
                                         <button type='submit' className=" py-3 flex align-right right-0" onClick={logout}>
                                             <span className="text-white mr-1">Logout </span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 text-white">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-white">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                                             </svg>
                                         </button>}
                                 </li>
