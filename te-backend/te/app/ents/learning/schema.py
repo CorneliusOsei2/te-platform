@@ -4,11 +4,18 @@ from enum import Enum
 from pydantic import BaseModel
 
 
+class LessonFormat(Enum):
+    video = "video"
+    pdf = "pdf"
+    html = "html"
+
+
 class WorkshopBase(BaseModel):
     topic: str
     link: str
+    format: LessonFormat = LessonFormat.video
     playlist: str
-    year: int
+    year: int = 2023
     instructor: str = ""
 
 
@@ -23,6 +30,7 @@ class WorkshopRead(WorkshopBase):
 class DataStructuresAndAlgorithmsBase(BaseModel):
     topic: str
     link: str
+    format: LessonFormat = LessonFormat.video
     playlist: str
 
 
@@ -37,6 +45,7 @@ class DataStructuresAndAlgorithmsRead(DataStructuresAndAlgorithmsBase):
 class SystemDesignBase(BaseModel):
     topic: str
     link: str
+    format: LessonFormat = LessonFormat.video
     playlist: str
 
 
@@ -51,6 +60,7 @@ class SystemDesignRead(SystemDesignBase):
 class MiscellaneousBase(BaseModel):
     topic: str
     link: str
+    format: LessonFormat = LessonFormat.video
     playlist: str
 
 

@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect, useCallback } from 'react'
 import {
     FolderIcon,
     XMarkIcon,
@@ -12,7 +12,7 @@ import Sidebar from '../custom/Sidebar'
 import FilesAndEssay from '../file/FilesAndEssay'
 import Referrals from '../referral/Referrals'
 import Learning from '../learning/Learning'
-import Tmp from '../application/ApplicationCreate'
+import { BrowserRouter, Routes } from 'react-router-dom'
 
 
 const navigation = [
@@ -33,7 +33,14 @@ const Workspace = ({ setLogin }) => {
     const [essay, setEssay] = useState("");
     const [resumes, setResumes] = useState([]);
 
-    localStorage.setItem('prevPage', "/workspace");
+    useEffect(() => {
+        let prevContent = sessionStorage.getItem('content');
+        console.log(prevContent)
+        if (prevContent) {
+            setContent(prevContent);
+        }
+    }, [content]);
+
 
     const updateEssayRequest = (essay) => {
         axiosInstance.post(`/applications.essay.update`, { "essay": essay })
@@ -56,6 +63,12 @@ const Workspace = ({ setLogin }) => {
                 console.log(error);
             })
     }
+
+    const setContentHandler = (value) => {
+        setContent(value);
+        sessionStorage.setItem('content', value);
+    }
+
 
     return (
         <>
@@ -108,7 +121,7 @@ const Workspace = ({ setLogin }) => {
                     </Dialog>
                 </Transition.Root>
 
-                <Sidebar navigation={navigation} content={content} setContent={setContent} setLogin={setLogin} />
+                <Sidebar navigation={navigation} content={content} setContent={setContentHandler} setLogin={setLogin} />
 
                 <div className="lg:pl-72 ">
                     <main className="bg-white h-screen">
@@ -121,7 +134,8 @@ const Workspace = ({ setLogin }) => {
                                 />
                                 :
                                 content === "Referrals" ? <Referrals essay={essay} resumes={resumes} contact={""} /> :
-                                    content === "Learning" ? <Learning /> : <Tmp />}
+                                    // content === "Learning" :
+                                    <Learning />}
                     </main>
 
                 </div>

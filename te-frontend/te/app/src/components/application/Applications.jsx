@@ -8,17 +8,20 @@ import SortDropdown from '../custom/SortDropdown'
 import ApplicationItem from './ApplicationItem'
 import Tmp from './ApplicationCreate'
 import ApplicationCreate from './ApplicationCreate'
+import ApplicationInfo from './ApplicationInfo'
 
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
 const Applications = () => {
-    const [addApplication, setAddApplication] = useState(false);
-    const [sortBy, setSortBy] = useState("Company name")
     const { userId, accessToken } = useAuth();
     const { fetchApplications, setFetchApplications, applications, setApplications } = useData();
 
-    const getUserAapplicationsRequest = useCallback(() => {
+    const [sortBy, setSortBy] = useState("Company name")
+    const [addApplication, setAddApplication] = useState(false);
+    const [applicationId, setApplicationId] = useState(null);
+
+    const getUserApplicationsRequest = useCallback(() => {
         axiosInstance.get(`/users.${userId}.applications.list`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -35,10 +38,10 @@ const Applications = () => {
 
     useEffect(() => {
         if (fetchApplications && accessToken) {
-            getUserAapplicationsRequest();
+            getUserApplicationsRequest();
             setFetchApplications(false);
         }
-    }, [accessToken, getUserAapplicationsRequest, fetchApplications, setApplications, setFetchApplications])
+    }, [accessToken, getUserApplicationsRequest, fetchApplications, setApplications, setFetchApplications])
 
     const handleApplicationsSortBy = (sortBy) => {
         let sorted_applications = [];
@@ -59,9 +62,6 @@ const Applications = () => {
         setApplications(sorted_applications);
     }
 
-
-
-
     return (
         <>
             <div className="lg:pr-72 ">
@@ -80,16 +80,31 @@ const Applications = () => {
                 <ul className="Applications divide-y divide-white/5 list-none">
                     {applications.map((application) => (
                         <li key={application.id} className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 hover:bg-gray-100">
-                            <ApplicationItem application={application} />
+                            <ApplicationItem application={application} setApplicationId={setApplicationId} />
                         </li>
                     ))}
                 </ul>
 
                 {addApplication && <ApplicationCreate addApplication={addApplication} setAddApplication={setAddApplication} />}
-
+                {applicationId !== null && <ApplicationInfo applicationId={applicationId} setApplicationId={setApplicationId} />}
             </div >
         </>
     )
 }
+
+
+// const requestGetApplication = useCallback(() => {
+//     axiosInstance.post(`/users.${userId}.applications.${applicationId}.info`)
+//         .then((response) => {
+//             setApplication(response.data.application)
+//         })
+//         .catch((error) => {
+//             console.log(error);
+//         });
+// });
+
+// useEffect(() => {
+//     requestGetApplication();
+// }, [requestGetApplication])
 
 export default Applications

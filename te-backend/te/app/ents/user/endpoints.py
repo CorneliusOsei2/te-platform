@@ -65,7 +65,7 @@ def get_users(
     db: Session = Depends(session.get_db),
     skip: int = 0,
     limit: int = 100,
-    _: user_models.User = Depends(user_dependencies.get_current_user),
+    current_user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Retrieve all active users.
@@ -92,10 +92,9 @@ def get_essay(
     db: Session = Depends(session.get_db),
     *,
     user_id: int,
-    data: dict[str, str],
     _: user_models.User = Depends(user_dependencies.get_current_user),
 ):
-    essay = user_crud.read_user_essay(db, user_id=user_id, data=data)
+    essay = user_crud.read_user_essay(db, user_id=user_id)
     return {"essay": essay}
 
 

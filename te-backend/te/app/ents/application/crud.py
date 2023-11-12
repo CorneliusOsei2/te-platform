@@ -12,6 +12,16 @@ from app.core.config import settings
 from googleapiclient.http import MediaFileUpload
 
 
+def read_application_by_id(
+    db: Session, *, application_id: int
+) -> application_models.Application | None:
+    return (
+        db.query(application_models.Application)
+        .filter(application_models.Application.id == application_id)
+        .first()
+    )
+
+
 def read_application_multi(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[application_models.Application]:
@@ -81,6 +91,17 @@ def read_user_applications(
     if not user:
         ...
     return user.applications
+
+
+def read_user_application(
+    db: Session, *, user_id: int, application_id: int
+) -> application_models.Application:
+    user = user_crud.read_user_by_id(db, id=user_id)
+    if not user:
+        ...
+
+    application = read_application_by_id(db, application_id=application_id)
+    return application
 
 
 def read_user_application_files(

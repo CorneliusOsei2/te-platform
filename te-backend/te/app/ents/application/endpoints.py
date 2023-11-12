@@ -13,7 +13,9 @@ user_app_router = APIRouter(prefix="/users.{user_id}.applications")
 app_router = APIRouter(prefix="/applications")
 
 
-@app_router.post(".create", response_model=application_schema.ApplicationRead)
+@app_router.post(
+    ".create", response_model=dict[str, application_schema.ApplicationRead]
+)
 def create_application(
     *,
     db: Session = Depends(session.get_db),
@@ -54,6 +56,29 @@ def get_user_applications(
 
 
 @user_app_router.get(
+    ".{application_id}.info",
+    response_model=dict[str, application_schema.ApplicationRead],
+)
+def get_user_application(
+    db: Session = Depends(session.get_db),
+    *,
+    user_id: int,
+    application_id: int,
+    user=Depends(user_dependencies.get_current_user),
+) -> Any:
+    """
+    Retrieve Applications.
+    """
+    application = application_crud.read_user_application(
+        db, user_id=user_id, application_id=application_id
+    )
+
+    return {
+        "application": application_dependencies.parse_application(application)
+    }
+
+
+@user_app_router.get(
     ".files.list", response_model=dict[str, application_schema.FilesRead]
 )
 def get_user_application_files(
@@ -80,6 +105,16 @@ def get_user_application_files(
             ],
         )
     }
+
+"""
+{
+    user (1) : {
+        name
+    }
+}
+"""
+
+
 
 
 @app_router.post(

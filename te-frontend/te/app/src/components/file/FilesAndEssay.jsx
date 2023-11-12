@@ -4,13 +4,15 @@ import { ExclamationTriangleIcon, MagnifyingGlassIcon, DocumentIcon, ArrowDownIc
 import axiosInstance from "../../axiosConfig";
 import { useData } from "../../context/DataContext";
 import { useAuth } from "../../context/AuthContext";
+import FileUpload from "./FileUpload";
 
 const Files = () => {
     const { userId, accessToken } = useAuth();
-    const { resumes, setResumes, fetchFiles, setFetchFiles, essay, setEssay } = useData();
+    const { resumes, otherFiles, setResumes, fetchFiles, setFetchFiles, essay, setEssay } = useData();
     const [showResume, setShowResume] = useState(true);
+    const [uploadFile, setUploadFile] = useState(false)
 
-    const resumesRequest = useCallback(() => {
+    const getUserResumesRequest = useCallback(() => {
         axiosInstance.get(`/users.${userId}.applications.files.list`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -25,7 +27,7 @@ const Files = () => {
             })
     });
 
-    const uploadResumeRequest = useCallback(() => {
+    const uploadFileRequest = useCallback(() => {
         axiosInstance.get(`/users.${userId}.applications.files.list`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -42,10 +44,10 @@ const Files = () => {
 
     useEffect(() => {
         if (fetchFiles && accessToken) {
-            resumesRequest();
+            getUserResumesRequest();
             setFetchFiles(false);
         }
-    }, [accessToken, fetchFiles, resumesRequest, setFetchFiles])
+    }, [accessToken, fetchFiles, getUserResumesRequest, setFetchFiles])
 
     return (
         <>
@@ -74,7 +76,7 @@ const Files = () => {
                                 <button
                                     type="button"
                                     className="flex rounded-full mx-auto text-red-600 bg-red-400/10 ring-red-400/30 ring-1 ring-inset ring-red-500  px-4 py-2.5 text-xs font-semibold  shadow-sm hover:bg-red-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                                    onClick={uploadResumeRequest}>
+                                    onClick={() => setUploadFile(true)}>
                                     Upload new resume <DocumentIcon className="ml-3 h-5 w-5" />
                                 </button>
                             </div>
@@ -107,7 +109,7 @@ const Files = () => {
 
                         <h3 className="text-base text-left mt-6 ml-4  font-semibold leading-7 text-cyan-800">Other Files</h3>
                         <ul className="flex mb-6">
-                            {resumes.map((resume) => {
+                            {otherFiles.map((resume) => {
                                 return (<li key={resume.id} className="flex rounded-md w-40 px-3 py-3 mr-3 justify-center hover:bg-gray-100 ">
                                     <a href={resume.link}>
                                         <img className="m-auto" width="100" height="100" src="https://img.icons8.com/plasticine/100/pdf.png" alt={resume.name} />
@@ -119,10 +121,9 @@ const Files = () => {
                         </ul>
                     </div>
                 </div>
-
-
-
             </div>
+
+            {uploadFile && <FileUpload setFileUpload={setUploadFile} />}
 
         </>
     )

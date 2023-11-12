@@ -16,7 +16,6 @@ const data = [
     'ServiceNow',
     'Deutsche',
     'Map'
-    // Add more company names to this array.
 ];
 
 const ApplicationCreate = ({ addApplication, setAddApplication }) => {
@@ -29,7 +28,7 @@ const ApplicationCreate = ({ addApplication, setAddApplication }) => {
         recruiter_email: ""
     })
 
-    const requestCreateApplication = () => {
+    const createUserApplicationRequest = () => {
         axiosInstance.post("/companies.create", appData)
             .then((response) => {
                 let data = response.data;
@@ -46,8 +45,9 @@ const ApplicationCreate = ({ addApplication, setAddApplication }) => {
 
     return (
         <SlideOverForm
+            title={"New Application"}
             setHandler={setAddApplication}
-            requestHandler={requestCreateApplication}
+            requestHandler={createUserApplicationRequest}
             children={<div className="flex flex-1 flex-col justify-between">
                 <div className="divide-y divide-gray-200 px-4 sm:px-6">
                     <div className="space-y-6 pb-5 pt-6">
@@ -77,6 +77,39 @@ const ApplicationCreate = ({ addApplication, setAddApplication }) => {
                             </label>
                             <div className="mt-2">
                                 <Typeahead name={"company"} value={appData.company} data={data} handler={handleInputChange} />
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                htmlFor="company-name"
+                                className="block text-sm font-medium leading-6 text-gray-900"
+                            >
+                                Company name
+                            </label>
+                            <div className="mt-2">
+                                {/* <input
+                                    type="text"
+                                    name="company-name"
+                                    id="company-name"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                                /> */}
+                                <AutoSuggest data={data} handler={handleInputChange} />
+                            </div>
+                        </div><div>
+                            <label
+                                htmlFor="company-name"
+                                className="block text-sm font-medium leading-6 text-gray-900"
+                            >
+                                Company name
+                            </label>
+                            <div className="mt-2">
+                                {/* <input
+                                    type="text"
+                                    name="company-name"
+                                    id="company-name"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                                /> */}
+                                <AutoSuggest data={data} handler={handleInputChange} />
                             </div>
                         </div>
                         <div>

@@ -30,7 +30,7 @@ const SortDropdown = ({ sortOptions, handler }) => {
                             <Menu.Item key={option}>
                                 {({ active }) => (
                                     <a
-                                        href="/"
+                                        // href="/"
                                         className={classNames(
                                             active ? 'bg-gray-50' : '',
                                             'block px-3 py-1 text-sm leading-6 text-gray-900'

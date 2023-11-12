@@ -84,34 +84,18 @@ def create_user(
     return user
 
 
-def read_user_essay(db: Session, *, user_id, data: dict[str, str]) -> str:
+def read_user_essay(db: Session, *, user_id) -> str:
     user = read_user_by_id(db, id=user_id)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail={
-                "error": {
-                    "email": data.email,
-                    "message": "The user with this email already exists!",
-                }
-            },
-        )
+        ...
 
-    return str(user.essay)
+    return user.essay
 
 
 def add_user_essay(db: Session, *, user_id, data: dict[str, str]) -> str:
     user = read_user_by_id(db, id=user_id)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail={
-                "error": {
-                    "email": data.email,
-                    "message": "The user with this email already exists!",
-                }
-            },
-        )
+        ...
 
     user.essay = data["essay"]
 

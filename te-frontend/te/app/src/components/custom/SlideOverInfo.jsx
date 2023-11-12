@@ -1,17 +1,17 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import { XMarkIcon, TrashIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline'
 
 
-const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
+const SlideOverInfo = ({ title, setHandler, children }) => {
     const [open, setOpen] = useState(true);
 
     useEffect(() => {
         let timeoutId;
         if (open === false) {
             timeoutId = setTimeout(() => {
-                setHandler(false);
-            }, 700); // The same duration as the CSS transition
+                setHandler(null);
+            }, 700);
         }
         return () => clearTimeout(timeoutId);
     }, [open, setHandler]);
@@ -33,7 +33,7 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
                                 leaveTo="translate-x-full"
                             >
                                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
+                                    <div className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
                                         <div className="h-0 flex-1 overflow-y-auto">
                                             <div className="bg-sky-800 px-4 py-6 sm:px-6">
                                                 <div className="flex items-center justify-between">
@@ -54,24 +54,29 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
                                                 </div>
                                             </div>
                                             {children}
-                                        </div >
-                                        <div className="flex flex-shrink-0 justify-end px-4 py-4">
-                                            <button
-                                                type="button"
-                                                className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                                onClick={() => { setOpen(false) }}
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                className="ml-4 inline-flex justify-center rounded-md bg-sky-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-                                                onClick={requestHandler}
-                                            >
-                                                Save
-                                            </button>
+
+                                            <div className="flex bottom-0 text-center justify-between px-6">
+                                                <button
+                                                    type="button"
+                                                    className="ml-3 w-1/3  justify-between px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset text-gray-500 bg-gray-400/10 ring-gray-400/20 hover:bg-gray-700 hover:text-white"
+                                                >
+                                                    Archive <ArchiveBoxIcon className="h-5 w-5" aria-hidden="true" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="ml-3 justify-between px-auto flex w-1/3 rounded-full py-1 px-2 text-sm font-medium ring-1 ring-inset text-green-500 bg-green-400/10 ring-green-400/20 hover:bg-green-700 hover:text-white"
+                                                >
+                                                    Close <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="ml-3   justify-between px-3 flex w-1/3 rounded-full py-1 text-sm font-medium ring-1 ring-inset text-red-500 bg-red-400/10 ring-gray-400/20 hover:bg-red-700 hover:text-white"
+                                                >
+                                                    Delete <TrashIcon className="h-5 w-5" aria-hidden="true" />
+                                                </button>
+                                            </div>
                                         </div>
-                                    </form >
+                                    </div >
 
                                 </Dialog.Panel>
                             </Transition.Child>
@@ -83,4 +88,4 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
     )
 }
 
-export default SlideOverForm;
+export default SlideOverInfo;

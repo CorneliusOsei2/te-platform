@@ -1,15 +1,16 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import axiosInstance from '../../axiosConfig'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
+import ReferralCreate from './ReferralCreate'
 
-const referral_statuses = {
+const referralStatuses = {
     "Requested": "bg-blue-50 text-blue-700  ring-blue-600/20",
     "Completed": "bg-green-50 text-green-700  ring-green-600/20",
     "In review": "bg-green-50 text-green-700  ring-green-600/20",
 }
 
-const referral_action = (status, resumes, essay, contact) => {
+const referralAction = (status, resumes, essay, contact) => {
     if (status !== null) {
         switch (status) {
             case "Completed":
@@ -51,9 +52,13 @@ const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ')
 }
 
-const Referrals = ({ essay, resumes, contact }) => {
+const Referrals = () => {
     const { accessToken } = useAuth();
-    const { fetchReferralCompanies, setFetchReferralCompanies, referralCompanies, setReferralCompanies } = useData();
+    const { fetchReferralCompanies, setFetchReferralCompanies, referralCompanies, setReferralCompanies, resumes, essay, contact } = useData();
+
+    const [createReferral, setCreateReferral] = useState(false);
+    const [action, setAction] = useState("")
+    const [referralCompanyIndex, setReferralCompanyIndex] = useState(null);
 
 
     const referralCompaniesRequest = useCallback(() => {
@@ -106,7 +111,7 @@ const Referrals = ({ essay, resumes, contact }) => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
-                                {referralCompanies.map((company) => (
+                                {referralCompanies.map((company, index) => (
                                     <tr key={company.name}>
                                         <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                             <div className="flex items-center">
@@ -126,20 +131,24 @@ const Referrals = ({ essay, resumes, contact }) => {
                                         <td className="whitespace-nowrap text-left px-3 py-5 text-sm text-gray-500">
                                             {
                                                 company.referral ?
-                                                    <span className={classNames(referral_statuses[company.referral ? company.referral.status : "None"], "inline-flex text-left rounded-full  px-2 py-1 text-xs font-medium ring-1 ring-inset ")}>
+                                                    <span className={classNames(referralStatuses[company.referral.status || "None"], "inline-flex text-left rounded-full  px-2 py-1 text-xs font-medium ring-1 ring-inset ")}>
                                                         {company.referral.status}
                                                         {company.role}
                                                     </span>
                                                     :
-                                                    <button className="inline-flex text-left rounded-full  px-2 py-1 text-xs font-medium ring-1 ring-inset" onClick={referralCompaniesRequest}>
+                                                    <button
+                                                        className="inline-flex text-left rounded-full  px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                                                        onClick={() => {
+                                                            setAction(referralAction(null, resumes.length > 0, essay !== "", contact !== ""));
+                                                            setCreateReferral(true)
+                                                        }}>
                                                         Request
                                                     </button>
                                             }
                                         </td>
                                         <td className="whitespace-nowrap text-left px-3 py-5 text-sm text-gray-500">
-                                            <span>{referral_action(company.referral ? company.referral.status : null, resumes.length > 0, essay !== "", contact !== "")} </span>
+                                            <span>{referralAction(company.referral?.status || null, resumes.length > 0, essay !== "", contact !== "")} </span>
                                         </td>
-
                                     </tr>
                                 ))}
                             </tbody>
@@ -147,6 +156,8 @@ const Referrals = ({ essay, resumes, contact }) => {
                     </div>
                 </div>
             </div>
+
+            {createReferral && <ReferralCreate setCreateReferral={setCreateReferral} action={referralAction(referralCompanyIndex)} />}
         </>
     )
 }

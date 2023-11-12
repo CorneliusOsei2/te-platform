@@ -35,7 +35,7 @@ const LearningGroup = ({ title, groupLessons, playlists }) => {
                             <table className="w-4/6">
                                 <thead>
                                     <tr >
-                                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-500 sm:pl-0">
                                             <a href="#" className="group inline-flex">
                                                 Topic
                                                 <button className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" onClick={() => sortLessons("topic")}>
@@ -43,7 +43,7 @@ const LearningGroup = ({ title, groupLessons, playlists }) => {
                                                 </button>
                                             </a>
                                         </th>
-                                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-500 sm:pl-0">
                                             <a href="#" className="group inline-flex">
                                                 Link
                                                 <button className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" onClick={() => sortLessons("topic")}>
@@ -51,7 +51,7 @@ const LearningGroup = ({ title, groupLessons, playlists }) => {
                                                 </button>
                                             </a>
                                         </th>
-                                        <th scope="col" className="py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        {title === "Workshops" && <th scope="col" className="py-3.5 text-left text-sm font-semibold text-gray-500">
                                             <a href="#" className="group inline-flex">
                                                 Year
                                                 <span className="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
@@ -61,7 +61,7 @@ const LearningGroup = ({ title, groupLessons, playlists }) => {
                                                     />
                                                 </span>
                                             </a>
-                                        </th>
+                                        </th>}
                                     </tr>
                                 </thead>
                                 <tbody className=" bg-white">
@@ -80,14 +80,16 @@ const LearningGroup = ({ title, groupLessons, playlists }) => {
                                                     </th>
                                                 </tr>
                                                 {lessons.map((lesson) => (
-                                                    <tr key={title + "." + lesson.topic} className="text-left">
-                                                        <td className="whitespace-nowrap w-1/2 py-4 pl-4 pr-3 text-sm  text-gray-900 sm:pl-0">
+                                                    <tr key={title + "." + lesson.topic} className="text-left left-3">
+                                                        <td className=" break-words w-1/2 py-4 pl-3 pr-3 text-sm  text-gray-900 sm:pl-0">
                                                             {lesson.topic}
                                                         </td>
-                                                        <td className="whitespace-nowrap w-1/4 py-4 text-sm text-blue-500">
-                                                            <a className='visited:text-purple-600 decoration-dotted underline hover:text-green-600' href={lesson.link}>YouTube Link</a>
+                                                        <td className=" w-1/4 py-4 text-sm text-blue-500">
+                                                            <a className='visited:text-purple-600 decoration-dotted underline hover:text-green-600' href={lesson.link}>
+                                                                {lesson.format === "video" ? "Video" : lesson.format === "pdf" ? "Document" : "Web page"}
+                                                            </a>
                                                         </td>
-                                                        <td className="whitespace-nowrap w-1/4 py-4 text-sm text-gray-500">{lesson.year}</td>
+                                                        {title === "Workshops" && <td className=" w-1/4 py-4 text-sm text-gray-500">{lesson.year}</td>}
                                                     </tr>
                                                 ))}
                                             </Fragment>
