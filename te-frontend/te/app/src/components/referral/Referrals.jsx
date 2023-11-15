@@ -58,11 +58,11 @@ const Referrals = () => {
 
     const [createReferral, setCreateReferral] = useState(false);
     const [action, setAction] = useState("")
-    const [referralCompanyIndex, setReferralCompanyIndex] = useState(null);
+    const [referralIndex, setReferralIndex] = useState(null);
 
 
-    const referralCompaniesRequest = useCallback(() => {
-        axiosInstance.get("companies.referrals.list", {
+    const referralCompaniesRequest = useCallback(async () => {
+        await axiosInstance.get("companies.referrals.list", {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -139,7 +139,7 @@ const Referrals = () => {
                                                     <button
                                                         className="inline-flex text-left rounded-full  px-2 py-1 text-xs font-medium ring-1 ring-inset"
                                                         onClick={() => {
-                                                            setAction(referralAction(null, resumes.length > 0, essay !== "", contact !== ""));
+                                                            setReferralIndex(index);
                                                             setCreateReferral(true)
                                                         }}>
                                                         Request
@@ -157,7 +157,12 @@ const Referrals = () => {
                 </div>
             </div>
 
-            {createReferral && <ReferralCreate setCreateReferral={setCreateReferral} action={referralAction(referralCompanyIndex)} />}
+            {createReferral &&
+                <ReferralCreate
+                    resumes={resumes}
+                    company={referralCompanies[referralIndex]}
+                    setCreateReferral={setCreateReferral}
+                    action={referralAction(null, resumes, essay, contact)} />}
         </>
     )
 }

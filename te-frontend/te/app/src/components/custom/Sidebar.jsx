@@ -116,6 +116,32 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                 <li>
                                     <div className="relative mt-3 mb-3">
                                         <div className="relative flex justify-start">
+                                            <span className="bg-sky-900 pr-2 text-sm text-gray-100">Profile</span>
+                                        </div>
+                                    </div>
+                                    <ul className="-mx-2 space-y-1">
+                                        {navigation.filter((item) => item.type === "profile").map((item) => (
+                                            <li key={item.name} className={classNames(
+                                                (item.name === content)
+                                                    ? 'bg-gray-50 text-sky-900'
+                                                    : 'text-gray-100 hover:text-sky-900 hover:bg-gray-300',
+                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                            )}
+                                                onClick={(e) => { setContent(e.target.innerText) }}>
+                                                <item.icon
+                                                    className={classNames(
+                                                        (item.name === content) ? 'text-blue-500' : 'text-gray-100 group-hover:text-blue-500',
+                                                        'h-6 w-6 shrink-0'
+                                                    )}
+                                                    aria-hidden="true"
+                                                />
+                                                {item.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className="relative mt-3 mb-3">
+                                        <div className="relative flex justify-start">
                                             <span className="bg-sky-900 pr-2 text-sm text-gray-100">Learn</span>
                                         </div>
                                     </div>

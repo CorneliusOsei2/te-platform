@@ -70,9 +70,6 @@ class Settings(BaseSettings):
 
     CLEAR_BIT_BASE_URL: str = "https://logo.clearbit.com/"
 
-    # GOOGLE_DRIVE_CREDENTIALS: str
-    GDRIVE_RESUMES:str
-
     class Config:
         env_file = ".env"
         case_sensitive = True

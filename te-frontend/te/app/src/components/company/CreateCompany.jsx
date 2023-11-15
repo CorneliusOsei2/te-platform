@@ -7,6 +7,7 @@ import axios from 'axios';
 import axiosInstance from '../../axiosConfig';
 
 import Typeahead from "../custom/Typehead";
+import { countries } from '../../data/data';
 
 const data = [
     'Microsoft',
@@ -18,7 +19,6 @@ const data = [
 
 const CreateCompany = ({ setAddCompany }) => {
     const [open, setOpen] = useState(true);
-    const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
 
     const [companyName, setCompanyName] = useState("")
@@ -28,19 +28,7 @@ const CreateCompany = ({ setAddCompany }) => {
         city: ""
     })
 
-    const [error, setError] = useState(true);
 
-    useEffect(() => {
-        axios.get('https://restcountries.com/v3.1/all')
-            .then((response) => {
-                let data = response.data.map((ent) => ent["name"]["common"]);
-                data.unshift("")
-                setCountries(data.sort());
-            })
-            .catch((error) => {
-                setError('Error fetching countries:', error);
-            });
-    }, []);
 
     // useEffect(() => {
     //     axios.get(`http://api.geocompanyNames.org/searchJSON?country=${companyLocationData.country}&featureClass=P&usercompanyName=techelevate`)

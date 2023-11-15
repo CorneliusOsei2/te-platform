@@ -23,7 +23,6 @@ const FileUpload = ({ setFileUpload }) => {
 
     return (
         <>
-
             <SlideOverForm
                 title={"Upload New  File"}
                 setHandler={setFileUpload}
@@ -55,7 +54,12 @@ const FileUpload = ({ setFileUpload }) => {
                                 Type
                             </label>
                             <div className="mt-3">
-                                <select name="" id="" className="block w-full rounded-md border-0 py-1.5  shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-sky-600 sm:text-sm sm:leading-6">
+                                <select
+                                    name=""
+                                    id=""
+                                    className="block w-full rounded-md border-0 py-1.5  shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-sky-600 sm:text-sm sm:leading-6"
+                                    onSelect={() => { }}
+                                >
                                     <option value="">Resume</option>
                                     <option value="">Other files (eg: cover letter)</option>
                                 </select>
@@ -75,7 +79,7 @@ const FileUpload = ({ setFileUpload }) => {
                                     </label>
                                     <p className="pl-1">or drag and drop</p>
                                 </div>
-                                <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+                                <p className="text-xs text-center text-gray-600">PDF up to 10MB</p>
                             </div>
                         </div>
                     </div>}

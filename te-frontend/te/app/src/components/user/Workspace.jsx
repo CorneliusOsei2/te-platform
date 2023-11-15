@@ -13,9 +13,13 @@ import FilesAndEssay from '../file/FilesAndEssay'
 import Referrals from '../referral/Referrals'
 import Learning from '../learning/Learning'
 import { BrowserRouter, Routes } from 'react-router-dom'
+import { useData } from '../../context/DataContext'
+import { useAuth } from '../../context/AuthContext'
+import Profile from './Profile'
 
 
 const navigation = [
+    { name: 'Profile', type: "profile", icon: BriefcaseIcon },
     { name: 'Applications', type: "app", icon: BriefcaseIcon },
     { name: 'Resume and Essay', type: "app", icon: DocumentIcon },
     { name: 'Referrals', type: "app", icon: FolderIcon },
@@ -27,11 +31,12 @@ const navigation = [
 
 
 const Workspace = ({ setLogin }) => {
+    const { userId, accessToken } = useAuth();
+    const { setResumes, setOtherFiles, fetchFiles, setFetchFiles } = useData();
+
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [content, setContent] = useState("Applications")
 
-    const [essay, setEssay] = useState("");
-    const [resumes, setResumes] = useState([]);
 
     useEffect(() => {
         let prevContent = sessionStorage.getItem('content');
@@ -41,33 +46,33 @@ const Workspace = ({ setLogin }) => {
         }
     }, [content]);
 
-
-    const updateEssayRequest = (essay) => {
-        axiosInstance.post(`/applications.essay.update`, { "essay": essay })
+    const getUserResumesRequest = useCallback(() => {
+        axiosInstance.get(`/users.${userId}.applications.files.list`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        })
             .then((response) => {
-                setEssay(response.data)
+                setResumes(response.data.files.resumes);
+                setOtherFiles(response.data.files.other_files)
             })
             .catch((error) => {
                 console.log(error);
             })
-    }
+    });
 
-    const updateResumeRequest = (essay) => {
-        axiosInstance.post(`/applications.essay.update`, { "essay": essay })
-            .then((response) => {
-                let tmp = resumes;
-                tmp.push(response.data);
-                setResumes(tmp);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-    }
 
     const setContentHandler = (value) => {
         setContent(value);
         sessionStorage.setItem('content', value);
     }
+
+    useEffect(() => {
+        if (fetchFiles && accessToken) {
+            getUserResumesRequest();
+            setFetchFiles(false);
+        }
+    }, [accessToken, fetchFiles, getUserResumesRequest, setFetchFiles])
 
 
     return (
@@ -125,17 +130,12 @@ const Workspace = ({ setLogin }) => {
 
                 <div className="lg:pl-72 ">
                     <main className="bg-white h-screen">
-                        {content === "Applications" ? <Applications />
-                            :
-                            content === "Resume and Essay" ?
-                                <FilesAndEssay
-                                    updateEssayRequest={updateEssayRequest}
-                                    updateResumeRequest={updateResumeRequest}
-                                />
-                                :
-                                content === "Referrals" ? <Referrals essay={essay} resumes={resumes} contact={""} /> :
-                                    // content === "Learning" :
-                                    <Learning />}
+                        {
+                            content === "Profile" ? <Profile /> :
+                                content === "Applications" ? <Applications /> :
+                                    content === "Resume and Essay" ? <FilesAndEssay /> :
+                                        content === "Referrals" ? <Referrals /> : <Learning />
+                        }
                     </main>
 
                 </div>

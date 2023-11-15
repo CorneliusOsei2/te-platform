@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "TechElevate"
 version = "0.1.0"
-description = "API for Jadaad Farms"
+description = "API for TechElevate Platform"
 authors = ["CorneliusOsei2 <oseiowusuboatengcornelius6@gmail.com>"]
 readme = "README.md"
 

@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Home from './components/home/Home';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DataProvider } from './context/DataContext'
+import Register from './components/user/Register';
 
 function App() {
   const [login, setLogin] = useState(false)
@@ -19,6 +20,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/workspace" element={<Workspace setLogin={setLogin} />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
             </Routes>
           </div>
         </DataProvider>

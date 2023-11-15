@@ -9,7 +9,7 @@ class Essay(BaseModel):
 
 
 class FileBase(BaseModel):
-    name: str
+    title: str
     date: str
     link: str
     reviewed: bool
@@ -53,8 +53,10 @@ class ApplicationBase(BaseModel):
     recruiter_email: str = ""
     active: bool = True
     date: str = None
-    role: company_schema.JobRoles
-    status: ApplicationStatuses
+    # role: company_schema.JobRoles
+    # status: ApplicationStatuses
+    role: str
+    status: str
 
 
 class ApplicationCreate(ApplicationBase):

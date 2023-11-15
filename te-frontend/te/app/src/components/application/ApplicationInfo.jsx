@@ -9,13 +9,13 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import SlideOverInfo from '../custom/SlideOverInfo'
 import { useAuth } from '../../context/AuthContext'
 
-const statuses = {
+export const jobStatuses = {
     "Offer": 'text-green-400 bg-green-400/10 ring-gray-400/20',
     "HR": 'text-blue-400 bg-blue-400/10 ring-blue-400/30',
     "Phone interview": 'text-blue-400 bg-blue-400/10 ring-blue-400/30',
     "Final interview": 'text-blue-400 bg-blue-400/10 ring-blue-400/30',
     "OA": 'text-blue-400 bg-blue-400/10 ring-blue-400/30',
-    "Submitted": 'text-yellow-400 bg-yellow-400/10 ring-yellow-400/30',
+    "Submitted": 'text-yellow-900 bg-yellow-300/10 ring-yellow-400/30',
     "Rejected": 'text-red-400 bg-red-400/10 ring-red-400/30',
 }
 
@@ -24,7 +24,6 @@ const classNames = (...classes) => {
 }
 
 const ApplicationInfo = ({ applicationId, setApplicationId }) => {
-
     const { userId, accessToken } = useAuth();
     const [application, setApplication] = useState(null);
 
@@ -88,7 +87,7 @@ const ApplicationInfo = ({ applicationId, setApplicationId }) => {
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-gray-500">Status</dt>
                                         <dd className={classNames(
-                                            statuses[application.status],
+                                            jobStatuses[application.status],
                                             'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'
                                         )}> {application.status}</dd>
                                     </div>

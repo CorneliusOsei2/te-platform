@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Essay from "./Essay";
-import { ExclamationTriangleIcon, MagnifyingGlassIcon, DocumentIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
+import { ExclamationTriangleIcon, PaperClipIcon, MagnifyingGlassIcon, DocumentIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import axiosInstance from "../../axiosConfig";
 import { useData } from "../../context/DataContext";
 import { useAuth } from "../../context/AuthContext";
@@ -8,27 +8,13 @@ import FileUpload from "./FileUpload";
 
 const Files = () => {
     const { userId, accessToken } = useAuth();
-    const { resumes, otherFiles, setResumes, fetchFiles, setFetchFiles, essay, setEssay } = useData();
+    const { resumes, otherFiles, setResumes } = useData();
     const [showResume, setShowResume] = useState(true);
     const [uploadFile, setUploadFile] = useState(false)
 
-    const getUserResumesRequest = useCallback(() => {
-        axiosInstance.get(`/users.${userId}.applications.files.list`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
-            .then((response) => {
-                console.log(response.data)
-                setResumes(response.data.files.resumes);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-    });
 
     const uploadFileRequest = useCallback(() => {
-        axiosInstance.get(`/users.${userId}.applications.files.list`, {
+        axiosInstance.get(`/users.${userId}.applications.files.create`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -42,12 +28,6 @@ const Files = () => {
             })
     });
 
-    useEffect(() => {
-        if (fetchFiles && accessToken) {
-            getUserResumesRequest();
-            setFetchFiles(false);
-        }
-    }, [accessToken, fetchFiles, getUserResumesRequest, setFetchFiles])
 
     return (
         <>
@@ -93,12 +73,34 @@ const Files = () => {
 
                     <div className="w-full  lg:col-span-7 xl:relative xl:inset-0  xl:mr-6 h-screen">
                         <h3 className="text-base text-left mt-6 ml-4  font-semibold leading-7 text-cyan-800">Resumes</h3>
+                        <div className=" px-4 py-6 sm:col-span-2 sm:px-0">
+                            <dd className="mt-2 text-sm text-gray-900">
+                                <ul className="divide-y divide-gray-100 rounded-md border border-gray-200">
+                                    {resumes.map((resume) => (<li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+                                        <div className="flex w-0 flex-1 items-center">
+                                            <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+                                            <div className="ml-4 flex min-w-0 flex-1 gap-2">
+                                                <span className="truncate font-medium">{resume.title}</span>
+                                                <span className="flex-shrink-0 text-gray-400">2.4mb</span>
+                                            </div>
+                                        </div>
+                                        <div className="ml-4 flex-shrink-0">
+                                            <a href={resume.link} className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                Download
+                                            </a>
+                                        </div>
+                                    </li>))}
+
+                                </ul>
+                            </dd>
+                        </div>
+
                         <ul className="flex mb-6">
                             {resumes.map((resume) => {
                                 return (<li key={resume.id} className="flex rounded-md w-40 px-3 py-3 mr-3 justify-center hover:bg-gray-100 ">
                                     <a href={resume.link}>
                                         <img className="m-auto" width="100" height="100" src="https://img.icons8.com/plasticine/100/pdf.png" alt={resume.name} />
-                                        <span className="text-gray-600  line-clamp-2 hover:line-clamp-none">{resume.name}</span>
+                                        <span className="text-gray-600  line-clamp-2 hover:line-clamp-none">{resume.title}</span>
                                     </a>
                                 </li>)
                             })

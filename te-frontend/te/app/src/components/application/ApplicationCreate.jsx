@@ -1,14 +1,21 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { LinkIcon, PlusIcon, QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
+import { LinkIcon, PlusIcon, QuestionMarkCircleIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { useEffect } from 'react'
 import axiosInstance from '../../axiosConfig';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import { jobStatuses } from './ApplicationInfo'
 
-import Typeahead from "../custom/Typehead";
 import SlideOverForm from '../custom/SlideOverForm'
 import AutoSuggest from '../custom/AutoSuggest'
+import { getNestedPropertyValue, setNestedPropertyValue } from '../../utils'
+import { countries, jobRoles, jobTitles } from '../../data/data'
+import { useAuth } from '../../context/AuthContext'
+import { useData } from '../../context/DataContext'
+import SuccessFeedback from '../custom/SuccessFeedback'
+import { FormSelect, InputWithPlaceholderAndValidation } from '../custom/FormInputs'
+
 const data = [
     'Microsoft',
     'Meta',
@@ -18,123 +25,164 @@ const data = [
     'Map'
 ];
 
-const ApplicationCreate = ({ addApplication, setAddApplication }) => {
+const customInputMap = {
+    "title": "showCustomJobTitle",
+    "role": "showCustomJobRole",
+    "company": "showCustomCompany"
+}
+
+const ApplicationCreate = ({ setAddApplication }) => {
+    const { accessToken } = useAuth();
+    const { companies, setFetchApplications } = useData();
+
+    const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
+
+    const [showCustomInputs, setShowCustomInputs] = useState({
+        showCustomCompany: false,
+        showCustomJobTitle: false,
+        showCustomJobRole: false,
+        showCustomStatus: false,
+    })
+
+    const [customInputValidation, setCustomInputValidation] = useState({
+        validCustomCompany: true,
+        validCustomJobTitle: true,
+        validCustomJobRole: true,
+        validCustomStatus: true,
+    })
+
     const [appData, setAppData] = useState({
-        company: "",
-        role: "",
+        company: companies ? companies[0] : "",
+        title: jobTitles.length > 0 ? jobTitles[0] : "",
+        role: jobRoles.length > 0 ? jobRoles[0] : "",
         deadline: "",
         notes: "",
+        status: "Applied",
         recruiter_name: "",
-        recruiter_email: ""
+        recruiter_email: "",
+        location: {
+            country: "",
+            city: "",
+        }
     })
 
     const createUserApplicationRequest = () => {
-        axiosInstance.post("/companies.create", appData)
-            .then((response) => {
-                let data = response.data;
-                console.log(data)
+        axiosInstance.post("/applications.create", appData,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then((_) => {
+                setFetchApplications(true);
+                setShowSuccessFeedback(true);
             })
             .catch((error) => {
-                console.log("Error!");
+                console.log(error);
             });
     }
 
-    const handleInputChange = ({ name, value }) => {
-        setAppData({ ...appData, [name]: value });
+    const handleInputChange = ({ field, value, hideCustomInput = true }) => {
+        if (value === "Other.......") {
+            setAppData((prevAppData) => {
+                const tmp = setNestedPropertyValue({ ...prevAppData }, field, "");
+                setShowCustomInputs({ ...showCustomInputs, [customInputMap[field]]: true });
+                return tmp;
+            });
+        } else {
+            if (hideCustomInput) {
+                setShowCustomInputs({ ...showCustomInputs, [customInputMap[field]]: false });
+            }
+            setAppData((prevAppData) =>
+                setNestedPropertyValue({ ...prevAppData }, field, value)
+            );
+        }
     };
+
+
+
+    const validateCustomInput = () => {
+        setCustomInputValidation({
+            validCustomCompany: appData.company.trim() !== "",
+            validCustomJobRole: appData.role.trim() !== "",
+            validCustomJobTitle: appData.title.trim() !== "",
+        })
+    }
 
     return (
         <SlideOverForm
             title={"New Application"}
             setHandler={setAddApplication}
             requestHandler={createUserApplicationRequest}
+            validateCustomInput={validateCustomInput}
+            customInputValidation={customInputValidation}
             children={<div className="flex flex-1 flex-col justify-between">
                 <div className="divide-y divide-gray-200 px-4 sm:px-6">
                     <div className="space-y-6 pb-5 pt-6">
-                        <div>
-                            <label
-                                htmlFor="company-name"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                Company name
-                            </label>
-                            <div className="mt-2">
-                                {/* <input
-                                    type="text"
-                                    name="company-name"
-                                    id="company-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                                /> */}
-                                <AutoSuggest data={data} handler={handleInputChange} />
-                            </div>
+
+                        {showSuccessFeedback &&
+                            <SuccessFeedback
+                                message={"Application successfully added."}
+                                setShowSuccessFeedback={setShowSuccessFeedback}
+                            />
+                        }
+
+                        <FormSelect label="Company" field="company" data={companies} handleInputChange={handleInputChange} />
+
+                        <div className="flex mt-3 justify-between ">
+                            <FormSelect label="Title" field="title" data={jobTitles} handleInputChange={handleInputChange} />
+                            <FormSelect label="Role" field="role" data={jobRoles} handleInputChange={handleInputChange} />
                         </div>
-                        <div>
-                            <label
-                                htmlFor="company-name"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                Company name
-                            </label>
-                            <div className="mt-2">
-                                <Typeahead name={"company"} value={appData.company} data={data} handler={handleInputChange} />
-                            </div>
+
+                        <div className='flex justify-between'>
+                            {showCustomInputs.showCustomJobTitle &&
+                                <InputWithPlaceholderAndValidation
+                                    label="Specify title: "
+                                    field="title"
+                                    handleInputChange={handleInputChange}
+                                    validation={!customInputValidation.validCustomJobTitle}
+                                />
+                            }
+
+                            {showCustomInputs.showCustomJobRole &&
+                                <InputWithPlaceholderAndValidation
+                                    label="Specify role: "
+                                    field="role"
+                                    handleInputChange={handleInputChange}
+                                    validation={!customInputValidation.validCustomJobRole}
+                                />
+                            }
                         </div>
-                        <div>
-                            <label
-                                htmlFor="company-name"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                Company name
-                            </label>
-                            <div className="mt-2">
-                                {/* <input
-                                    type="text"
-                                    name="company-name"
-                                    id="company-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                                /> */}
-                                <AutoSuggest data={data} handler={handleInputChange} />
-                            </div>
-                        </div><div>
-                            <label
-                                htmlFor="company-name"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                            >
-                                Company name
-                            </label>
-                            <div className="mt-2">
-                                {/* <input
-                                    type="text"
-                                    name="company-name"
-                                    id="company-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                                /> */}
-                                <AutoSuggest data={data} handler={handleInputChange} />
-                            </div>
+
+                        <FormSelect label="Status" field="status" data={Object.keys(jobStatuses)} handleInputChange={handleInputChange} />
+
+                        <div className="flex justify-between">
+                            <FormSelect label="Country" field="location.country" data={countries} handleInputChange={handleInputChange} />
+                            <FormSelect label="City" field="location.city" data={[]} handleInputChange={handleInputChange} />
                         </div>
+
+
                         <div>
                             <label
-                                htmlFor="description"
-                                className="block text-sm font-medium leading-6 text-gray-900"
+                                htmlFor="notes"
+                                className="block text-sm font-medium leading-6 text-sky-800"
                             >
                                 Notes
                             </label>
                             <div className="mt-2">
                                 <textarea
-                                    id="description"
-                                    name="description"
+                                    id="notes"
+                                    name="notes"
                                     rows={4}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
+                                    className="block w-full rounded-md border-0 py-1.5 text-sky-800 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
                                     defaultValue={''}
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>}
+            </div >}
         />
-
-
     )
 }
 

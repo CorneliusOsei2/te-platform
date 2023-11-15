@@ -2,7 +2,6 @@ from datetime import date
 from enum import Enum
 
 from pydantic import BaseModel, EmailStr
-import app.ents.application.schema as application_schema
 
 
 class UserLogin(BaseModel):

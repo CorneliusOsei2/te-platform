@@ -22,9 +22,16 @@ export const DataProvider = ({ children }) => {
     const [fetchEssay, setFetchEssay] = useState(true);
     const [essay, setEssay] = useState([]);
 
+    const [fetchCompanies, setFetchCompanies] = useState(true);
+    const [companies, setCompanies] = useState(["Microsoft", "Other......."]);
+
 
     return (
         <DataContext.Provider value={{
+            fetchCompanies,
+            setFetchCompanies,
+            companies,
+            setCompanies,
             fetchApplications,
             setFetchApplications,
             applications,

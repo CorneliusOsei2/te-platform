@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 
-const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
+const SlideOverForm = ({ title, setHandler, validateCustomInput, customInputValidation, requestHandler, children }) => {
     const [open, setOpen] = useState(true);
 
     useEffect(() => {
@@ -11,10 +11,35 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
         if (open === false) {
             timeoutId = setTimeout(() => {
                 setHandler(false);
-            }, 700); // The same duration as the CSS transition
+            }, 700);
         }
         return () => clearTimeout(timeoutId);
     }, [open, setHandler]);
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+        }
+    };
+
+    const submitFormHandler = (e) => {
+        e.preventDefault();
+
+        if (validateCustomInput !== undefined) {
+            validateCustomInput();
+
+            let isValid = false;
+            setTimeout(() => {
+                isValid = !Object.values(customInputValidation).some((value) => value === false);
+            }, 5000);
+
+            if (isValid) {
+                console.log(isValid, customInputValidation)
+                requestHandler();
+            }
+        }
+    };
+
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -33,7 +58,7 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
                                 leaveTo="translate-x-full"
                             >
                                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
+                                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl" onKeyDown={handleKeyDown} onSubmit={submitFormHandler}>
                                         <div className="h-0 flex-1 overflow-y-auto">
                                             <div className="bg-sky-800 px-4 py-6 sm:px-6">
                                                 <div className="flex items-center justify-between">
@@ -66,13 +91,12 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
                                             <button
                                                 type="submit"
                                                 className="ml-4 inline-flex justify-center rounded-md bg-sky-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-                                                onClick={requestHandler}
+                                                onClick={submitFormHandler}
                                             >
                                                 Save
                                             </button>
                                         </div>
                                     </form >
-
                                 </Dialog.Panel>
                             </Transition.Child>
                         </div>

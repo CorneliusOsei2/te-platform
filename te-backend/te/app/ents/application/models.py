@@ -21,11 +21,13 @@ class Application(Base):
     notes = Column(String, nullable=False)
     recruiter_name = Column(String, nullable=False)
     recruiter_email = Column(String, nullable=False)
-    role = Column(Enum(company_schema.JobRoles), nullable=False)
+    # role = Column(Enum(company_schema.JobRoles), nullable=False)
+    role = Column(String, nullable=False)
     title = Column(String, nullable=False)
-    status = Column(
-        Enum(application_schema.ApplicationStatuses), nullable=False
-    )
+    # status = Column(
+    #     Enum(application_schema.ApplicationStatuses), nullable=False
+    # )
+    status = Column(String, nullable=False)
     active = Column(Boolean, nullable=False)
 
     # Relationships
@@ -44,7 +46,7 @@ class Resume(Base):
     file_id = Column(String, nullable=False)
     date = Column(String, nullable=False)
     link = Column(String, nullable=False)
-    name = Column(String, nullable=False)
+    title = Column(String, nullable=False)
     reviewed = Column(Boolean, nullable=False, default=False)
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="resumes")

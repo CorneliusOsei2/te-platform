@@ -19,8 +19,8 @@ const Essay = () => {
     const [essayBody, setEssayBody] = useState(essay);
 
 
-    const updateEssayRequest = () => {
-        axiosInstance.post(`/users.${userId}.essay`,
+    const updateEssayRequest = async () => {
+        await axiosInstance.post(`/users.${userId}.essay`,
             { "essay": essayBody },
             {
                 headers: { Authorization: `Bearer ${accessToken}` },
@@ -35,8 +35,8 @@ const Essay = () => {
             })
     };
 
-    const essayRequest = useCallback(() => {
-        axiosInstance.get(`/users.${userId}.essay`, {
+    const essayRequest = useCallback(async () => {
+        await axiosInstance.get(`/users.${userId}.essay`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
