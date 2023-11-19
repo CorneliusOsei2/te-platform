@@ -1,8 +1,8 @@
 import { useEffect, useCallback, useState } from 'react'
-import axiosInstance from '../../axiosConfig'
-import { useAuth } from '../../context/AuthContext'
-import { useData } from '../../context/DataContext'
-import ReferralCreate from './ReferralCreate'
+import axiosInstance from '../axiosConfig'
+import { useAuth } from '../context/AuthContext'
+import { useData } from '../context/DataContext'
+import ReferralCreate from '../components/referral/ReferralCreate'
 
 const referralStatuses = {
     "Requested": "bg-blue-50 text-blue-700  ring-blue-600/20",

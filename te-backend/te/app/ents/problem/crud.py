@@ -7,9 +7,7 @@ from app.ents.base import crud_base
 from app.ents.user import models, schema
 
 
-def read_multi(
-    db: Session, *, skip: int = 0, limit: int = 100
-) -> list[models.User]:
+def read_multi(db: Session, *, skip: int = 0, limit: int = 100) -> list[models.User]:
     return db.query(models.User).offset(skip).limit(limit).all()
 
 

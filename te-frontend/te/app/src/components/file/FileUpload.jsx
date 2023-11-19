@@ -4,7 +4,7 @@ import { DocumentIcon } from '@heroicons/react/20/solid'
 import axiosInstance from "../../axiosConfig";
 import { useData } from "../../context/DataContext";
 import { useAuth } from "../../context/AuthContext";
-import SlideOverForm from "../custom/SlideOverForm";
+import SlideOverForm from "../custom/SlideOver/SlideOverCreate";
 
 
 const FileUpload = ({ setFileUpload }) => {

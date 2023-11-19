@@ -24,7 +24,6 @@ const SlideOverForm = ({ title, setHandler, validateCustomInput, customInputVali
 
     const submitFormHandler = (e) => {
         e.preventDefault();
-
         if (validateCustomInput !== undefined) {
             validateCustomInput();
 
@@ -43,7 +42,7 @@ const SlideOverForm = ({ title, setHandler, validateCustomInput, customInputVali
 
     return (
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => { }}>
+            <Dialog as="div" className="relative z-20" onClose={() => { }}>
                 <div className="fixed inset-0" />
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
@@ -93,7 +92,7 @@ const SlideOverForm = ({ title, setHandler, validateCustomInput, customInputVali
                                                 className="ml-4 inline-flex justify-center rounded-md bg-sky-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
                                                 onClick={submitFormHandler}
                                             >
-                                                Save
+                                                Done
                                             </button>
                                         </div>
                                     </form >

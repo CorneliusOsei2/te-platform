@@ -45,9 +45,7 @@ def create_company(
                 for location in company.locations
             )
         ):
-            company = company_crud.add_location(
-                db, company=company, data=data.location
-            )
+            company = company_crud.add_location(db, company=company, data=data.location)
             return company_dependencies.parse_company(company)
         else:
             raise HTTPException(

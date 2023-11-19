@@ -1,15 +1,17 @@
+import os
+import tempfile
 from datetime import date
 
+from googleapiclient.http import MediaFileUpload
 from sqlalchemy.orm import Session
-import tempfile, os  # Import the tempfile module
+
+import app.core.service as service
 import app.ents.application.models as application_models
 import app.ents.application.schema as application_schema
 import app.ents.company.crud as company_crud
 import app.ents.company.schema as company_schema
 import app.ents.user.crud as user_crud
-import app.core.service as service
 from app.core.config import settings
-from googleapiclient.http import MediaFileUpload
 
 
 def read_application_by_id(
@@ -25,9 +27,7 @@ def read_application_by_id(
 def read_application_multi(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[application_models.Application]:
-    return (
-        db.query(application_models.Application).offset(skip).limit(limit).all()
-    )
+    return db.query(application_models.Application).offset(skip).limit(limit).all()
 
 
 def create_application(
@@ -53,10 +53,7 @@ def create_application(
 
     if not location:
         for loc in company.locations:
-            if (
-                loc.country == data.location.country
-                and loc.city == data.location.city
-            ):
+            if loc.country == data.location.country and loc.city == data.location.city:
                 location = loc
                 break
             if loc.country == data.location.country:

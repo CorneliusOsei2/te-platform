@@ -7,6 +7,7 @@ import { copyTextToClipboard } from '../../utils'
 import { useData } from '../../context/DataContext'
 import axiosInstance from '../../axiosConfig'
 import { useAuth } from '../../context/AuthContext'
+import MissingData from '../custom/Alert/MissingData'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -103,10 +104,7 @@ const Essay = () => {
                             <div className="border-b">
                                 <div className="mx-px mt-px px-3 pb-12 pt-2 text-sm leading-5 text-gray-800">
                                     {essay !== "" ? <p>{essay}</p> : <div className="flex-shrink-0">
-                                        <div className="mt-2 text-md text-yellow-700 flex">
-                                            <ExclamationTriangleIcon className="  h-12 w-12 text-yellow-400" aria-hidden="true" />
-                                            No cover letter currently. Please upload by clicking the Edit button. Thanks!
-                                        </div>
+                                        <MissingData info="No cover letter added." />
                                     </div>}
                                 </div>
                             </div>

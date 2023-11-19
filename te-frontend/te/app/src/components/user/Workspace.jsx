@@ -7,11 +7,11 @@ import {
 import { Dialog, Transition } from '@headlessui/react'
 import axiosInstance from "../../axiosConfig"
 import { BriefcaseIcon, DocumentIcon, CodeBracketIcon, ComputerDesktopIcon, BookOpenIcon } from '@heroicons/react/20/solid'
-import Applications from '../application/Applications'
+import Applications from '../../pages/Applications'
 import Sidebar from '../custom/Sidebar'
-import FilesAndEssay from '../file/FilesAndEssay'
-import Referrals from '../referral/Referrals'
-import Learning from '../learning/Learning'
+import FilesAndEssay from '../../pages/FilesAndEssay'
+import Referrals from '../../pages/Referrals'
+import Learning from '../../pages/Learning'
 import { BrowserRouter, Routes } from 'react-router-dom'
 import { useData } from '../../context/DataContext'
 import { useAuth } from '../../context/AuthContext'
@@ -19,7 +19,6 @@ import Profile from './Profile'
 
 
 const navigation = [
-    { name: 'Profile', type: "profile", icon: BriefcaseIcon },
     { name: 'Applications', type: "app", icon: BriefcaseIcon },
     { name: 'Resume and Essay', type: "app", icon: DocumentIcon },
     { name: 'Referrals', type: "app", icon: FolderIcon },

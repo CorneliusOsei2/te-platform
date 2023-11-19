@@ -15,18 +15,14 @@ router = APIRouter(prefix="/users")
 
 
 @router.post(".login")
-def login_user(
-    response: Response, token=Depends(user_auth.login_access_token)
-) -> Any:
+def login_user(response: Response, token=Depends(user_auth.login_access_token)) -> Any:
     """
     Log User in.
     """
     return {"token": token}
 
 
-@router.get(
-    ".mentees.list", response_model=dict[str, list[user_schema.UserRead]]
-)
+@router.get(".mentees.list", response_model=dict[str, list[user_schema.UserRead]])
 def get_mentees(
     db: Session = Depends(session.get_db),
     skip: int = 0,
@@ -37,14 +33,10 @@ def get_mentees(
     Retrieve all active mentees.
     """
     mentees = user_crud.read_mentees(db, skip=skip, limit=limit)
-    return {
-        "mentees": [user_schema.UserRead(**vars(mentor)) for mentor in mentees]
-    }
+    return {"mentees": [user_schema.UserRead(**vars(mentor)) for mentor in mentees]}
 
 
-@router.get(
-    ".mentors.list", response_model=dict[str, list[user_schema.UserRead]]
-)
+@router.get(".mentors.list", response_model=dict[str, list[user_schema.UserRead]])
 def get_mentors(
     db: Session = Depends(session.get_db),
     skip: int = 0,
@@ -55,9 +47,7 @@ def get_mentors(
     Retrieve all active mentors.
     """
     mentors = user_crud.read_mentors(db, skip=skip, limit=limit)
-    return {
-        "mentors": [user_schema.UserRead(**vars(mentor)) for mentor in mentors]
-    }
+    return {"mentors": [user_schema.UserRead(**vars(mentor)) for mentor in mentors]}
 
 
 @router.get(".list", response_model=dict[str, list[user_schema.UserRead]])

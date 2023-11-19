@@ -15,4 +15,3 @@ from app.ents.learning.models import Workshop
 from app.ents.learning.models import DataStructuresAndAlgorithms
 from app.ents.learning.models import SystemDesign
 from app.ents.learning.models import Miscellaneous
-

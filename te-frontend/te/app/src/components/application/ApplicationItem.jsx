@@ -1,24 +1,26 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
+import { jobStatuses } from './ApplicationInfo'
 
-const statuses = {
-    "Offer": 'text-green-400 bg-green-400/10 ring-gray-400/20',
-    "HR": 'text-blue-400 bg-blue-400/10 ring-blue-400/30',
-    "Phone interview": 'text-purple-400 bg-purple-400/10 ring-purple-400/30',
-    "Final interview": 'text-blue-400 bg-blue-400/10 ring-blue-400/30',
-    "OA": 'text-orange-400 bg-orange-400/10 ring-orange-400/30',
-    "Submitted": 'text-yellow-400 bg-yellow-400/10 ring-yellow-400/30',
-    "Rejected": 'text-red-400 bg-red-400/10 ring-red-400/30',
-}
+
 
 const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ')
 }
 
-const ApplicationItem = ({ application, setApplicationId }) => {
+const ApplicationItem = ({ allowSelection, addSelectedItem, application, setApplicationId }) => {
 
     return (
         <>
-            <div className="min-w-0 flex-auto" onClick={() => setApplicationId(application.id)}>
+            {allowSelection && <input
+                id="comments"
+                aria-describedby="comments-description"
+                name="comments"
+                type="checkbox"
+                checked={application.selected}
+                className="h-4 w-4 rounded-md border-sky-700 text-sky-600 focus:ring-sky-600"
+            />}
+
+            <div className="min-w-0 flex-auto " onClick={() => { allowSelection ? addSelectedItem(application) : setApplicationId(application.id) }}>
                 <div className="flex items-center gap-x-3">
                     <div className="flex-none rounded-full p-1">
                         <img
@@ -49,7 +51,7 @@ const ApplicationItem = ({ application, setApplicationId }) => {
             </div>
             <div
                 className={classNames(
-                    statuses[application.status],
+                    jobStatuses[application.status],
                     'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'
                 )}
             >

@@ -4,30 +4,39 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { LinkIcon, PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/20/solid'
 import { useEffect } from 'react'
 import axiosInstance from '../../axiosConfig';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
-import SlideOverInfo from '../custom/SlideOver/SlideOverInfo'
 import { useAuth } from '../../context/AuthContext'
+import SlideOverUpdate from '../custom/SlideOver/SlideOverUpdate'
+import { FormSelect, FormInputWithValidation } from '../custom/FormInputs'
+import { setNestedPropertyValue } from '../../utils'
+import { jobStatuses } from './ApplicationInfo'
+import { customInputMap } from './ApplicationCreate'
+import { countries } from '../../data/data'
 
-export const jobStatuses = {
-    "Offer": 'text-green-900 bg-green-300/10 ring-green-400/30',
-    "HR": 'text-blue-400 bg-blue-400/10 ring-blue-400/30',
-    "Phone interview": 'text-blue-400 bg-blue-400/10 ring-blue-400/30',
-    "Final interview": 'text-blue-900 bg-blue-300/10 ring-blue-400/30',
-    "OA": 'text-blue-400 bg-blue-400/10 ring-blue-400/30',
-    "Submitted": 'text-yellow-900 bg-yellow-300/10 ring-yellow-400/30',
-    "Rejected": 'text-gray-900 bg-gray-300/10 ring-gray-400/30',
-}
 
 const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ')
 }
 
-const ApplicationInfo = ({ applicationId, setApplicationId, application, setApplication, setUpdateApplication }) => {
+const ApplicationUpdate = ({ application, setApplication }) => {
     const { userId, accessToken } = useAuth();
 
-    const getUserApplicationRequest = useCallback(() => {
-        axiosInstance.get(`/users.${userId}.applications.${applicationId}.info`, {
+    const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
+    const [showCustomInputs, setShowCustomInputs] = useState({
+        showCustomCompany: false,
+        showCustomJobTitle: false,
+        showCustomJobRole: false,
+        showCustomStatus: false,
+    })
+    const [customInputValidation, setCustomInputValidation] = useState({
+        validCustomCompany: true,
+        validCustomJobTitle: true,
+        validCustomJobRole: true,
+        validCustomStatus: true,
+    })
+
+    const updateUserApplicationRequest = useCallback(() => {
+        axiosInstance.put(`/users.${userId}.applications.${application.id}.info`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -42,15 +51,27 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
 
     useEffect(() => {
         if (application === null) {
-            getUserApplicationRequest();
+            updateUserApplicationRequest();
         }
-    }, [application, applicationId, getUserApplicationRequest])
+    }, [application, updateUserApplicationRequest])
+
+    const handleInputChange = ({ field, value, hideCustomInput = true }) => {
+        if (value === "Other.......") {
+            setShowCustomInputs({ ...showCustomInputs, [customInputMap[field]]: true });
+            setApplication(setNestedPropertyValue({ ...application }, field, ""));
+        } else {
+            if (hideCustomInput) {
+                setShowCustomInputs({ ...showCustomInputs, [customInputMap[field]]: false });
+            }
+            setApplication(setNestedPropertyValue({ ...application }, field, value))
+        }
+    };
 
     return (
         <>
             {
-                application !== null && <SlideOverInfo
-                    setHandler={setApplicationId}
+                application !== null && <SlideOverUpdate
+                    setHandler={setApplication}
                     title={
                         <div className="flex rounded-full p-1">
                             <img
@@ -72,42 +93,34 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
                                     <h3 className="text-base font-semibold leading-6 text-gray-900">
                                         {application.title}, {application.role}
                                     </h3>
-                                    <span className='text-sm text-slate-500'>{application.location.city}, {application.location.country}</span>
                                 </div>
-                                <button
-                                    type="button"
-                                    className=" h-5 w-5 flex items-center justify-center rounded-full bg-white text-blue-400 hover:bg-blue-100 hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    onClick={() => setUpdateApplication(true)}
-                                >
-                                    <PencilIcon className="h-5 w-5" aria-hidden="true" />
-                                </button>
                             </div>
 
                             <div>
                                 <dl className="mt-3 divide-y divide-gray-200 border-b border-t border-gray-200">
                                     <div className="flex justify-between py-3 text-sm font-medium">
+                                        <dt className="text-sky-800">Country</dt>
+                                        <dd className="text-gray-900 -mt-3"> <FormSelect field="location.country" data={countries} handleInputChange={handleInputChange} /></dd>
+                                    </div>
+                                    <div className="flex justify-between py-3 text-sm font-medium">
+                                        <dt className="text-sky-800">City</dt>
+                                        <dd className="text-gray-900 -mt-3"><FormInputWithValidation type='text' field="location.city" handleInputChange={handleInputChange} /></dd>
+                                    </div>
+                                    <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Status</dt>
-                                        <dd className={classNames(
-                                            jobStatuses[application.status],
-                                            'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'
-                                        )}> {application.status}</dd>
-
+                                        <dd className="text-gray-900 -mt-3"> <FormSelect data={Object.keys(jobStatuses)} handleInputChange={handleInputChange} /></dd>
                                     </div>
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Referred</dt>
-                                        <dd className="text-gray-900"> {application.referred}</dd>
-                                    </div>
-                                    <div className="flex justify-between py-3 text-sm font-medium">
-                                        <dt className="text-sky-800">Added on</dt>
-                                        <dd className="text-gray-900">{application.date} </dd>
+                                        <dd className="text-gray-900 -mt-3"><FormSelect data={["Yes", "No"]} handleInputChange={handleInputChange} /></dd>
                                     </div>
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Recruiter Name</dt>
-                                        <dd className="text-gray-900">{application.recruiter}</dd>
+                                        <dd className="text-gray-900 -mt-3"><FormInputWithValidation type='text' field="recruiter_name" handleInputChange={handleInputChange} /></dd>
                                     </div>
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Recruiter Email</dt>
-                                        <dd className="text-gray-900">{application.recruiter_email}</dd>
+                                        <dd className="text-gray-900 -mt-3"><FormInputWithValidation type="email" field="recruiter_email" handleInputChange={handleInputChange} /></dd>
                                     </div>
                                 </dl>
                             </div>
@@ -129,5 +142,5 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
 }
 
 
-export default ApplicationInfo;
+export default ApplicationUpdate;
 

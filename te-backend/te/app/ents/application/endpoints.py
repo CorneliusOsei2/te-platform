@@ -1,13 +1,13 @@
 from typing import Any
-import app.database.session as session
 
 from fastapi import APIRouter, Depends, UploadFile
 from sqlalchemy.orm import Session
-import app.ents.application.dependencies as application_dependencies
-import app.ents.user.dependencies as user_dependencies
+
+import app.database.session as session
 import app.ents.application.crud as application_crud
+import app.ents.application.dependencies as application_dependencies
 import app.ents.application.schema as application_schema
-import app.utilities.response as custom_response
+import app.ents.user.dependencies as user_dependencies
 
 user_app_router = APIRouter(prefix="/users.{user_id}.applications")
 app_router = APIRouter(prefix="/applications")
@@ -25,12 +25,8 @@ def create_application(
     """
     Create an application.
     """
-    application = application_crud.create_application(
-        db, data=data, user_id=user.id
-    )
-    return {
-        "application": application_dependencies.parse_application(application)
-    }
+    application = application_crud.create_application(db, data=data, user_id=user.id)
+    return {"application": application_dependencies.parse_application(application)}
 
 
 @user_app_router.get(
@@ -43,7 +39,7 @@ def get_user_applications(
     user=Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Applications.
+    Retrieve applications of user `user_id`.
     """
     applications = application_crud.read_user_applications(db, user_id=user_id)
 
@@ -67,15 +63,13 @@ def get_user_application(
     user=Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Applications.
+    Retrieve application `application_id` of user `user_id`.
     """
     application = application_crud.read_user_application(
         db, user_id=user_id, application_id=application_id
     )
 
-    return {
-        "application": application_dependencies.parse_application(application)
-    }
+    return {"application": application_dependencies.parse_application(application)}
 
 
 @user_app_router.get(
@@ -88,48 +82,35 @@ def get_user_application_files(
     current_user=Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Applications.
+    Retrieve application files (resume and other files)
     """
     resumes, other_files = application_crud.read_user_application_files(
         db, user_id=user_id
     )
     return {
         "files": application_schema.FilesRead(
-            resumes=[
-                application_schema.FileRead(**vars(resume))
-                for resume in resumes
-            ],
+            resumes=[application_schema.FileRead(**vars(resume)) for resume in resumes],
             other_files=[
-                application_schema.FileRead(**vars(file))
-                for file in other_files
+                application_schema.FileRead(**vars(file)) for file in other_files
             ],
         )
     }
 
-"""
-{
-    user (1) : {
-        name
-    }
-}
-"""
 
-
-
-
-@app_router.post(
+@user_app_router.post(
     ".resumes.upload", response_model=dict[str, application_schema.FileRead]
 )
 def upload_resume(
-    *,
     db: Session = Depends(session.get_db),
+    *,
+    user_id: int,
     file: UploadFile,
-    user=Depends(user_dependencies.get_current_user),
+    _=Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Create an application.
+    Upload resume for user `user_id`.
     """
-    resume = application_crud.upload_resume(db, file, user.id)
+    resume = application_crud.upload_resume(db, file, user_id)
     return {"resume": application_schema.FileRead(**vars(resume))}
 
 
@@ -137,37 +118,33 @@ def upload_resume(
     ".resumes.list", response_model=dict[str, list[application_schema.FileRead]]
 )
 def get_user_resumes(
-    *,
     db: Session = Depends(session.get_db),
+    *,
     user_id: int,
     user=Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Get all resumes of `user`
+    Get all resumes of user `user_id`
     """
     resumes = application_crud.get_user_resumes(db, user_id)
-    return {
-        "resumes": [
-            application_schema.File(**vars(resume)) for resume in resumes
-        ]
-    }
+    return {"resumes": [application_schema.File(**vars(resume)) for resume in resumes]}
 
 
 @user_app_router.get(
     ".essays.update",
-    response_model=list[custom_response.Response],
+    response_model=dict[str, application_schema.Essay],
 )
 def update_essay(
-    *,
     db: Session = Depends(session.get_db),
+    *,
     data: application_schema.Essay,
     user=Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Applications.
+    Update essay of user `user_id`.
     """
     essay = application_crud.update_essay(db, user_id=user.id)
-    return application_schema.Essay(essay=essay)
+    return {"essay": application_schema.Essay(essay=essay)}
 
 
 # @router.put(".info/{company_id}", response_model=company_schema.CompanyRead)

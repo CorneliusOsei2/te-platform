@@ -2,9 +2,9 @@ import { Fragment, useState, useCallback, useEffect } from 'react'
 import { Dialog, Disclosure, Menu, Popover, Tab, Transition } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
-import LearningGroup from './LearningGroup'
-import axiosInstance from '../../axiosConfig'
-import { useAuth } from '../../context/AuthContext'
+import LearningGroup from '../components/learning/LearningGroup'
+import axiosInstance from '../axiosConfig'
+import { useAuth } from '../context/AuthContext'
 
 
 

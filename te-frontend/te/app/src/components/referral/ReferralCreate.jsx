@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { DocumentIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import axiosInstance from "../../axiosConfig";
-import SlideOverForm from "../custom/SlideOverForm";
+import SlideOverForm from "../custom/SlideOver/SlideOverCreate";
 import { useData } from "../../context/DataContext";
 
 

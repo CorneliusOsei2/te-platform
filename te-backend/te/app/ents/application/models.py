@@ -6,10 +6,6 @@ from sqlalchemy import (
     String,
 )
 from sqlalchemy.orm import relationship
-from sqlalchemy.types import Enum
-
-import app.ents.application.schema as application_schema
-import app.ents.company.schema as company_schema
 
 from app.database.base_class import Base
 

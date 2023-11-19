@@ -23,18 +23,12 @@ def login_access_token(
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    user = security.authenticate(
-        db, email=data.username, password=data.password
-    )
+    user = security.authenticate(db, email=data.username, password=data.password)
     if not user:
-        raise HTTPException(
-            status_code=400, detail="Incorrect email or password"
-        )
+        raise HTTPException(status_code=400, detail="Incorrect email or password")
     elif not user_crud.is_user_active(db, user=user):
         raise HTTPException(status_code=400, detail="Inactive user")
-    access_token_expires = timedelta(
-        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-    )
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
     return {
         "sub": user.id,

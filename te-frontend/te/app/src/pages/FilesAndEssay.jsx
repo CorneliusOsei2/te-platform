@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import Essay from "./Essay";
+import Essay from "../components/file/Essay";
 import { ExclamationTriangleIcon, PaperClipIcon, MagnifyingGlassIcon, DocumentIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
-import axiosInstance from "../../axiosConfig";
-import { useData } from "../../context/DataContext";
-import { useAuth } from "../../context/AuthContext";
-import FileUpload from "./FileUpload";
+import axiosInstance from "../axiosConfig";
+import { useData } from "../context/DataContext";
+import { useAuth } from "../context/AuthContext";
+import FileUpload from "../components/file/FileUpload";
+import MissingData from "../components/custom/Alert/MissingData";
 
 const Files = () => {
     const { userId, accessToken } = useAuth();
@@ -75,23 +76,25 @@ const Files = () => {
                         <h3 className="text-base text-left mt-6 ml-4  font-semibold leading-7 text-cyan-800">Resumes</h3>
                         <div className=" px-4 py-6 sm:col-span-2 sm:px-0">
                             <dd className="mt-2 text-sm text-gray-900">
-                                <ul className="divide-y divide-gray-100 rounded-md border border-gray-200">
-                                    {resumes.map((resume) => (<li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
-                                        <div className="flex w-0 flex-1 items-center">
-                                            <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-                                            <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                                                <span className="truncate font-medium">{resume.title}</span>
-                                                <span className="flex-shrink-0 text-gray-400">2.4mb</span>
-                                            </div>
-                                        </div>
-                                        <div className="ml-4 flex-shrink-0">
-                                            <a href={resume.link} className="font-medium text-indigo-600 hover:text-indigo-500">
-                                                Download
-                                            </a>
-                                        </div>
-                                    </li>))}
-
-                                </ul>
+                                {resumes.length === 0 ? <MissingData info="No resume(s) uploaded." />
+                                    :
+                                    <ul className="divide-y divide-gray-100 rounded-md border border-gray-200">
+                                        {
+                                            resumes.map((resume) => (<li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+                                                <div className="flex w-0 flex-1 items-center">
+                                                    <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+                                                    <div className="ml-4 flex min-w-0 flex-1 gap-2">
+                                                        <span className="truncate font-medium">{resume.title}</span>
+                                                        <span className="flex-shrink-0 text-gray-400">2.4mb</span>
+                                                    </div>
+                                                </div>
+                                                <div className="ml-4 flex-shrink-0">
+                                                    <a href={resume.link} className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                        Download
+                                                    </a>
+                                                </div>
+                                            </li>))}
+                                    </ul>}
                             </dd>
                         </div>
 

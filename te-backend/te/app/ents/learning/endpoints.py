@@ -28,17 +28,13 @@ def get_workshop_lesson(
     """
     lessons = learning_crud.read_workshop_lesson(db, skip=skip, limit=limit)
     return {
-        "lessons": [
-            learning_schema.WorkshopRead(**vars(lesson)) for lesson in lessons
-        ]
+        "lessons": [learning_schema.WorkshopRead(**vars(lesson)) for lesson in lessons]
     }
 
 
 @router.get(
     ".dsa.list",
-    response_model=dict[
-        str, list[learning_schema.DataStructuresAndAlgorithmsRead]
-    ],
+    response_model=dict[str, list[learning_schema.DataStructuresAndAlgorithmsRead]],
 )
 def get_dsa_lessons(
     db: Session = Depends(session.get_db),
@@ -74,8 +70,7 @@ def get_sys_design_lessons(
     lessons = learning_crud.read_dsa_lesson(db, skip=skip, limit=limit)
     return {
         "lessons": [
-            learning_schema.SystemDesignRead(**vars(lesson))
-            for lesson in lessons
+            learning_schema.SystemDesignRead(**vars(lesson)) for lesson in lessons
         ]
     }
 
@@ -93,13 +88,10 @@ def get_miscellaneous_lessons(
     """
     Retrieve Problems.
     """
-    lessons = learning_crud.read_miscellaneous_lessons(
-        db, skip=skip, limit=limit
-    )
+    lessons = learning_crud.read_miscellaneous_lessons(db, skip=skip, limit=limit)
     return {
         "lessons": [
-            learning_schema.MiscellaneousRead(**vars(lesson))
-            for lesson in lessons
+            learning_schema.MiscellaneousRead(**vars(lesson)) for lesson in lessons
         ]
     }
 
@@ -111,9 +103,7 @@ def create_workshop_lesson(
     *,
     db: Session = Depends(session.get_db),
     data: learning_schema.WorkshopCreate,
-    current_user: user_models.User = Depends(
-        user_dependencies.get_current_user
-    ),
+    current_user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Create a workshop lesson.
@@ -132,9 +122,7 @@ def create_dsa_lesson(
     *,
     db: Session = Depends(session.get_db),
     data: learning_schema.DataStructuresAndAlgorithmsCreate,
-    current_user: user_models.User = Depends(
-        user_dependencies.get_current_user
-    ),
+    current_user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Create a dsa lesson.
@@ -142,11 +130,7 @@ def create_dsa_lesson(
     lesson = learning_crud.create_dsa_lesson(
         db, author=current_user.full_name, data=data
     )
-    return {
-        "lesson": learning_schema.DataStructuresAndAlgorithmsRead(
-            **vars(lesson)
-        )
-    }
+    return {"lesson": learning_schema.DataStructuresAndAlgorithmsRead(**vars(lesson))}
 
 
 @router.post(
@@ -157,9 +141,7 @@ def create_sysdesign_lesson(
     *,
     db: Session = Depends(session.get_db),
     data: learning_schema.SystemDesignCreate,
-    current_user: user_models.User = Depends(
-        user_dependencies.get_current_user
-    ),
+    current_user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Create a sysdesign lesson.
@@ -178,9 +160,7 @@ def create_miscellaneous_lesson(
     *,
     db: Session = Depends(session.get_db),
     data: learning_schema.MiscellaneousCreate,
-    current_user: user_models.User = Depends(
-        user_dependencies.get_current_user
-    ),
+    current_user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Create a miscellaneous lesson.

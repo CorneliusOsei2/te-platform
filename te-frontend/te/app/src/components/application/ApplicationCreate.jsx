@@ -1,31 +1,17 @@
 import { Fragment, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { LinkIcon, PlusIcon, QuestionMarkCircleIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid'
-import { useEffect } from 'react'
 import axiosInstance from '../../axiosConfig';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { jobStatuses } from './ApplicationInfo'
 
-import SlideOverForm from '../custom/SlideOverForm'
-import AutoSuggest from '../custom/AutoSuggest'
+import SlideOverForm from '../custom/SlideOver/SlideOverCreate'
 import { getNestedPropertyValue, setNestedPropertyValue } from '../../utils'
 import { countries, jobRoles, jobTitles } from '../../data/data'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
-import SuccessFeedback from '../custom/SuccessFeedback'
-import { FormSelect, InputWithPlaceholderAndValidation } from '../custom/FormInputs'
+import SuccessFeedback from '../custom/Alert/SuccessFeedback'
+import { FormSelect, FormInputWithValidation, TextArea } from '../custom/FormInputs'
 
-const data = [
-    'Microsoft',
-    'Meta',
-    'Google',
-    'ServiceNow',
-    'Deutsche',
-    'Map'
-];
 
-const customInputMap = {
+export const customInputMap = {
     "title": "showCustomJobTitle",
     "role": "showCustomJobRole",
     "company": "showCustomCompany"
@@ -36,21 +22,18 @@ const ApplicationCreate = ({ setAddApplication }) => {
     const { companies, setFetchApplications } = useData();
 
     const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
-
     const [showCustomInputs, setShowCustomInputs] = useState({
         showCustomCompany: false,
         showCustomJobTitle: false,
         showCustomJobRole: false,
         showCustomStatus: false,
     })
-
     const [customInputValidation, setCustomInputValidation] = useState({
         validCustomCompany: true,
         validCustomJobTitle: true,
         validCustomJobRole: true,
         validCustomStatus: true,
     })
-
     const [appData, setAppData] = useState({
         company: companies ? companies[0] : "",
         title: jobTitles.length > 0 ? jobTitles[0] : "",
@@ -128,6 +111,14 @@ const ApplicationCreate = ({ setAddApplication }) => {
                         }
 
                         <FormSelect label="Company" field="company" data={companies} handleInputChange={handleInputChange} />
+                        {showCustomInputs.showCustomCompany &&
+                            <FormInputWithValidation
+                                placeholder="Specify company: "
+                                field="company"
+                                handleInputChange={handleInputChange}
+                                validation={!customInputValidation.validCustomCompany}
+                            />
+                        }
 
                         <div className="flex mt-3 justify-between ">
                             <FormSelect label="Title" field="title" data={jobTitles} handleInputChange={handleInputChange} />
@@ -136,8 +127,8 @@ const ApplicationCreate = ({ setAddApplication }) => {
 
                         <div className='flex justify-between'>
                             {showCustomInputs.showCustomJobTitle &&
-                                <InputWithPlaceholderAndValidation
-                                    label="Specify title: "
+                                <FormInputWithValidation
+                                    placeholder="Specify title: "
                                     field="title"
                                     handleInputChange={handleInputChange}
                                     validation={!customInputValidation.validCustomJobTitle}
@@ -145,8 +136,8 @@ const ApplicationCreate = ({ setAddApplication }) => {
                             }
 
                             {showCustomInputs.showCustomJobRole &&
-                                <InputWithPlaceholderAndValidation
-                                    label="Specify role: "
+                                <FormInputWithValidation
+                                    placeholder="Specify role: "
                                     field="role"
                                     handleInputChange={handleInputChange}
                                     validation={!customInputValidation.validCustomJobRole}
@@ -162,23 +153,7 @@ const ApplicationCreate = ({ setAddApplication }) => {
                         </div>
 
 
-                        <div>
-                            <label
-                                htmlFor="notes"
-                                className="block text-sm font-medium leading-6 text-sky-800"
-                            >
-                                Notes
-                            </label>
-                            <div className="mt-2">
-                                <textarea
-                                    id="notes"
-                                    name="notes"
-                                    rows={4}
-                                    className="block w-full rounded-md border-0 py-1.5 text-sky-800 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                                    defaultValue={''}
-                                />
-                            </div>
-                        </div>
+                        <TextArea label="Notes" field="notes" handleInputChange={handleInputChange} />
                     </div>
                 </div>
             </div >}
