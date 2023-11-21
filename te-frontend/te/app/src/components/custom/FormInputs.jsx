@@ -1,7 +1,7 @@
-import { ExclamationCircleIcon, Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 
 
-export const FormSelect = ({ field, label, data, handleInputChange }) => {
+export const FormSelect = ({ field, label, data, handleInputChange, value }) => {
 
     return (
         <div className=''>
@@ -11,12 +11,14 @@ export const FormSelect = ({ field, label, data, handleInputChange }) => {
             >
                 {label}
             </label>
+
             <div className="mt-2">
                 <select
                     name={field}
                     id={field}
                     className="block w-full rounded-md border-0 py-1.5  shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-sky-600 sm:text-sm sm:leading-6"
                     required
+                    defaultValue={value}
                     onChange={(e) => handleInputChange({ field: field, value: e.target.value })}
                 >
                     {data.map((item) => (
@@ -30,7 +32,7 @@ export const FormSelect = ({ field, label, data, handleInputChange }) => {
 }
 
 
-export const FormInputWithValidation = ({ type = "test", label, field, placeholder, handleInputChange, validation }) => {
+export const FormInputWithValidation = ({ type, label, field, placeholder, handleInputChange, validation, value }) => {
     return (
         <div className="relative mt-2 rounded-md shadow-sm">
             <label
@@ -40,10 +42,11 @@ export const FormInputWithValidation = ({ type = "test", label, field, placehold
                 {label}
             </label>
             <input
-                type={type}
+                type={type ?? "test"}
                 name={field}
                 id={field}
                 placeholder={placeholder}
+                defaultValue={value ?? ""}
                 className="block w-full rounded-md border-0 py-1.5  shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-sky-600 sm:text-sm sm:leading-6"
                 aria-invalid={validation}
                 onChange={(e) => handleInputChange({ field: field, value: e.target.value, hideCustomInput: false })}

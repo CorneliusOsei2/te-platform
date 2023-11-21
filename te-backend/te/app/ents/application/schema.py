@@ -52,11 +52,13 @@ class ApplicationBase(BaseModel):
     recruiter_name: str = ""
     recruiter_email: str = ""
     active: bool = True
+    archived: bool = False
     date: str = None
     # role: company_schema.JobRoles
     # status: ApplicationStatuses
     role: str
     status: str
+    referred: bool = False
 
 
 class ApplicationCreate(ApplicationBase):
@@ -72,3 +74,22 @@ class ApplicationRead(ApplicationBase):
     id: int
     company: company_schema.CompanyReadBase
     location: company_schema.LocationRead
+
+
+class ApplicationUpdateBase(BaseModel):
+    id: int
+    status: str
+    referred: bool
+    notes: str
+    recruiter_name: str
+    recruiter_email: str
+
+
+class ApplicationUpdate(ApplicationUpdateBase):
+    id: int
+    status: str
+    referred: bool
+    notes: str
+    recruiter_name: str
+    recruiter_email: str
+    location: company_schema.LocationBase

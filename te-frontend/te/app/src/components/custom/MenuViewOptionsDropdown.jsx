@@ -8,7 +8,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const SortDropdown = ({ sortOptions, handler }) => {
+const MenuViewOptionsDropdown = ({ sortOptions, handler }) => {
     return (
         <>
             <Menu as="div" className="relative">
@@ -44,11 +44,10 @@ const SortDropdown = ({ sortOptions, handler }) => {
                         )
                         )}
                     </Menu.Items>
-
                 </Transition>
             </Menu>
         </>
     )
 }
 
-export default SortDropdown;
+export default MenuViewOptionsDropdown;

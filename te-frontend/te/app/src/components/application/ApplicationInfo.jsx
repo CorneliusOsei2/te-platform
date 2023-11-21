@@ -50,7 +50,7 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
         <>
             {
                 application !== null && <SlideOverInfo
-                    setHandler={setApplicationId}
+                    setHandler={(val) => { setApplicationId(val); setApplication(null) }}
                     title={
                         <div className="flex rounded-full p-1">
                             <img
@@ -95,7 +95,7 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
                                     </div>
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Referred</dt>
-                                        <dd className="text-gray-900"> {application.referred}</dd>
+                                        <dd className="text-gray-900"> {application.referred === true ? "Yes" : "No"}</dd>
                                     </div>
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Added on</dt>
@@ -103,7 +103,7 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
                                     </div>
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Recruiter Name</dt>
-                                        <dd className="text-gray-900">{application.recruiter}</dd>
+                                        <dd className="text-gray-900">{application.recruiter_name}</dd>
                                     </div>
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Recruiter Email</dt>

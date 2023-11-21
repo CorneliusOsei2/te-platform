@@ -11,16 +11,18 @@ const ApplicationItem = ({ allowSelection, addSelectedItem, application, setAppl
 
     return (
         <>
-            {allowSelection && <input
-                id="comments"
-                aria-describedby="comments-description"
-                name="comments"
-                type="checkbox"
-                checked={application.selected}
-                className="h-4 w-4 rounded-md border-sky-700 text-sky-600 focus:ring-sky-600"
-            />}
+            {allowSelection &&
+                <input
+                    id="comments"
+                    aria-describedby="comments-description"
+                    name="comments"
+                    type="checkbox"
+                    checked={application.selected}
+                    className="h-4 w-4  text-xs  md:text-sm  rounded-md border-sky-700 text-sky-600 focus:ring-sky-600"
+                />
+            }
 
-            <div className="min-w-0 flex-auto " onClick={() => { allowSelection ? addSelectedItem(application) : setApplicationId(application.id) }}>
+            <div className="min-w-0 flex-auto  text-xs  md:text-sm  " onClick={() => { allowSelection ? addSelectedItem(application) : setApplicationId(application.id) }}>
                 <div className="flex items-center gap-x-3">
                     <div className="flex-none rounded-full p-1">
                         <img
@@ -32,7 +34,7 @@ const ApplicationItem = ({ allowSelection, addSelectedItem, application, setAppl
                             src={application.company.image}>
                         </img>
                     </div>
-                    <div className="min-w-0 text-sm font-semibold leading-6 text-black">
+                    <div className="min-w-0 font-semibold leading-6 text-black">
                         <div className="flex gap-x-2" >
                             <span className="truncate">{application.company.name}</span>
                             <span className="text-gray-400">:</span>
@@ -52,7 +54,7 @@ const ApplicationItem = ({ allowSelection, addSelectedItem, application, setAppl
             <div
                 className={classNames(
                     jobStatuses[application.status],
-                    'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'
+                    'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset  max-sm:hidden'
                 )}
             >
                 {application.status}

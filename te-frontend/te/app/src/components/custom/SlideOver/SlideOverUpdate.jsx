@@ -1,9 +1,9 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { XMarkIcon, TrashIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline'
+import { XMarkIcon, TrashIcon, FolderIcon } from '@heroicons/react/24/outline'
 
 
-const SlideOverUpdate = ({ title, setHandler, children }) => {
+const SlideOverUpdate = ({ title, setHandler, children, updateHandler }) => {
     const [open, setOpen] = useState(true);
 
     useEffect(() => {
@@ -55,25 +55,21 @@ const SlideOverUpdate = ({ title, setHandler, children }) => {
                                             </div>
                                             {children}
 
-                                            <div className="flex bottom-0 text-center justify-between px-6">
+                                            <div className="flex bottom-0 text-center justify-between px-12">
                                                 <button
                                                     type="button"
-                                                    className="ml-3 w-1/3  justify-between px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset text-gray-500 bg-gray-400/10 ring-gray-400/20 hover:bg-gray-700 hover:text-white"
+                                                    className="ml-3   justify-between px-3 flex w-1/3 rounded-full py-1 text-sm font-medium ring-1 ring-inset text-green-500 bg-green-400/10 ring-gray-400/20 hover:bg-green-700 hover:text-white"
+                                                    onClick={updateHandler}
                                                 >
-                                                    Archive <ArchiveBoxIcon className="h-5 w-5" aria-hidden="true" />
+                                                    Save <FolderIcon className="h-5 w-5" aria-hidden="true" />
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    className="ml-3 justify-between px-auto flex w-1/3 rounded-full py-1 px-2 text-sm font-medium ring-1 ring-inset text-green-500 bg-green-400/10 ring-green-400/20 hover:bg-green-700 hover:text-white"
+                                                    className="ml-3 justify-between px-auto flex w-1/3 rounded-full py-1 px-2 text-sm font-medium ring-1 ring-inset text-red-500 bg-red-400/10 ring-red-400/20 hover:bg-green-700 hover:text-white"
                                                 >
                                                     Close <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                                                 </button>
-                                                <button
-                                                    type="button"
-                                                    className="ml-3   justify-between px-3 flex w-1/3 rounded-full py-1 text-sm font-medium ring-1 ring-inset text-red-500 bg-red-400/10 ring-gray-400/20 hover:bg-red-700 hover:text-white"
-                                                >
-                                                    Delete <TrashIcon className="h-5 w-5" aria-hidden="true" />
-                                                </button>
+
                                             </div>
                                         </div>
                                     </div >

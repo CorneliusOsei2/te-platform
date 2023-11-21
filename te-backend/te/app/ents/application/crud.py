@@ -27,7 +27,9 @@ def read_application_by_id(
 def read_application_multi(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[application_models.Application]:
-    return db.query(application_models.Application).offset(skip).limit(limit).all()
+    return (
+        db.query(application_models.Application).offset(skip).limit(limit).all()
+    )
 
 
 def create_application(
@@ -53,7 +55,10 @@ def create_application(
 
     if not location:
         for loc in company.locations:
-            if loc.country == data.location.country and loc.city == data.location.city:
+            if (
+                loc.country == data.location.country
+                and loc.city == data.location.city
+            ):
                 location = loc
                 break
             if loc.country == data.location.country:
@@ -109,6 +114,91 @@ def read_user_application_files(
         ...
 
     return user.resumes, user.other_files
+
+
+def update_application(
+    db: Session,
+    *,
+    user_id: int,
+    application_id: int,
+    data: application_schema.ApplicationUpdate
+) -> application_models.Application:
+    user = user_crud.read_user_by_id(db, id=user_id)
+    if not user:
+        ...
+
+    application = read_application_by_id(db, application_id=application_id)
+    if not application:
+        ...
+
+    base_app = application_schema.ApplicationUpdateBase(**data.dict())
+
+    location = None
+    for loc in application.company.locations:
+        if (
+            loc.country == data.location.country
+            and loc.city == data.location.city
+        ):
+            location = loc
+            break
+        if loc.country == data.location.country:
+            location = loc
+
+    if location and not location.city:
+        location.city = data.location.city
+        db.add(location)
+
+    elif not location:
+        location = company_crud.add_location(
+            db, company=application.company, data=data.location
+        ).locations[-1]
+
+    for key, value in base_app.dict().items():
+        setattr(application, key, value)
+
+    application.location = location
+
+    db.add(application)
+    db.commit()
+    db.refresh(application)
+    db.refresh(location)
+
+    print(data)
+    print(base_app)
+    print(application)
+    return application
+
+
+def archive_application(
+    db: Session, *, application_id: int
+) -> application_models.Application:
+    application = read_application_by_id(db, application_id=application_id)
+    if not application:
+        ...
+
+    application.archived = True
+
+    db.add(application)
+    db.commit()
+    db.refresh(application)
+
+    return application
+
+
+def delete_application(
+    db: Session, *, application_id: int
+) -> application_models.Application:
+    application = read_application_by_id(db, application_id=application_id)
+    if not application:
+        ...
+
+    application.active = False
+
+    db.add(application)
+    db.commit()
+    db.refresh(application)
+
+    return application
 
 
 def upload_file(file) -> application_schema.FileUpload:

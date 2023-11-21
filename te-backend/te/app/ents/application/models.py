@@ -24,7 +24,9 @@ class Application(Base):
     #     Enum(application_schema.ApplicationStatuses), nullable=False
     # )
     status = Column(String, nullable=False)
-    active = Column(Boolean, nullable=False)
+    referred = Column(Boolean, nullable=False)
+    active = Column(Boolean, default=True, nullable=False)
+    archived = Column(Boolean, nullable=False)
 
     # Relationships
     user_id = Column(Integer, ForeignKey("users.id"))
