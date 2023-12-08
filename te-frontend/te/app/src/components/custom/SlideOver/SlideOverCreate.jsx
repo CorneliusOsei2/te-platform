@@ -27,10 +27,10 @@ const SlideOverForm = ({ title, setHandler, validateCustomInput, customInputVali
         if (validateCustomInput !== undefined) {
             validateCustomInput();
 
-            let isValid = false;
-            setTimeout(() => {
-                isValid = !Object.values(customInputValidation).some((value) => value === false);
-            }, 5000);
+            let isValid = true;
+            // setTimeout(() => {
+            //     isValid = !Object.values(customInputValidation).some((value) => value === false);
+            // }, 5000);
 
             if (isValid) {
                 console.log(isValid, customInputValidation)

@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import { PlusIcon, ArchiveBoxIcon, TrashIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { useAuth } from '../context/AuthContext'
-import { useData } from '../context/DataContext'
 import { sortByField } from '../utils'
 import axiosInstance from '../axiosConfig'
 import MenuViewOptionsDropdown from '../components/custom/MenuViewOptionsDropdown'
 import ApplicationItem from '../components/application/ApplicationItem'
-import Tmp from '../components/application/ApplicationCreate'
 import ApplicationCreate from '../components/application/ApplicationCreate'
 import ApplicationInfo from '../components/application/ApplicationInfo'
 import ApplicationUpdate from '../components/application/ApplicationUpdate'
 import Modal from '../components/custom/Modal'
+import { useData } from '../context/DataContext'
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
@@ -20,40 +19,40 @@ const Applications = () => {
 
     const [applicationId, setApplicationId] = useState(null);
     const [application, setApplication] = useState(null);
+
     const [addApplication, setAddApplication] = useState(false);
     const [updateApplication, setUpdateApplication] = useState(false);
 
     const [allowSelection, setAllowSelection] = useState(false);
     const [selectedApplications, setSelectedApplications] = useState({})
 
-    const getUserApplicationsRequest = useCallback(() => {
-        axiosInstance.get(`/users.${userId}.applications.list`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
-            .then((response) => {
-                let apps = []
-                for (let application of response.data.applications) {
-                    apps.push({ ...application, selected: false })
-                }
-                setApplications(apps)
-            })
-            .catch((error) => {
-                if (error.response.data.detail === "User Not Found") {
-                    console.log("hi")
-                    logout()
-                }
+    const getUserApplicationsRequest = useCallback(async () => {
+        try {
+            const response = await axiosInstance.get(`/users.${userId}.applications.list`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
 
-            })
-    });
+            let apps = response.data.applications.map((application) => ({ ...application, selected: false }));
+            setApplications(apps);
+        } catch (error) {
+            if (error.response.data.detail === "User Not Found") {
+                logout();
+            }
+        }
+    }, [userId, accessToken, setApplications, logout]);
 
     useEffect(() => {
-        if (fetchApplications && accessToken) {
-            getUserApplicationsRequest();
-            setFetchApplications(false);
-        }
-    }, [accessToken, getUserApplicationsRequest, fetchApplications, setApplications, setFetchApplications])
+        const fetchData = async () => {
+            if (fetchApplications && accessToken) {
+                await getUserApplicationsRequest();
+                setFetchApplications(false);
+            }
+        };
+
+        fetchData();
+    }, [accessToken, getUserApplicationsRequest, fetchApplications, setFetchApplications]);
 
     const handleApplicationsSortBy = (sortBy) => {
         let sorted_applications = [];
@@ -72,7 +71,7 @@ const Applications = () => {
                 break;
         }
         setApplications(sorted_applications);
-    }
+    };
 
     const handleSelection = () => {
         setAllowSelection(!allowSelection);
@@ -83,7 +82,6 @@ const Applications = () => {
             { ...selectedApplications, [app.id]: app.id in selectedApplications ? !selectedApplications[app.id] : true }
         )
         app.selected = !app.selected;
-
     }
 
     return (
@@ -93,13 +91,28 @@ const Applications = () => {
                     {/* Account for smaller screens */}
                     <img
                         src="applicationsImg.png" alt=""
-                        className='transition-shadow mx-auto opacity-50 w-full h-full  animate-pulse '
+                        className='hidden xl:flex transition-shadow mx-auto opacity-50 w-full h-full  animate-pulse '
                     />
 
-                    <Modal />
+                    <Modal
+                        content={
+                            <a href='/login' className="mt-3 m-auto sm:ml-4 flex  py-12 justify-center sm:mt-0 sm:text-left">
+                                <button
+                                    type="button"
+                                    className="w-full text-lg flex justify-between rounded-full bg-sky-600 px-6 py-2  font-semibold text-white hover:animate-none  hover:bg-gray-50 border border-cyan-600 hover:text-sky-600 sm:ml-3 sm:w-auto"
+                                // onClick={() => setOpen(false)}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                    </svg>
+                                    <span className='ml-3 text-slate-900'>Log in to view your applications. </span>
+                                    <span className='ml-3 animate-spin hover:animate-none'> 🚀</span>
+                                </button>
+                            </a>
+                        } />
                 </div>
 
-                : <div className="lg:pr-72 ">
+                : <div className="lg:pr-36 ">
                     <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
                         <h1 className="text-base ml-4  font-semibold leading-7 text-cyan-800">Applications</h1>
                         <button
@@ -165,7 +178,6 @@ const Applications = () => {
 
                     {addApplication &&
                         <ApplicationCreate
-                            addApplication={addApplication}
                             setAddApplication={setAddApplication}
                         />
                     }

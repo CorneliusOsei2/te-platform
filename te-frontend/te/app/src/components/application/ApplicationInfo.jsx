@@ -38,7 +38,45 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
             .catch((error) => {
                 console.log(error);
             });
-    });
+    }, [accessToken, applicationId, setApplication, userId]);
+
+    const archiveUserApplicationRequest = useCallback(() => {
+        axiosInstance.put(`/users.${userId}.applications.archive`, [applicationId],
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then((response) => {
+                setApplication(response.data.application)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, [accessToken, applicationId, setApplication, userId]);
+
+    const archiveApplicationHandler = () => {
+        archiveUserApplicationRequest();
+    }
+
+    const deleteUserApplicationRequest = useCallback(() => {
+        axiosInstance.put(`/users.${userId}.applications.delete`, [applicationId],
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then((response) => {
+                setApplication(response.data.application)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, [accessToken, applicationId, setApplication, userId]);
+
+    const deleteApplicationHandler = () => {
+        deleteUserApplicationRequest();
+    }
 
     useEffect(() => {
         if (application === null) {
@@ -51,6 +89,8 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
             {
                 application !== null && <SlideOverInfo
                     setHandler={(val) => { setApplicationId(val); setApplication(null) }}
+                    archiveHandler={archiveApplicationHandler}
+                    deleteHandler={deleteApplicationHandler}
                     title={
                         <div className="flex rounded-full p-1">
                             <img

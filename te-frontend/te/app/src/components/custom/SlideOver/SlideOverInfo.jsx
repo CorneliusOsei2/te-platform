@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon, TrashIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline'
 
 
-const SlideOverInfo = ({ title, setHandler, children }) => {
+const SlideOverInfo = ({ title, setHandler, archiveHandler, deleteHandler, children }) => {
     const [open, setOpen] = useState(true);
 
     useEffect(() => {
@@ -18,7 +18,7 @@ const SlideOverInfo = ({ title, setHandler, children }) => {
 
     return (
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => { }}>
+            <Dialog as="div" className="relative z-10" onClose={setOpen}>
                 <div className="fixed inset-0" />
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
@@ -59,18 +59,21 @@ const SlideOverInfo = ({ title, setHandler, children }) => {
                                                 <button
                                                     type="button"
                                                     className="ml-3 w-1/3  justify-between px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset text-gray-500 bg-gray-400/10 ring-gray-400/20 hover:bg-gray-700 hover:text-white"
+                                                    onClick={archiveHandler}
                                                 >
                                                     Archive <ArchiveBoxIcon className="h-5 w-5" aria-hidden="true" />
                                                 </button>
                                                 <button
                                                     type="button"
                                                     className="ml-3 justify-between px-auto flex w-1/3 rounded-full py-1 px-2 text-sm font-medium ring-1 ring-inset text-green-500 bg-green-400/10 ring-green-400/20 hover:bg-green-700 hover:text-white"
+                                                    onClick={setOpen}
                                                 >
                                                     Close <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                                                 </button>
                                                 <button
                                                     type="button"
                                                     className="ml-3   justify-between px-3 flex w-1/3 rounded-full py-1 text-sm font-medium ring-1 ring-inset text-red-500 bg-red-400/10 ring-gray-400/20 hover:bg-red-700 hover:text-white"
+                                                    onClick={deleteHandler}
                                                 >
                                                     Delete <TrashIcon className="h-5 w-5" aria-hidden="true" />
                                                 </button>

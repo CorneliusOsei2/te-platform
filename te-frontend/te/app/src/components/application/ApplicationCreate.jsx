@@ -19,7 +19,7 @@ export const customInputMap = {
 
 const ApplicationCreate = ({ setAddApplication }) => {
     const { accessToken } = useAuth();
-    const { companies, setFetchApplications } = useData();
+    const { setFetchApplications, companies } = useData();
 
     const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
     const [showCustomInputs, setShowCustomInputs] = useState({

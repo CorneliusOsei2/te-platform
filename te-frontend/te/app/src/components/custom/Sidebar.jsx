@@ -18,7 +18,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
         <>
             <div className="">
                 <Transition.Root show={sidebarOpen} as={Fragment}>
-                    <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
+                    <Dialog as="div" className="relative z-50 md:hidden" onClose={setSidebarOpen}>
                         <Transition.Child
                             as={Fragment}
                             enter="transition-opacity ease-linear duration-300"
@@ -102,7 +102,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                 </Transition.Root>
 
                 {/* Static sidebar for desktop */}
-                <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col bg-sky-900">
+                <div className="hidden md:fixed md:inset-y-0 lg:z-50 md:flex md:w-72 lg:flex-col bg-sky-900">
                     <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200  px-6">
                         <div className="flex h-16 shrink-0 items-center">
                             <img

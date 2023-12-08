@@ -127,7 +127,7 @@ const Workspace = ({ setLogin }) => {
 
                 <Sidebar navigation={navigation} content={content} setContent={setContentHandler} setLogin={setLogin} />
 
-                <div className="lg:pl-72 ">
+                <div className="md:pl-72 ">
                     <main className="bg-white h-screen">
                         {
                             content === "Profile" ? <Profile /> :

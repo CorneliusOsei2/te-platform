@@ -105,7 +105,7 @@ def update_user_application(
     }
 
 
-@user_app_router.post(
+@user_app_router.put(
     ".archive", response_model=dict[str, application_schema.ApplicationRead]
 )
 def archive_user_application(
@@ -131,7 +131,7 @@ def archive_user_application(
     }
 
 
-@user_app_router.post(
+@user_app_router.delete(
     ".delete", response_model=dict[str, application_schema.ApplicationRead]
 )
 def delete_user_application(
