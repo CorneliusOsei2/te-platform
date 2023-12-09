@@ -10,13 +10,10 @@ import ApplicationInfo from '../components/application/ApplicationInfo'
 import ApplicationUpdate from '../components/application/ApplicationUpdate'
 import Modal from '../components/custom/Modal'
 import { useData } from '../context/DataContext'
-import { useNavigate } from 'react-router-dom'
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
 const Applications = () => {
-    const navigate = useNavigate();
-
     const { userId, accessToken, logout } = useAuth();
     const { fetchApplications, setFetchApplications, applications, setApplications } = useData();
 
@@ -56,20 +53,18 @@ const Applications = () => {
     };
 
     const getUserApplicationsRequest = useCallback(async () => {
-        try {
-            const response = await axiosInstance.get(`/users.${userId}.applications.list`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
-
+        await axiosInstance.get(`/users.${userId}.applications.list`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }).then((response) => {
             let apps = response.data.applications.map((application) => ({ ...application, selected: false }));
             setApplications(apps);
-        } catch (error) {
-            if (error.response.data.detail === "User Not Found") {
+        }).catch((error) => {
+            if (error.response.status === 401) {
                 logout();
             }
-        }
+        })
     }, [userId, accessToken, setApplications, logout]);
 
     const archiveUserApplicationRequest = useCallback((applicationIds) => {
@@ -77,12 +72,26 @@ const Applications = () => {
             headers: { Authorization: `Bearer ${accessToken}` },
         })
             .then(() => {
-                window.location.reload();
+                setFetchApplications(true);
+                setApplicationId(null);
             })
             .catch(error => {
                 console.error(error);
             });
-    }, [userId, accessToken]);
+    }, [userId, accessToken, setFetchApplications]);
+
+    const deleteUserApplicationRequest = useCallback((applicationIds) => {
+        axiosInstance.put(`/users.${userId}.applications.delete`, applicationIds, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        })
+            .then(() => {
+                setFetchApplications(true);
+                setApplicationId(null);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, [userId, accessToken, setFetchApplications]);
 
     const handleSelection = () => {
         setAllowSelection(!allowSelection);
@@ -220,6 +229,7 @@ const Applications = () => {
                             setApplication={setApplication}
                             setUpdateApplication={setUpdateApplication}
                             archiveUserApplicationRequest={archiveUserApplicationRequest}
+                            deleteUserApplicationRequest={deleteUserApplicationRequest}
                         />}
 
                     {updateApplication && <ApplicationUpdate

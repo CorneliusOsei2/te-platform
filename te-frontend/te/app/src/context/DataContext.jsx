@@ -23,7 +23,7 @@ export const DataProvider = ({ children }) => {
     const [essay, setEssay] = useState([]);
 
     const [fetchCompanies, setFetchCompanies] = useState(true);
-    const [companies, setCompanies] = useState(["Microsoft", "Other......."]);
+    const [companies, setCompanies] = useState(["Microsoft", "Google", "Meta"]);
 
 
     return (

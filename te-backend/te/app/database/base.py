@@ -11,7 +11,4 @@ from app.ents.application.models import Application
 from app.ents.company.models import Location
 from app.ents.company.models import CompanyLocationRel
 
-from app.ents.learning.models import Workshop
-from app.ents.learning.models import DataStructuresAndAlgorithms
-from app.ents.learning.models import SystemDesign
-from app.ents.learning.models import Miscellaneous
+from app.ents.learning.models import Lesson

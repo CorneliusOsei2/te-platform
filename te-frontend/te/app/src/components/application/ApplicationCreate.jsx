@@ -1,9 +1,9 @@
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 import axiosInstance from '../../axiosConfig';
 import { jobStatuses } from './ApplicationInfo'
 
 import SlideOverForm from '../custom/SlideOver/SlideOverCreate'
-import { getNestedPropertyValue, setNestedPropertyValue } from '../../utils'
+import { setNestedPropertyValue } from '../../utils'
 import { countries, jobRoles, jobTitles } from '../../data/data'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
@@ -28,19 +28,14 @@ const ApplicationCreate = ({ setAddApplication }) => {
         showCustomJobRole: false,
         showCustomStatus: false,
     })
-    const [customInputValidation, setCustomInputValidation] = useState({
-        validCustomCompany: true,
-        validCustomJobTitle: true,
-        validCustomJobRole: true,
-        validCustomStatus: true,
-    })
+
     const [appData, setAppData] = useState({
-        company: companies ? companies[0] : "",
-        title: jobTitles.length > 0 ? jobTitles[0] : "",
-        role: jobRoles.length > 0 ? jobRoles[0] : "",
+        company: "",
+        title: "",
+        role: "",
         deadline: "",
         notes: "",
-        status: "Applied",
+        status: "",
         recruiter_name: "",
         recruiter_email: "",
         location: {
@@ -84,21 +79,11 @@ const ApplicationCreate = ({ setAddApplication }) => {
 
 
 
-    const validateCustomInput = () => {
-        setCustomInputValidation({
-            validCustomCompany: appData.company.trim() !== "",
-            validCustomJobRole: appData.role.trim() !== "",
-            validCustomJobTitle: appData.title.trim() !== "",
-        })
-    }
-
     return (
         <SlideOverForm
             title={"New Application"}
             setHandler={setAddApplication}
             requestHandler={createUserApplicationRequest}
-            validateCustomInput={validateCustomInput}
-            customInputValidation={customInputValidation}
             children={<div className="flex flex-1 flex-col justify-between">
                 <div className="divide-y divide-gray-200 px-4 sm:px-6">
                     <div className="space-y-6 pb-5 pt-6">
@@ -110,19 +95,19 @@ const ApplicationCreate = ({ setAddApplication }) => {
                             />
                         }
 
-                        <FormSelect label="Company" field="company" data={companies} handleInputChange={handleInputChange} />
-                        {showCustomInputs.showCustomCompany &&
+                        <FormSelect label="Company" field="company" data={["Other", ...companies]} handleInputChange={handleInputChange} required={true} />
+                        {appData.company === "Other" &&
                             <FormInputWithValidation
                                 placeholder="Specify company: "
                                 field="company"
                                 handleInputChange={handleInputChange}
-                                validation={!customInputValidation.validCustomCompany}
+                                required={true}
                             />
                         }
 
                         <div className="flex mt-3 justify-between ">
-                            <FormSelect label="Title" field="title" data={jobTitles} handleInputChange={handleInputChange} />
-                            <FormSelect label="Role" field="role" data={jobRoles} handleInputChange={handleInputChange} />
+                            <FormSelect label="Title" field="title" data={jobTitles} handleInputChange={handleInputChange} required={true} />
+                            <FormSelect label="Role" field="role" data={jobRoles} handleInputChange={handleInputChange} required={true} />
                         </div>
 
                         <div className='flex justify-between'>
@@ -131,7 +116,6 @@ const ApplicationCreate = ({ setAddApplication }) => {
                                     placeholder="Specify title: "
                                     field="title"
                                     handleInputChange={handleInputChange}
-                                    validation={!customInputValidation.validCustomJobTitle}
                                 />
                             }
 
@@ -140,20 +124,20 @@ const ApplicationCreate = ({ setAddApplication }) => {
                                     placeholder="Specify role: "
                                     field="role"
                                     handleInputChange={handleInputChange}
-                                    validation={!customInputValidation.validCustomJobRole}
+                                    required={true}
                                 />
                             }
                         </div>
 
-                        <FormSelect label="Status" field="status" data={Object.keys(jobStatuses)} handleInputChange={handleInputChange} />
+                        <FormSelect label="Status" field="status" data={Object.keys(jobStatuses)} handleInputChange={handleInputChange} required={true} />
 
                         <div className="flex justify-between">
-                            <FormSelect label="Country" field="location.country" data={countries} handleInputChange={handleInputChange} />
-                            <FormSelect label="City" field="location.city" data={[]} handleInputChange={handleInputChange} />
+                            <FormSelect label="Country" field="location.country" data={countries} handleInputChange={handleInputChange} required={true} />
+                            <FormSelect label="City" field="location.city" data={[]} handleInputChange={handleInputChange} required={false} />
                         </div>
 
 
-                        <TextArea label="Notes" field="notes" handleInputChange={handleInputChange} />
+                        <TextArea label="Notes" field="notes" handleInputChange={handleInputChange} required={true} />
                     </div>
                 </div>
             </div >}

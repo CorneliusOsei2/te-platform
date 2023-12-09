@@ -1,35 +1,45 @@
 import { Fragment, useState, useCallback, useEffect } from 'react'
 import { Dialog, Disclosure, Menu, Popover, Tab, Transition } from '@headlessui/react'
-import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
 import LearningGroup from '../components/learning/LearningGroup'
 import axiosInstance from '../axiosConfig'
 import { useAuth } from '../context/AuthContext'
+import LessonCreate from '../components/learning/LessonCreate'
 
+let baseCategories = {
+    "Fundamentals": ["Recursion", "Classes and Objects", "Mutability"],
+    "Data Structures and Algorithms": ["Arrays and Lists", "Stacks, Queues, Deques", "Linked List", "Trees",
+        "Priority Queue and Heaps", "Tries", "Graphs", "Pointers", "Intervals", "Bit Manipulation"],
+    "System Design": ""
+};
 
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
+let lessonCategories = {
+    "Workshops": { ...baseCategories, },
+    "Data Structures and Algorithms": baseCategories['Data Structures and Algorithms'],
+    "System Design": baseCategories['System Design']
 }
 
-let tmp = {
-    "lessons": [
-        { topic: "ABC", link: "a.com", playlist: "Data Structures and Algorithms" }
-    ]
-}
+const mapSubCategoryToLessons = (lessons) => {
+    return lessons.reduce((acc, lesson) => {
+        if (!acc[lesson.subcategory]) {
+            acc[lesson.subcategory] = [];
+        }
+        acc[lesson.subcategory].push(lesson);
+        return acc;
+    }, {});
+};
+
+let tmp = mapSubCategoryToLessons(
+    [{ topic: "ABC", link: "a.com", subcategory: "Data Structures and Algorithms", playlist: "Stacks, Queues, Deques" },
+    { topic: "ABC", link: "a.com", subcategory: "Data Structures and Algorithms", playlist: "Trees" }])
 
 const Learning = () => {
     const { accessToken } = useAuth();
-    const [workshops, setWorkshops] = useState([])
-    const [dsa, setDsa] = useState([])
-    const [sysDesign, setSysDesign] = useState([])
 
+    const [workshopLessons, setWorkshopLessons] = useState(tmp)
+    const [otherLessons, setLessons] = useState(tmp)
 
-    let lessons = {
-        "Workshops": [workshops, setWorkshops],
-        "Data Structures and Algorithms": [dsa, setDsa],
-        "System Design": [sysDesign, setSysDesign]
-    }
+    const [addLesson, setAddLesson] = useState(false);
 
     const workshopsRequest = useCallback(() => {
         axiosInstance.get("/learning.workshops.list", {
@@ -38,58 +48,101 @@ const Learning = () => {
             },
         })
             .then((response) => {
-                setWorkshops(response.data.lessons)
+                setWorkshopLessons(response.data.lessons)
             })
             .catch((error) => {
                 console.log(error);
             })
     });
 
-    useEffect(() => {
-        workshopsRequest();
-    })
+    // useEffect(() => {
+    //     workshopsRequest();
+    // }, [])
 
     return (
         <div className="bg-white">
             <div>
                 <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
                     <h1 className="text-base ml-4  font-semibold leading-7 text-cyan-800">Learning</h1>
+                    <button
+                        type="button"
+                        className="mx-auto mt-1 animate-bounce rounded-full bg-green-400 p-1 text-gray-900 shadow-sm hover:bg-green-600 hover:animate-none"
+                        onClick={() => setAddLesson(true)}
+                    >
+                        <PlusIcon className="h-5 w-5 " aria-hidden="true" />
+                    </button>
                 </header>
             </div>
 
             <div>
                 <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {
-                        Object.entries(lessons).map(([title, groupStates]) => (
-                            <Disclosure as="div" key={title} className="border-t border-gray-200 py-6">
-                                {({ open }) => (
-                                    <>
-                                        <h3 className="-mx-2 -my-3 flow-root">
-                                            <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                                <span className="font-medium text-gray-900">{title}</span>
-                                                <span className="ml-6 flex items-center">
-                                                    {open ? (
-                                                        <MinusIcon className="h-5 w-5" aria-hidden="true" />
-                                                    ) : (
-                                                        <PlusIcon className="h-5 w-5" aria-hidden="true" />
-                                                    )}
-                                                </span>
-                                            </Disclosure.Button>
-                                        </h3>
-                                        <Disclosure.Panel >
-                                            <div className="space-y-6">
-                                                <LearningGroup
-                                                    title={title}
-                                                    groupLessons={groupStates[0]}
-                                                    playlists={groupStates[0].map((lesson) => lesson.playlist)}
-                                                />
-                                            </div>
-                                        </Disclosure.Panel>
-                                    </>
-                                )}
-                            </Disclosure>
-                        ))
+                        <Disclosure as="div" key="Workshops" className="border-t border-gray-200 py-6">
+                            {({ open }) => (
+                                <>
+                                    <h3 className="-mx-2 -my-3 flow-root">
+                                        <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
+                                            <span className="font-medium text-gray-900">Workshops</span>
+                                            <span className="ml-6 flex items-center">
+                                                {open ? (
+                                                    <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                                                ) : (
+                                                    <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                                                )}
+                                            </span>
+                                        </Disclosure.Button>
+                                    </h3>
+                                    <Disclosure.Panel >
+                                        <div className="space-y-6">
+                                            {Object.keys(workshopLessons).map((subcategory, index) => {
+                                                return (
+                                                    < LearningGroup
+                                                        subcategory={subcategory}
+                                                        rawLessons={workshopLessons[subcategory]}
+                                                        key={subcategory}
+                                                    />
+                                                )
+                                            })}
+                                        </div>
+                                    </Disclosure.Panel>
+                                </>
+                            )}
+                        </Disclosure>
                     }
+                    {
+                        Object.entries(lessonCategories)
+                            .filter((([cat, _]) => cat !== "Workshops"))
+                            .map(([subcategory, lessons]) => (
+                                <Disclosure as="div" key={subcategory} className="border-t border-gray-200 py-6">
+                                    {({ open }) => (
+                                        <>
+                                            <h3 className="-mx-2 -my-3 flow-root">
+                                                <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
+                                                    <span className="font-medium text-gray-900">{subcategory}</span>
+                                                    <span className="ml-6 flex items-center">
+                                                        {open ? (
+                                                            <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                                                        ) : (
+                                                            <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                                                        )}
+                                                    </span>
+                                                </Disclosure.Button>
+                                            </h3>
+                                            <Disclosure.Panel >
+                                                <div className="space-y-6">
+                                                    <LearningGroup
+                                                        subcategory={subcategory}
+                                                        rawLessons={otherLessons[subcategory]}
+                                                    />
+                                                </div>
+                                            </Disclosure.Panel>
+                                        </>
+                                    )}
+                                </Disclosure>
+                            ))
+                    }
+
+                    {addLesson && <LessonCreate setAddLesson={setAddLesson} lessonCategories={lessonCategories} />}
                 </main>
 
             </div>

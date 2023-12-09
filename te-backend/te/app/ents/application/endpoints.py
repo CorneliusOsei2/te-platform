@@ -27,12 +27,8 @@ def create_application(
     """
     Create an application.
     """
-    application = application_crud.create_application(
-        db, data=data, user_id=user.id
-    )
-    return {
-        "application": application_dependencies.parse_application(application)
-    }
+    application = application_crud.create_application(db, data=data, user_id=user.id)
+    return {"application": application_dependencies.parse_application(application)}
 
 
 @user_app_router.get(
@@ -76,9 +72,7 @@ def get_user_application(
         db, user_id=user_id, application_id=application_id
     )
 
-    return {
-        "application": application_dependencies.parse_application(application)
-    }
+    return {"application": application_dependencies.parse_application(application)}
 
 
 @user_app_router.put(
@@ -101,9 +95,7 @@ def update_user_application(
         db, user_id=user_id, application_id=application_id, data=data
     )
 
-    return {
-        "application": application_dependencies.parse_application(application)
-    }
+    return {"application": application_dependencies.parse_application(application)}
 
 
 @user_app_router.put(".archive", status_code=status.HTTP_204_NO_CONTENT)
@@ -182,13 +174,9 @@ def get_user_application_files(
     )
     return {
         "files": application_schema.FilesRead(
-            resumes=[
-                application_schema.FileRead(**vars(resume))
-                for resume in resumes
-            ],
+            resumes=[application_schema.FileRead(**vars(resume)) for resume in resumes],
             other_files=[
-                application_schema.FileRead(**vars(file))
-                for file in other_files
+                application_schema.FileRead(**vars(file)) for file in other_files
             ],
         )
     }
@@ -197,7 +185,7 @@ def get_user_application_files(
 @user_app_router.post(
     ".resumes.upload", response_model=dict[str, application_schema.FileRead]
 )
-def upload_resume(
+def add_resume(
     db: Session = Depends(session.get_db),
     *,
     user_id: int,
@@ -207,7 +195,7 @@ def upload_resume(
     """
     Upload resume for user `user_id`.
     """
-    resume = application_crud.upload_resume(db, file, user_id)
+    resume = application_crud.create_resume(db, file, user_id)
     return {"resume": application_schema.FileRead(**vars(resume))}
 
 
@@ -225,9 +213,7 @@ def get_user_resumes(
     """
     resumes = application_crud.get_user_resumes(db, user_id)
     return {
-        "resumes": [
-            application_schema.File(**vars(resume)) for resume in resumes
-        ]
+        "resumes": [application_schema.FileRead(**vars(resume)) for resume in resumes]
     }
 
 

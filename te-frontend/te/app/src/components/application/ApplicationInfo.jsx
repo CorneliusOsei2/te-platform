@@ -1,6 +1,4 @@
 import { Fragment, useCallback, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
 import { LinkIcon, PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/20/solid'
 import { useEffect } from 'react'
 import axiosInstance from '../../axiosConfig';
@@ -24,7 +22,8 @@ const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ')
 }
 
-const ApplicationInfo = ({ applicationId, setApplicationId, application, setApplication, setUpdateApplication, archiveUserApplicationRequest }) => {
+const ApplicationInfo = ({ applicationId, setApplicationId, application, setApplication, setUpdateApplication,
+    archiveUserApplicationRequest, deleteUserApplicationRequest }) => {
     const { userId, accessToken } = useAuth();
     const { setFetchApplications } = useData();
 
@@ -41,23 +40,6 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
                 console.log(error);
             });
     }, [accessToken, applicationId, setApplication, userId]);
-
-
-    const deleteUserApplicationRequest = useCallback(async () => {
-        axiosInstance.put(`/users.${userId}.applications.delete`, [applicationId],
-            {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            })
-            .then((_) => {
-                setApplication(null);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, [accessToken, applicationId, setApplication, userId]);
-
 
 
     useEffect(() => {

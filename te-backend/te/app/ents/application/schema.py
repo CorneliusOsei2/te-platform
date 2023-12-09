@@ -9,19 +9,18 @@ class Essay(BaseModel):
 
 
 class FileBase(BaseModel):
-    title: str
+    name: str
     date: str
-    link: str
-    reviewed: bool
 
 
 class File(FileBase):
-    id: int
     file_id: str
 
 
 class FileRead(FileBase):
     id: int
+    file_id: int
+    link: str
 
 
 class FilesRead(BaseModel):

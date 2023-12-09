@@ -26,3 +26,6 @@ build:
 
 run:
 	docker-compose up
+
+format:
+	ruff .

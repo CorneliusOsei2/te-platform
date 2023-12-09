@@ -27,9 +27,7 @@ def read_application_by_id(
 def read_application_multi(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[application_models.Application]:
-    return (
-        db.query(application_models.Application).offset(skip).limit(limit).all()
-    )
+    return db.query(application_models.Application).offset(skip).limit(limit).all()
 
 
 def create_application(
@@ -55,10 +53,7 @@ def create_application(
 
     if not location:
         for loc in company.locations:
-            if (
-                loc.country == data.location.country
-                and loc.city == data.location.city
-            ):
+            if loc.country == data.location.country and loc.city == data.location.city:
                 location = loc
                 break
             if loc.country == data.location.country:
@@ -121,7 +116,7 @@ def update_application(
     *,
     user_id: int,
     application_id: int,
-    data: application_schema.ApplicationUpdate
+    data: application_schema.ApplicationUpdate,
 ) -> application_models.Application:
     user = user_crud.read_user_by_id(db, id=user_id)
     if not user:
@@ -135,10 +130,7 @@ def update_application(
 
     location = None
     for loc in application.company.locations:
-        if (
-            loc.country == data.location.country
-            and loc.city == data.location.city
-        ):
+        if loc.country == data.location.country and loc.city == data.location.city:
             location = loc
             break
         if loc.country == data.location.country:
@@ -163,9 +155,6 @@ def update_application(
     db.refresh(application)
     db.refresh(location)
 
-    print(data)
-    print(base_app)
-    print(application)
     return application
 
 
@@ -201,14 +190,14 @@ def delete_application(
     return application
 
 
-def upload_file(file) -> application_schema.FileUpload:
+def upload_file(file, parent) -> application_schema.FileUpload:
     drive_service = service.get_drive_service()
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
         temp_file.write(file.file.read())
 
     file_metadata = {
         "name": file.filename,
-        "parents": [settings.GDRIVE_RESUMES],
+        "parents": [parent],
     }
 
     media = MediaFileUpload(temp_file.name, resumable=True)
@@ -230,8 +219,8 @@ def upload_file(file) -> application_schema.FileUpload:
     )
 
 
-def upload_resume(db, file, user_id):
-    data = upload_file(file=file)
+def create_resume(db, file, user_id):
+    data = upload_file(file=file, parent=settings.GDRIVE_RESUMES)
     resume = application_models.Resume(
         file_id=data.file_id,
         name=data.name,

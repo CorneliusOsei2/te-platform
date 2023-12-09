@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 
-const SlideOverForm = ({ title, setHandler, validateCustomInput, customInputValidation, requestHandler, children }) => {
+const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
     const [open, setOpen] = useState(true);
 
     useEffect(() => {
@@ -24,19 +24,7 @@ const SlideOverForm = ({ title, setHandler, validateCustomInput, customInputVali
 
     const submitFormHandler = (e) => {
         e.preventDefault();
-        if (validateCustomInput !== undefined) {
-            validateCustomInput();
-
-            let isValid = true;
-            // setTimeout(() => {
-            //     isValid = !Object.values(customInputValidation).some((value) => value === false);
-            // }, 5000);
-
-            if (isValid) {
-                console.log(isValid, customInputValidation)
-                requestHandler();
-            }
-        }
+        requestHandler();
     };
 
 
@@ -90,7 +78,6 @@ const SlideOverForm = ({ title, setHandler, validateCustomInput, customInputVali
                                             <button
                                                 type="submit"
                                                 className="ml-4 inline-flex justify-center rounded-md bg-sky-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-                                                onClick={submitFormHandler}
                                             >
                                                 Done
                                             </button>
