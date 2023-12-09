@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, UploadFile, status
 from sqlalchemy.orm import Session
 
 import app.database.session as session
@@ -9,6 +9,7 @@ import app.ents.application.dependencies as application_dependencies
 import app.ents.application.schema as application_schema
 import app.ents.user.dependencies as user_dependencies
 
+from app.utilities.response import CustomResponse
 
 user_app_router = APIRouter(prefix="/users.{user_id}.applications")
 app_router = APIRouter(prefix="/applications")
@@ -105,9 +106,7 @@ def update_user_application(
     }
 
 
-@user_app_router.put(
-    ".archive", response_model=dict[str, application_schema.ApplicationRead]
-)
+@user_app_router.put(".archive", status_code=status.HTTP_204_NO_CONTENT)
 def archive_user_application(
     db: Session = Depends(session.get_db),
     *,
@@ -118,22 +117,11 @@ def archive_user_application(
     """
     Archive user applications
     """
-    archived_applications = []
     for app_id in applications:
-        app = application_crud.archive_application(db, application_id=app_id)
-        archived_applications.append(app)
-
-    return {
-        "applications": [
-            application_dependencies.parse_application(application)
-            for application in archived_applications
-        ]
-    }
+        _ = application_crud.archive_application(db, application_id=app_id)
 
 
-@user_app_router.delete(
-    ".delete", response_model=dict[str, application_schema.ApplicationRead]
-)
+@user_app_router.delete(".delete", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user_application(
     db: Session = Depends(session.get_db),
     *,
@@ -147,17 +135,8 @@ def delete_user_application(
     if isinstance(applications, int):
         applications = [applications]
 
-    deleted_applications = []
     for app_id in applications:
-        app = application_crud.delete_application(db, application_id=app_id)
-        deleted_applications.append(app)
-
-    return {
-        "applications": [
-            application_dependencies.parse_application(application)
-            for application in deleted_applications
-        ]
-    }
+        _ = application_crud.delete_application(db, application_id=app_id)
 
 
 # @user_app_router.post(

@@ -8,6 +8,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
 import SlideOverInfo from '../custom/SlideOver/SlideOverInfo'
 import { useAuth } from '../../context/AuthContext'
+import { useData } from '../../context/DataContext'
 
 export const jobStatuses = {
     "Offer": 'text-green-900 bg-green-300/10 ring-green-400/30',
@@ -23,10 +24,11 @@ const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ')
 }
 
-const ApplicationInfo = ({ applicationId, setApplicationId, application, setApplication, setUpdateApplication }) => {
+const ApplicationInfo = ({ applicationId, setApplicationId, application, setApplication, setUpdateApplication, archiveUserApplicationRequest }) => {
     const { userId, accessToken } = useAuth();
+    const { setFetchApplications } = useData();
 
-    const getUserApplicationRequest = useCallback(() => {
+    const getUserApplicationRequest = useCallback(async () => {
         axiosInstance.get(`/users.${userId}.applications.${applicationId}.info`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -40,57 +42,44 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
             });
     }, [accessToken, applicationId, setApplication, userId]);
 
-    const archiveUserApplicationRequest = useCallback(() => {
-        axiosInstance.put(`/users.${userId}.applications.archive`, [applicationId],
-            {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            })
-            .then((response) => {
-                setApplication(response.data.application)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, [accessToken, applicationId, setApplication, userId]);
 
-    const archiveApplicationHandler = () => {
-        archiveUserApplicationRequest();
-    }
-
-    const deleteUserApplicationRequest = useCallback(() => {
+    const deleteUserApplicationRequest = useCallback(async () => {
         axiosInstance.put(`/users.${userId}.applications.delete`, [applicationId],
             {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             })
-            .then((response) => {
-                setApplication(response.data.application)
+            .then((_) => {
+                setApplication(null);
             })
             .catch((error) => {
                 console.log(error);
             });
     }, [accessToken, applicationId, setApplication, userId]);
 
-    const deleteApplicationHandler = () => {
-        deleteUserApplicationRequest();
-    }
+
 
     useEffect(() => {
-        if (application === null) {
-            getUserApplicationRequest();
+        const fetchData = async () => {
+            if (application === null) {
+                await getUserApplicationRequest();
+            }
         }
+        fetchData();
+
     }, [application, applicationId, getUserApplicationRequest])
 
     return (
         <>
             {
-                application !== null && <SlideOverInfo
+                application !== null &&
+                <SlideOverInfo
+                    entityId={applicationId}
                     setHandler={(val) => { setApplicationId(val); setApplication(null) }}
-                    archiveHandler={archiveApplicationHandler}
-                    deleteHandler={deleteApplicationHandler}
+                    archiveRequest={archiveUserApplicationRequest}
+                    deleteRequest={deleteUserApplicationRequest}
+                    fetchContent={setFetchApplications}
                     title={
                         <div className="flex rounded-full p-1">
                             <img

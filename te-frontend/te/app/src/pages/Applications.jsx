@@ -10,10 +10,13 @@ import ApplicationInfo from '../components/application/ApplicationInfo'
 import ApplicationUpdate from '../components/application/ApplicationUpdate'
 import Modal from '../components/custom/Modal'
 import { useData } from '../context/DataContext'
+import { useNavigate } from 'react-router-dom'
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
 const Applications = () => {
+    const navigate = useNavigate();
+
     const { userId, accessToken, logout } = useAuth();
     const { fetchApplications, setFetchApplications, applications, setApplications } = useData();
 
@@ -26,33 +29,12 @@ const Applications = () => {
     const [allowSelection, setAllowSelection] = useState(false);
     const [selectedApplications, setSelectedApplications] = useState({})
 
-    const getUserApplicationsRequest = useCallback(async () => {
-        try {
-            const response = await axiosInstance.get(`/users.${userId}.applications.list`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
-
-            let apps = response.data.applications.map((application) => ({ ...application, selected: false }));
-            setApplications(apps);
-        } catch (error) {
-            if (error.response.data.detail === "User Not Found") {
-                logout();
-            }
-        }
-    }, [userId, accessToken, setApplications, logout]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            if (fetchApplications && accessToken) {
-                await getUserApplicationsRequest();
-                setFetchApplications(false);
-            }
-        };
-
-        fetchData();
-    }, [accessToken, getUserApplicationsRequest, fetchApplications, setFetchApplications]);
+    const addSelectedItem = (app) => {
+        setSelectedApplications(
+            { ...selectedApplications, [app.id]: app.id in selectedApplications ? !selectedApplications[app.id] : true }
+        )
+        app.selected = !app.selected;
+    }
 
     const handleApplicationsSortBy = (sortBy) => {
         let sorted_applications = [];
@@ -73,16 +55,63 @@ const Applications = () => {
         setApplications(sorted_applications);
     };
 
+    const getUserApplicationsRequest = useCallback(async () => {
+        try {
+            const response = await axiosInstance.get(`/users.${userId}.applications.list`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            let apps = response.data.applications.map((application) => ({ ...application, selected: false }));
+            setApplications(apps);
+        } catch (error) {
+            if (error.response.data.detail === "User Not Found") {
+                logout();
+            }
+        }
+    }, [userId, accessToken, setApplications, logout]);
+
+    const archiveUserApplicationRequest = useCallback((applicationIds) => {
+        axiosInstance.put(`/users.${userId}.applications.archive`, applicationIds, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        })
+            .then(() => {
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, [userId, accessToken]);
+
     const handleSelection = () => {
         setAllowSelection(!allowSelection);
     }
 
-    const addSelectedItem = (app) => {
-        setSelectedApplications(
-            { ...selectedApplications, [app.id]: app.id in selectedApplications ? !selectedApplications[app.id] : true }
-        )
-        app.selected = !app.selected;
-    }
+    const handleUserApplicationsArchive = () => {
+        const applicationsToArchive = Object.entries(selectedApplications)
+            .filter(([_, isSelected]) => isSelected)
+            .map(([id, _]) => id);
+
+        if (applicationsToArchive.length > 0) {
+            archiveUserApplicationRequest(applicationsToArchive)
+        }
+    };
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (fetchApplications && accessToken) {
+                await getUserApplicationsRequest();
+                setFetchApplications(false);
+            }
+        };
+
+        if (fetchApplications) {
+            fetchData();
+        }
+    }, [accessToken, getUserApplicationsRequest, fetchApplications, setFetchApplications]);
+
 
     return (
         <>
@@ -149,6 +178,7 @@ const Applications = () => {
                                     <button
                                         type="button"
                                         className="ml-3  justify-between px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset text-gray-500 bg-gray-400/10 ring-gray-400/20 hover:bg-gray-700 hover:text-white"
+                                        onClick={handleUserApplicationsArchive}
                                     >
                                         Archive <ArchiveBoxIcon className="h-5 w-5 ml-3" aria-hidden="true" />
                                     </button>
@@ -189,6 +219,7 @@ const Applications = () => {
                             application={application}
                             setApplication={setApplication}
                             setUpdateApplication={setUpdateApplication}
+                            archiveUserApplicationRequest={archiveUserApplicationRequest}
                         />}
 
                     {updateApplication && <ApplicationUpdate

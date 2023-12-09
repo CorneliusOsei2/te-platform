@@ -22,18 +22,11 @@ class TokenPayload(BaseModel):
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
 def create_access_token(
     subject: str | Any, expires_delta: timedelta | None = None
 ) -> str:
-    """Creates an access token
-
-    Args:
-        subject (str | Any): Token payload, typically the entity id.
-        expires_delta (timedelta | None, optional): Lifetime of token in minutes. Defaults to None.
-
-    Returns:
-        str: Encoded token string
+    """
+    Creates an access token with `subject` that expires after `expires_delta`.
     """
 
     if expires_delta:
