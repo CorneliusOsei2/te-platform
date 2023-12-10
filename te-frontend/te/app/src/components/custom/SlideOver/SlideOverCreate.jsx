@@ -25,6 +25,7 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
     const submitFormHandler = (e) => {
         e.preventDefault();
         requestHandler();
+        document.getElementById('createForm').reset();
     };
 
 
@@ -45,7 +46,7 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
                                 leaveTo="translate-x-full"
                             >
                                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                                    <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl" onKeyDown={handleKeyDown} onSubmit={submitFormHandler}>
+                                    <form id="createForm" className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl" onKeyDown={handleKeyDown} onSubmit={submitFormHandler}>
                                         <div className="h-0 flex-1 overflow-y-auto">
                                             <div className="bg-sky-800 px-4 py-6 sm:px-6">
                                                 <div className="flex items-center justify-between">

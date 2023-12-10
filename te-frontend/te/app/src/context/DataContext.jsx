@@ -9,6 +9,10 @@ export const useData = () => {
 
 
 export const DataProvider = ({ children }) => {
+    const [workshopLessons, setWorkshopLessons] = useState([]);
+    const [otherLessons, setOtherLessons] = useState([]);
+    const [fetchLessons, setFetchLessons] = useState(true);
+
     const [applications, setApplications] = useState([]);
     const [fetchApplications, setFetchApplications] = useState(true);
 
@@ -28,6 +32,12 @@ export const DataProvider = ({ children }) => {
 
     return (
         <DataContext.Provider value={{
+            fetchLessons,
+            setFetchLessons,
+            workshopLessons,
+            setWorkshopLessons,
+            otherLessons,
+            setOtherLessons,
             fetchCompanies,
             setFetchCompanies,
             companies,

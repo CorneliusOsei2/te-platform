@@ -10,7 +10,7 @@ class Lesson(Base):
     id = Column(Integer, primary_key=True, index=True)
     topic = Column(String, nullable=False)
     link = Column(String, nullable=False)
-    subcategory = Column(String, nullable=False)
+    subcategory = Column(String, nullable=True)
     instructor = Column(String, nullable=False)
     playlist = Column(String, nullable=False)
     year = Column(Integer, nullable=False)

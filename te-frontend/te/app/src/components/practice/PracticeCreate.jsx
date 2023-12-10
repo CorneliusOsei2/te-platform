@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import axiosInstance from '../../axiosConfig';
-import { ChevronDownIcon, DocumentIcon } from '@heroicons/react/20/solid'
 
 import SlideOverForm from '../custom/SlideOver/SlideOverCreate'
 import { setNestedPropertyValue } from '../../utils'

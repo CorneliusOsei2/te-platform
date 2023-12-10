@@ -1,7 +1,6 @@
 from enum import Enum
 
 from pydantic import BaseModel
-from datetime import date
 
 
 class LessonFormat(Enum):
@@ -11,7 +10,7 @@ class LessonFormat(Enum):
 
 
 class LessonCategory(Enum):
-    workshop = "Workshop"
+    workshop = "Workshops"
     dsa = "Data Structures and Algorithms"
     system_design = "System Design"
 
@@ -19,8 +18,8 @@ class LessonCategory(Enum):
 class LessonBase(BaseModel):
     topic: str
     link: str
-    category: str
-    subcategory: str
+    category: LessonCategory
+    subcategory: str | None
     format: LessonFormat = LessonFormat.video
     playlist: str
     year: int = 2023

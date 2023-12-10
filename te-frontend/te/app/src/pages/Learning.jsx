@@ -1,16 +1,17 @@
 import { Fragment, useState, useCallback, useEffect } from 'react'
-import { Dialog, Disclosure, Menu, Popover, Tab, Transition } from '@headlessui/react'
+import { Disclosure } from '@headlessui/react'
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
 import LearningGroup from '../components/learning/LearningGroup'
 import axiosInstance from '../axiosConfig'
 import { useAuth } from '../context/AuthContext'
 import LessonCreate from '../components/learning/LessonCreate'
+import { useData } from '../context/DataContext'
 
 let baseCategories = {
     "Fundamentals": ["Recursion", "Classes and Objects", "Mutability"],
     "Data Structures and Algorithms": ["Arrays and Lists", "Stacks, Queues, Deques", "Linked List", "Trees",
         "Priority Queue and Heaps", "Tries", "Graphs", "Pointers", "Intervals", "Bit Manipulation"],
-    "System Design": ""
+    "System Design": ["Components"]
 };
 
 let lessonCategories = {
@@ -19,45 +20,55 @@ let lessonCategories = {
     "System Design": baseCategories['System Design']
 }
 
-const mapSubCategoryToLessons = (lessons) => {
+const mapSubCategoryToLessons = (lessons, property) => {
     return lessons.reduce((acc, lesson) => {
-        if (!acc[lesson.subcategory]) {
-            acc[lesson.subcategory] = [];
+        if (!acc[lesson[property]]) {
+            acc[lesson[property]] = [];
         }
-        acc[lesson.subcategory].push(lesson);
+        acc[lesson[property]].push(lesson);
         return acc;
     }, {});
 };
 
-let tmp = mapSubCategoryToLessons(
-    [{ topic: "ABC", link: "a.com", subcategory: "Data Structures and Algorithms", playlist: "Stacks, Queues, Deques" },
-    { topic: "ABC", link: "a.com", subcategory: "Data Structures and Algorithms", playlist: "Trees" }])
 
 const Learning = () => {
     const { accessToken } = useAuth();
-
-    const [workshopLessons, setWorkshopLessons] = useState(tmp)
-    const [otherLessons, setLessons] = useState(tmp)
+    const { fetchLessons, setFetchLessons, workshopLessons, setWorkshopLessons, otherLessons, setOtherLessons } = useData();
 
     const [addLesson, setAddLesson] = useState(false);
 
-    const workshopsRequest = useCallback(() => {
-        axiosInstance.get("/learning.workshops.list", {
+
+    const getLessonsRequest = useCallback(async () => {
+        axiosInstance.get("/learning.lessons.list", {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         })
             .then((response) => {
-                setWorkshopLessons(response.data.lessons)
+                const workshops = response.data.lessons.filter((lesson) => lesson.category === "Workshops");
+                const otherLessons = response.data.lessons.filter((lesson) => lesson.category !== "Workshops")
+                console.log(response.data, workshops, otherLessons)
+                setWorkshopLessons(mapSubCategoryToLessons(workshops, "subcategory"));
+                setOtherLessons(mapSubCategoryToLessons(otherLessons, "category"));
             })
             .catch((error) => {
                 console.log(error);
             })
-    });
+    }, [accessToken]);
 
-    // useEffect(() => {
-    //     workshopsRequest();
-    // }, [])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (fetchLessons) {
+                await getLessonsRequest();
+                setFetchLessons(false);
+            }
+        };
+
+        if (fetchLessons) {
+            fetchData();
+        }
+    }, [accessToken, fetchLessons, getLessonsRequest, setFetchLessons]);
 
     return (
         <div className="bg-white">
@@ -99,7 +110,7 @@ const Learning = () => {
                                                     < LearningGroup
                                                         subcategory={subcategory}
                                                         rawLessons={workshopLessons[subcategory]}
-                                                        key={subcategory}
+                                                        key={index}
                                                     />
                                                 )
                                             })}
@@ -112,7 +123,7 @@ const Learning = () => {
                     {
                         Object.entries(lessonCategories)
                             .filter((([cat, _]) => cat !== "Workshops"))
-                            .map(([subcategory, lessons]) => (
+                            .map(([subcategory, _]) => (
                                 <Disclosure as="div" key={subcategory} className="border-t border-gray-200 py-6">
                                     {({ open }) => (
                                         <>
@@ -131,8 +142,8 @@ const Learning = () => {
                                             <Disclosure.Panel >
                                                 <div className="space-y-6">
                                                     <LearningGroup
-                                                        subcategory={subcategory}
-                                                        rawLessons={otherLessons[subcategory]}
+                                                        subcategory=""
+                                                        rawLessons={otherLessons[subcategory] ?? []}
                                                     />
                                                 </div>
                                             </Disclosure.Panel>

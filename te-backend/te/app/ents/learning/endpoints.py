@@ -1,46 +1,25 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, Form, UploadFile
+from fastapi import APIRouter, Depends, UploadFile
 from sqlalchemy.orm import Session
 
-import app.ents.user.dependencies as user_dependencies
-import app.ents.user.models as user_models
-import app.ents.learning.schema as learning_schema
-import app.ents.learning.crud as learning_crud
+import app.database.session as session
 import app.ents.application.crud as application_crud
 import app.ents.application.schema as application_schema
-import app.database.session as session
+import app.ents.learning.crud as learning_crud
+import app.ents.learning.schema as learning_schema
+import app.ents.user.dependencies as user_dependencies
+import app.ents.user.models as user_models
 from app.core.config import settings
 
 router = APIRouter(prefix="/learning")
 
 
 @router.get(
-    ".workshops.list",
-    response_model=dict[str, list[learning_schema.WorkshopLessonRead]],
-)
-def get_workshop_lesson(
-    db: Session = Depends(session.get_db),
-    skip: int = 0,
-    limit: int = 100,
-    _: str = Depends(user_dependencies.get_current_user),
-) -> Any:
-    """
-    Retrieve Problems.
-    """
-    lessons = learning_crud.read_workshop_lesson(db, skip=skip, limit=limit)
-    return {
-        "lessons": [
-            learning_schema.WorkshopLessonRead(**vars(lesson)) for lesson in lessons
-        ]
-    }
-
-
-@router.get(
-    ".otherlessons.list",
+    ".lessons.list",
     response_model=dict[str, list[learning_schema.LessonRead]],
 )
-def get_other_lessons(
+def get_lessons(
     db: Session = Depends(session.get_db),
     skip: int = 0,
     limit: int = 100,
@@ -49,9 +28,11 @@ def get_other_lessons(
     """
     Retrieve Problems.
     """
-    lessons = learning_crud.read_other_lessons(db, skip=skip, limit=limit)
+    lessons = learning_crud.read_lessons(db, skip=skip, limit=limit)
     return {
-        "lessons": [learning_schema.OtherRead(**vars(lesson)) for lesson in lessons]
+        "lessons": [
+            learning_schema.LessonRead(**vars(lesson)) for lesson in lessons
+        ]
     }
 
 
@@ -63,7 +44,9 @@ def add_workshop_lesson(
     db: Session = Depends(session.get_db),
     *,
     data: learning_schema.LessonCreate,
-    current_user: user_models.User = Depends(user_dependencies.get_current_user),
+    current_user: user_models.User = Depends(
+        user_dependencies.get_current_user
+    ),
 ) -> Any:
     """
     Create a  lesson.
@@ -82,7 +65,9 @@ def lesson_file_upload(
     *,
     db: Session = Depends(session.get_db),
     file: UploadFile,
-    current_user: user_models.User = Depends(user_dependencies.get_current_user),
+    current_user: user_models.User = Depends(
+        user_dependencies.get_current_user
+    ),
 ) -> Any:
     """
     Create other lesson.
