@@ -76,9 +76,11 @@ const Applications = () => {
                 setApplicationId(null);
             })
             .catch(error => {
-                console.error(error);
+                if (error.response.status === 401) {
+                    logout();
+                }
             });
-    }, [userId, accessToken, setFetchApplications]);
+    }, [userId, accessToken, setFetchApplications, logout]);
 
     const deleteUserApplicationRequest = useCallback((applicationIds) => {
         axiosInstance.put(`/users.${userId}.applications.delete`, applicationIds, {
@@ -89,9 +91,11 @@ const Applications = () => {
                 setApplicationId(null);
             })
             .catch(error => {
-                console.error(error);
+                if (error.response.status === 401) {
+                    logout();
+                }
             });
-    }, [userId, accessToken, setFetchApplications]);
+    }, [userId, accessToken, setFetchApplications, logout]);
 
     const handleSelection = () => {
         setAllowSelection(!allowSelection);
@@ -125,11 +129,11 @@ const Applications = () => {
     return (
         <>
             {accessToken === null ?
-                <div className="flex flex-col  justify-center w-full  h-full overflow-hidden'">
+                <div className="flex flex-col  justify-center w-full  h-full overflow-hidden '">
                     {/* Account for smaller screens */}
                     <img
                         src="applicationsImg.png" alt=""
-                        className='hidden xl:flex transition-shadow mx-auto opacity-50 w-full h-full  animate-pulse '
+                        className='hidden xl:flex mx-auto w-full h-full   opacity-50 transition-opacity'
                     />
 
                     <Modal
@@ -137,8 +141,7 @@ const Applications = () => {
                             <a href='/login' className="mt-3 m-auto sm:ml-4 flex  py-12 justify-center sm:mt-0 sm:text-left">
                                 <button
                                     type="button"
-                                    className="w-full text-lg flex justify-between rounded-full bg-sky-600 px-6 py-2  font-semibold text-white hover:animate-none  hover:bg-gray-50 border border-cyan-600 hover:text-sky-600 sm:ml-3 sm:w-auto"
-                                // onClick={() => setOpen(false)}
+                                    className="w-full cursor-pointer text-lg flex justify-between rounded-full bg-sky-600 px-6 py-2  font-semibold text-white hover:animate-none  hover:bg-gray-50 border border-cyan-600 hover:text-sky-600 sm:ml-3 sm:w-auto"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />

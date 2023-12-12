@@ -39,11 +39,7 @@ const Learning = () => {
 
 
     const getLessonsRequest = useCallback(async () => {
-        axiosInstance.get("/learning.lessons.list", {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
+        axiosInstance.get("/learning.lessons.list")
             .then((response) => {
                 const workshops = response.data.lessons.filter((lesson) => lesson.category === "Workshops");
                 const otherLessons = response.data.lessons.filter((lesson) => lesson.category !== "Workshops")
@@ -54,7 +50,7 @@ const Learning = () => {
             .catch((error) => {
                 console.log(error);
             })
-    }, [accessToken]);
+    }, [setOtherLessons, setWorkshopLessons]);
 
 
     useEffect(() => {

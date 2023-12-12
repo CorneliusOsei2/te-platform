@@ -1,7 +1,10 @@
 import { useEffect, useState, Fragment } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { ChevronDownIcon, DocumentIcon, XMarkIcon } from '@heroicons/react/20/solid'
 
 
 const LearningGroup = ({ subcategory, rawLessons }) => {
+    const { userRole } = useAuth();
 
     let [lessons, setLessons] = useState(rawLessons);
 
@@ -15,6 +18,7 @@ const LearningGroup = ({ subcategory, rawLessons }) => {
         }, {});
     };
     let playlistToLessons = mapPlaylistsToLessons(lessons)
+    console.log(userRole)
 
     return (
         <div className="px-6 mt-3">
@@ -23,7 +27,7 @@ const LearningGroup = ({ subcategory, rawLessons }) => {
                     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                             <h3 className='text-left font-bold text-slate-600'>{subcategory}</h3>
-                            <table className="w-4/6">
+                            <table className="w-5/6">
                                 <tbody className=" bg-white">
                                     {
                                         Object.entries(playlistToLessons).map(([playlist, lessons]) => (
@@ -50,6 +54,10 @@ const LearningGroup = ({ subcategory, rawLessons }) => {
                                                             </a>
                                                         </td>
                                                         {subcategory === "Workshops" && <td className=" w-1/4 py-4 text-sm text-gray-500">{lesson.year}</td>}
+                                                        {userRole === "Admin" &&
+                                                            <td className=" break-words w-1/2 py-4 pl-3 pr-3 text-sm  text-gray-900">
+                                                                Hi
+                                                            </td>}
                                                     </tr>
                                                 ))}
                                             </Fragment>

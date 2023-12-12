@@ -8,13 +8,13 @@ import FileUpload from "../components/file/FileUpload";
 import MissingData from "../components/custom/Alert/MissingData";
 
 const Files = () => {
-    const { userId, accessToken } = useAuth();
+    const { userId, accessToken, logout } = useAuth();
     const { resumes, otherFiles, setResumes } = useData();
     const [showResume, setShowResume] = useState(true);
     const [uploadFile, setUploadFile] = useState(false)
 
 
-    const uploadFileRequest = useCallback(() => {
+    const uploadFileRequest = useCallback(async () => {
         axiosInstance.get(`/users.${userId}.applications.files.create`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -25,9 +25,11 @@ const Files = () => {
                 setResumes(response.data.files.resumes);
             })
             .catch((error) => {
-                console.log(error);
+                if (error.response.status === 401) {
+                    logout();
+                }
             })
-    });
+    }, [accessToken, logout, setResumes, userId]);
 
 
     return (

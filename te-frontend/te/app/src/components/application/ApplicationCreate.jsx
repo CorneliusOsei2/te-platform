@@ -132,10 +132,9 @@ const ApplicationCreate = ({ setAddApplication }) => {
                         <FormSelect label="Status" field="status" data={Object.keys(jobStatuses)} handleInputChange={handleInputChange} required={true} />
 
                         <div className="flex justify-between">
-                            <FormSelect label="Country" field="location.country" data={countries} handleInputChange={handleInputChange} required={true} />
-                            <FormSelect label="City" field="location.city" data={[]} handleInputChange={handleInputChange} required={false} />
+                            <FormSelect label="Country" field="location.country" data={countries} handleInputChange={handleInputChange} required={false} />
+                            <FormInputWithValidation label="City" field="location.city" data={[]} handleInputChange={handleInputChange} required={false} />
                         </div>
-
 
                         <TextArea label="Notes" field="notes" handleInputChange={handleInputChange} required={true} />
                     </div>

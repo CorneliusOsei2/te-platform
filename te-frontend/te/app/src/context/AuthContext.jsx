@@ -10,42 +10,50 @@ export const useAuth = () => {
 const authReducer = (state, action) => {
   switch (action.type) {
     case 'login':
-      return { userId: action.payload.userId, accessToken: action.payload.accessToken };
+      return { userId: action.payload.userId, userRole: action.payload.userRole, accessToken: action.payload.accessToken };
     case 'logout':
-      return { userId: null, accessToken: null };
+      return { userId: null, userRole: null, accessToken: null };
     default:
       return state;
   }
 }
 
 export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
   const [state, dispatch] = useReducer(authReducer, { userId: null, accessToken: null });
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
     const userId = localStorage.getItem('userId');
+    const userRole = localStorage.getItem('userRole');
+
     if (accessToken) {
-      dispatch({ type: 'login', payload: { userId, accessToken } });
+      dispatch({ type: 'login', payload: { userId, userRole, accessToken } });
     }
   }, []);
 
-  const login = (userId, accessToken) => {
+  const login = (userId, userRole, accessToken) => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('userId', userId);
-    dispatch({ type: 'login', payload: { userId, accessToken } });
+    localStorage.setItem('userRole', userRole);
+    dispatch({ type: 'login', payload: { userId, userRole, accessToken } });
   };
 
   const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userId');
+    localStorage.removeItem('userRole');
+
     dispatch({ type: 'logout' });
-    navigate("/");
+    window.location.reload();
   };
 
 
   return (
-    <AuthenticationContext.Provider value={{ userId: state.userId, accessToken: state.accessToken, login, logout }}>
+    <AuthenticationContext.Provider value={{
+      userId: state.userId,
+      userRole: state.userRole,
+      accessToken: state.accessToken, login, logout
+    }}>
       {children}
     </AuthenticationContext.Provider>
   );

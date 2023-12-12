@@ -86,7 +86,7 @@ const Referrals = () => {
             .catch((error) => {
                 console.log(error);
             });
-    });
+    }, [accessToken, setReferralCompanies]);
 
     const handleShowReferrals = (option) => {
         switch (option) {
@@ -102,9 +102,12 @@ const Referrals = () => {
     };
 
     useEffect(() => {
-        if (fetchReferralCompanies && accessToken) {
-            referralCompaniesRequest();
+        const fetchData = async () => {
+            await referralCompaniesRequest();
             setFetchReferralCompanies(false);
+        }
+        if (fetchReferralCompanies && accessToken) {
+            fetchData();
         }
     }, [accessToken, fetchReferralCompanies, referralCompaniesRequest, setFetchReferralCompanies]);
 
@@ -155,7 +158,7 @@ const Referrals = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                        {shownCompanies.map((company, index) => (
+                                        {referralCompanies.map((company, index) => (
                                             <tr key={company.name}>
                                                 <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                     <div className="flex items-center">

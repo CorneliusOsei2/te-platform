@@ -18,7 +18,7 @@ const Login = () => {
             password: loginData.password
         })
             .then((response) => {
-                login(response.data.token.sub, response.data.token.access_token);
+                login(response.data.token.sub, response.data.token.role, response.data.token.access_token);
                 navigate(localStorage.getItem("prevPage") || "/");
             })
             .catch((error) => {
