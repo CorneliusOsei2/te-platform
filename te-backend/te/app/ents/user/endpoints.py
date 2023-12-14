@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Query, HTTPException, status
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
@@ -15,53 +15,148 @@ router = APIRouter(prefix="/users")
 
 
 @router.post(".login")
-def login_user(response: Response, token=Depends(user_auth.login_access_token)) -> Any:
+def login_user(
+    response: Response, token=Depends(user_auth.login_access_token)
+) -> Any:
     """
     Log User in.
     """
     return {"token": token}
 
 
-@router.get(".mentees.list", response_model=dict[str, list[user_schema.UserRead]])
-def get_mentees(
-    db: Session = Depends(session.get_db),
-    skip: int = 0,
-    limit: int = 100,
-    _: user_models.User = Depends(user_dependencies.get_current_user),
-) -> Any:
-    """
-    Retrieve all active mentees.
-    """
-    mentees = user_crud.read_mentees(db, skip=skip, limit=limit)
-    return {"mentees": [user_schema.UserRead(**vars(mentor)) for mentor in mentees]}
+# @router.get(
+#     ".mentee.list", response_model=dict[str, list[user_schema.UserRead]]
+# )
+# def get_mentees(
+#     db: Session = Depends(session.get_db),
+#     skip: int = 0,
+#     limit: int = 100,
+#     _: user_models.User = Depends(user_dependencies.get_current_mentor),
+# ) -> Any:
+#     """
+#     Retrieve all active mentees.
+#     """
+#     mentees = user_crud.read_users_by_role(
+#         db, skip=skip, limit=limit, role=user_schema.UserRoles.mentee
+#     )
+#     return {
+#         "mentees": [user_schema.UserRead(**vars(mentee)) for mentee in mentees]
+#     }
 
 
-@router.get(".mentors.list", response_model=dict[str, list[user_schema.UserRead]])
-def get_mentors(
-    db: Session = Depends(session.get_db),
-    skip: int = 0,
-    limit: int = 100,
-    _: user_models.User = Depends(user_dependencies.get_current_user),
-) -> Any:
-    """
-    Retrieve all active mentors.
-    """
-    mentors = user_crud.read_mentors(db, skip=skip, limit=limit)
-    return {"mentors": [user_schema.UserRead(**vars(mentor)) for mentor in mentors]}
+# @router.get(
+#     ".mentor.list", response_model=dict[str, list[user_schema.UserRead]]
+# )
+# def get_mentors(
+#     db: Session = Depends(session.get_db),
+#     skip: int = 0,
+#     limit: int = 100,
+#     _: user_models.User = Depends(user_dependencies.get_current_mentor),
+# ) -> Any:
+#     """
+#     Retrieve all active mentors.
+#     """
+#     mentors = user_crud.read_users_by_role(
+#         db, skip=skip, limit=limit, role=user_schema.UserRoles.mentor
+#     )
+#     return {
+#         "mentors": [user_schema.UserRead(**vars(mentor)) for mentor in mentors]
+#     }
+
+
+# @router.get(
+#     ".contributor.list", response_model=dict[str, list[user_schema.UserRead]]
+# )
+# def get_contributors(
+#     db: Session = Depends(session.get_db),
+#     skip: int = 0,
+#     limit: int = 100,
+#     _: user_models.User = Depends(
+#         user_dependencies.get_current_user_contributor
+#     ),
+# ) -> Any:
+#     """
+#     Retrieve all active contributors.
+#     """
+#     contributors = user_crud.read_users_by_role(
+#         db, skip=skip, limit=limit, role=user_schema.UserRoles.contributor
+#     )
+#     return {
+#         "contributors": [
+#             user_schema.UserRead(**vars(contributor))
+#             for contributor in contributors
+#         ]
+#     }
+
+
+# @router.get(".team.list", response_model=dict[str, list[user_schema.UserRead]])
+# def get_team(
+#     db: Session = Depends(session.get_db),
+#     skip: int = 0,
+#     limit: int = 100,
+#     _: user_models.User = Depends(user_dependencies.get_current_user_team),
+# ) -> Any:
+#     """
+#     Retrieve all active team.
+#     """
+#     team = user_crud.read_users_by_role(
+#         db, skip=skip, limit=limit, role=user_schema.UserRoles.team
+#     )
+#     return {"team": [user_schema.UserRead(**vars(member)) for member in team]}
+
+
+# @router.get(".admin.list", response_model=dict[str, list[user_schema.UserRead]])
+# def get_admins(
+#     db: Session = Depends(session.get_db),
+#     skip: int = 0,
+#     limit: int = 100,
+#     _: user_models.User = Depends(user_dependencies.get_current_user_admin),
+# ) -> Any:
+#     """
+#     Retrieve all active admins.
+#     """
+#     admins = user_crud.read_users_by_role(
+#         db, skip=skip, limit=limit, role=user_schema.UserRoles.admin
+#     )
+#     return {
+#         "admins": [user_schema.UserRead(**vars(member)) for member in admins]
+#     }
 
 
 @router.get(".list", response_model=dict[str, list[user_schema.UserRead]])
-def get_users(
+def get_users_by_role(
     db: Session = Depends(session.get_db),
+    *,
     skip: int = 0,
     limit: int = 100,
-    current_user: user_models.User = Depends(user_dependencies.get_current_user),
+    role: user_schema.UserRoles,
+    _: user_models.User = Depends(user_dependencies.get_current_user_by_role),
 ) -> Any:
     """
-    Retrieve all active users.
+    Retrieve all active admins.
     """
-    users = user_crud.read_users(db, skip=skip, limit=limit)
+    users = user_crud.read_users_by_role(
+        db, skip=skip, limit=limit, role=user_schema.UserRoles.admin
+    )
     return {"users": [user_schema.UserRead(**vars(user)) for user in users]}
+
+
+# @router.get(".list", response_model=dict[str, list[user_schema.UserRead]])
+# def get_all_users(
+#     db: Session = Depends(session.get_db),
+#     skip: int = 0,
+#     limit: int = 100,
+#     current_user: user_models.User = Depends(
+#         user_dependencies.get_current_user_team
+#     ),
+# ) -> Any:
+#     """
+#     Retrieve all active users.
+#     """
+#     users = user_crud.read_users_by_base_role(
+#         db, skip=skip, limit=limit, role=user_schema.UserRoles.guest
+#     )
+#     return {"users": [user_schema.UserRead(**vars(user)) for user in users]}
 
 
 @router.post(".create", response_model=dict[str, user_schema.UserRead])

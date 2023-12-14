@@ -8,7 +8,11 @@ import app.core.security as security
 
 
 def read_user_by_email(db: Session, *, email: str) -> user_models.User | None:
-    return db.query(user_models.User).filter(user_models.User.email == email).first()
+    return (
+        db.query(user_models.User)
+        .filter(user_models.User.email == email)
+        .first()
+    )
 
 
 def read_user_by_id(db: Session, *, id: int) -> user_models.User | None:
@@ -19,41 +23,37 @@ def is_user_active(db: Session, *, user: user_models.User) -> bool:
     return user.is_active
 
 
-def read_mentees(
-    db: Session, *, skip: int = 0, limit: int = 100
+def read_users_by_role(
+    db: Session, *, role=0, skip: int = 0, limit: int = 100
 ) -> list[user_models.User]:
     return (
         db.query(user_models.User)
-        .filter(user_models.User.role == user_schema.UserRoles.mentee)
+        .filter(user_models.User.role == role)
         .offset(skip)
         .limit(limit)
         .all()
     )
 
 
-def read_mentors(
-    db: Session, *, skip: int = 0, limit: int = 100
+def read_users_by_base_role(
+    db: Session, *, role=0, skip: int = 0, limit: int = 100
 ) -> list[user_models.User]:
     return (
         db.query(user_models.User)
-        .filter(user_models.User.role == user_schema.UserRoles.mentor)
+        .filter(user_models.User.role >= role)
         .offset(skip)
         .limit(limit)
         .all()
     )
-
-
-def read_users(
-    db: Session, *, skip: int = 0, limit: int = 100
-) -> list[user_models.User]:
-    return db.query(user_models.User).offset(skip).limit(limit).all()
 
 
 def get_user_full_name(first_name, middle_name, last_name) -> str:
     return f"{first_name} {middle_name} {last_name}"
 
 
-def create_user(db: Session, *, data: user_schema.UserCreate) -> user_models.User:
+def create_user(
+    db: Session, *, data: user_schema.UserCreate
+) -> user_models.User:
     user = read_user_by_email(db, email=data.email)
     if user:
         raise HTTPException(

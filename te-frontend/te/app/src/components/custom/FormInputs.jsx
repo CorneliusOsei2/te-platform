@@ -43,14 +43,14 @@ export const FormInputWithValidation = ({ type, label, field, placeholder, handl
                 {label}
             </label>
             <input
-                type={type ?? "test"}
+                type={type ?? "text"}
                 name={field}
                 id={field}
                 placeholder={placeholder}
                 defaultValue={value ?? ""}
                 className="block w-full rounded-md border-0 px-1.5 py-1.5  shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-sky-600 sm:text-sm sm:leading-6"
                 aria-invalid={validation}
-                onChange={(e) => handleInputChange({ field: field, value: e.target.value, hideCustomInput: false })}
+                onChange={(e) => handleInputChange({ field: field, value: e.target.value })}
                 required={required}
             />
             {validation &&

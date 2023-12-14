@@ -49,19 +49,56 @@ def get_current_active_user(
     return current_user
 
 
-def get_current_active_mentor(
+def get_current_user_by_role(
+    # role: user_schema.UserRoles ,
     current_user: user_models.User = Depends(get_current_user),
 ) -> user_models.User:
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
 
-    if current_user.role != user_schema.UserRoles.mentor:
+    if current_user.role != 1:
         raise HTTPException(status_code=400, detail="Unauthorized access")
 
     return current_user
 
 
-def get_current_active_admin(
+def get_current_mentor(
+    current_user: user_models.User = Depends(get_current_user),
+) -> user_models.User:
+    if not current_user.is_active:
+        raise HTTPException(status_code=400, detail="Inactive user")
+
+    if current_user.role < user_schema.UserRoles.mentor:
+        raise HTTPException(status_code=400, detail="Unauthorized access")
+
+    return current_user
+
+
+def get_current_user_contributor(
+    current_user: user_models.User = Depends(get_current_user),
+) -> user_models.User:
+    if not current_user.is_active:
+        raise HTTPException(status_code=400, detail="Inactive user")
+
+    if current_user.role < user_schema.UserRoles.contributor:
+        raise HTTPException(status_code=400, detail="Unauthorized access")
+
+    return current_user
+
+
+def get_current_user_team(
+    current_user: user_models.User = Depends(get_current_user),
+) -> user_models.User:
+    if not current_user.is_active:
+        raise HTTPException(status_code=400, detail="Inactive user")
+
+    if current_user.role < user_schema.UserRoles.contributor:
+        raise HTTPException(status_code=400, detail="Unauthorized access")
+
+    return current_user
+
+
+def get_current_user_admin(
     current_user: user_models.User = Depends(get_current_user),
 ) -> user_models.User:
     if not current_user.role == user_schema.UserRoles.admin:

@@ -29,7 +29,9 @@ def get_lessons(
     """
     lessons = learning_crud.read_lessons(db, skip=skip, limit=limit)
     return {
-        "lessons": [learning_schema.LessonRead(**vars(lesson)) for lesson in lessons]
+        "lessons": [
+            learning_schema.LessonRead(**vars(lesson)) for lesson in lessons
+        ]
     }
 
 
@@ -37,11 +39,13 @@ def get_lessons(
     ".lessons.create",
     response_model=dict[str, learning_schema.LessonRead],
 )
-def add_workshop_lesson(
+def add_lesson(
     db: Session = Depends(session.get_db),
     *,
     data: learning_schema.LessonCreate,
-    current_user: user_models.User = Depends(user_dependencies.get_current_user),
+    current_user: user_models.User = Depends(
+        user_dependencies.get_current_user_contributor
+    ),
 ) -> Any:
     """
     Create a  lesson.
@@ -60,7 +64,9 @@ def lesson_file_upload(
     *,
     db: Session = Depends(session.get_db),
     file: UploadFile,
-    current_user: user_models.User = Depends(user_dependencies.get_current_user),
+    current_user: user_models.User = Depends(
+        user_dependencies.get_current_user
+    ),
 ) -> Any:
     """
     Create other lesson.

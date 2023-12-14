@@ -9,10 +9,13 @@ class UserLogin(BaseModel):
     password: str
 
 
-class UserRoles(Enum):
-    mentee = "Mentee"
-    mentor = "Mentor"
-    admin = "Admin"
+class UserRoles(int, Enum):
+    guest = 0
+    mentee = 1
+    contributor = 2
+    mentor = 3
+    team = 4
+    admin = 5
 
 
 class UserBase(BaseModel):

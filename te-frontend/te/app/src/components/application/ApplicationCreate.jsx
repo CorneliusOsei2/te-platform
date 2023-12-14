@@ -31,6 +31,7 @@ const ApplicationCreate = ({ setAddApplication }) => {
 
     const [appData, setAppData] = useState({
         company: "",
+        company_other: "",
         title: "",
         role: "",
         deadline: "",
@@ -45,7 +46,7 @@ const ApplicationCreate = ({ setAddApplication }) => {
     })
 
     const createUserApplicationRequest = () => {
-        axiosInstance.post("/applications.create", appData,
+        axiosInstance.post("/applications.create", { ...appData, company: appData.company_other ? appData.company_other : appData.company },
             {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -60,21 +61,10 @@ const ApplicationCreate = ({ setAddApplication }) => {
             });
     }
 
-    const handleInputChange = ({ field, value, hideCustomInput = true }) => {
-        if (value === "Other.......") {
-            setAppData((prevAppData) => {
-                const tmp = setNestedPropertyValue({ ...prevAppData }, field, "");
-                setShowCustomInputs({ ...showCustomInputs, [customInputMap[field]]: true });
-                return tmp;
-            });
-        } else {
-            if (hideCustomInput) {
-                setShowCustomInputs({ ...showCustomInputs, [customInputMap[field]]: false });
-            }
-            setAppData((prevAppData) =>
-                setNestedPropertyValue({ ...prevAppData }, field, value)
-            );
-        }
+    const handleInputChange = ({ field, value }) => {
+        setAppData((prevAppData) =>
+            setNestedPropertyValue({ ...prevAppData }, field, value)
+        );
     };
 
 
@@ -95,11 +85,11 @@ const ApplicationCreate = ({ setAddApplication }) => {
                             />
                         }
 
-                        <FormSelect label="Company" field="company" data={["Other", ...companies]} handleInputChange={handleInputChange} required={true} />
-                        {appData.company === "Other" &&
+                        <FormSelect label="Company" field="company" data={[...companies, "Other....."]} handleInputChange={handleInputChange} required={true} />
+                        {appData.company === "Other....." &&
                             <FormInputWithValidation
                                 placeholder="Specify company: "
-                                field="company"
+                                field="company_other"
                                 handleInputChange={handleInputChange}
                                 required={true}
                             />
