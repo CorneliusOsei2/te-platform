@@ -33,6 +33,15 @@ const Applications = () => {
         app.selected = !app.selected;
     }
 
+    const selectAllApplications = () => {
+        let selected_apps = applications.reduce((app, { id }) => ({ ...app, [id]: true }), {});
+        setSelectedApplications(selected_apps);
+
+        for (let app of applications) {
+            app.selected = true;
+        }
+    }
+
     const handleApplicationsSortBy = (sortBy) => {
         let sorted_applications = [];
         switch (sortBy) {
@@ -183,6 +192,7 @@ const Applications = () => {
                                 <button
                                     type="button"
                                     className="ml-3  justify-between px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset text-yellow-700 bg-yellow-400/10 ring-yellow-400/20 hover:bg-yellow-700 hover:text-white"
+                                    onClick={selectAllApplications}
                                 >
                                     Select All
                                 </button>
