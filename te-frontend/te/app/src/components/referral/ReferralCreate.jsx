@@ -6,20 +6,65 @@ import { useData } from "../../context/DataContext";
 import { FormInput, FormSelect, FormTextArea } from "../custom/FormInputs";
 import { setNestedPropertyValue } from "../../utils";
 import MissingData from "../custom/Alert/MissingData";
+import { useAuth } from "../../context/AuthContext";
+import { jobRoles } from "../../data/data";
 
 
-const ReferralCreate = ({ action, resumes, company, referralCompanyId, setReferralCompanyId }) => {
+const referralAction = (resumes, essay, contact) => {
+    console.log(resumes, essay, contact);
+    if (!(resumes || essay || contact)) {
+        return "Please upload your resume, essay and contact before requesting."
+    }
+    else if (!(resumes || essay)) {
+        return "Please upload your resume and essay."
+    }
+    else if (!(resumes || contact)) {
+        return "Please upload your resume and contact."
+    }
+    else if (!(essay || contact)) {
+        return "Please upload your essay and contact."
+    }
+    else if (!resumes) {
+        return "Please upload your resume"
+    }
+    else if (!essay) {
+        return "Please upload your essay."
+    }
+    else if (!contact) {
+        return "Please upload your contact."
+    }
+}
 
-    const [referralData, setReferralData] = useState({ "company_id": referralCompanyId, "resume": "", "notes": "" });
+const ReferralCreate = ({ company, setReferralCompanyId }) => {
+    const { userId, accessToken } = useAuth();
+    const { resumes, essay } = useData();
+
+    const [referralData, setReferralData] = useState({
+        company_id: company.id,
+        resume: "",
+        role: "",
+        request_note: ""
+    });
+
+    const action = referralAction(
+        company.referral_materials.resumes ? resumes.length > 0 : true,
+        company.referral_materials.essay ? essay.length > 0 : true,
+        company.referral_materials.phone_number ? resumes.length > 0 : true,
+    )
 
     const createReferralRequest = async () => {
-        await axiosInstance.post("/companies.create", referralData)
-            .then((response) => {
-                let data = response.data;
-                console.log(data)
-            })
+        await axiosInstance.post(`/users.${userId}.referrals.create`, referralData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        }
+        ).then((response) => {
+            let data = response.data;
+            console.log(data);
+            setReferralCompanyId(null);
+        })
             .catch((error) => {
-                console.log("Error!");
+                console.log(error);
             });
     }
 
@@ -29,7 +74,7 @@ const ReferralCreate = ({ action, resumes, company, referralCompanyId, setReferr
         );
     };
 
-    console.log(action)
+
 
     return (
         <>
@@ -60,6 +105,16 @@ const ReferralCreate = ({ action, resumes, company, referralCompanyId, setReferr
                                     </div>
                                 </div>
 
+                                <FormSelect label="Role" field="role" data={jobRoles} handleInputChange={handleInputChange} required={true} />
+                                {referralData.role === "Other....." &&
+                                    <FormInput
+                                        placeholder="Specify role: "
+                                        field="role_other"
+                                        handleInputChange={handleInputChange}
+                                        required={true}
+                                    />
+                                }
+
                                 <FormSelect
                                     label={"Select Resume"}
                                     field={"resume"} data={resumes.map((resume) => (resume.name))}
@@ -69,7 +124,7 @@ const ReferralCreate = ({ action, resumes, company, referralCompanyId, setReferr
 
                                 <FormTextArea
                                     label={"Notes"}
-                                    field={"request_notes"}
+                                    field={"request_note"}
                                     handleInputChange={handleInputChange}
                                 />
                             </div>)

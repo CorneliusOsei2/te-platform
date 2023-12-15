@@ -174,7 +174,7 @@ def add_file(
     db: Session = Depends(session.get_db),
     *,
     user_id: int,
-    kind: str = Form(),
+    kind: application_schema.FileKind = Form(),
     file: UploadFile = Form(),
     _=Depends(user_dependencies.get_current_user),
 ) -> Any:

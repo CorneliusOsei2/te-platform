@@ -22,8 +22,8 @@ export const FormSelect = ({ field, label, data, handleInputChange, value, requi
                     required={required}
                 >
                     <option value=""></option>
-                    {data.map((item) => (
-                        <option key={item} value={item}>{item}</option>
+                    {data.map((item, index) => (
+                        <option key={index} value={item}>{item}</option>
                     ))}
                 </select>
             </div>

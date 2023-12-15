@@ -90,10 +90,7 @@ def read_user_referrals(
 
     return (
         db.query(company_models.Referral)
-        .filter(
-            company_models.Referral.user_id == user_id,
-            company_models.Referral.active is True,
-        )
+        .filter(company_models.Referral.user_id == user_id )
         .all()
     )
 
@@ -111,9 +108,9 @@ def request_referral(
         user_id=user_id,
         company_id=data.company_id,
         role=data.role,
-        notes=data.notes,
-        year=date.today().year,
-        status=company_schema.ReferralStatuses.requested,
+        request_note=data.request_note,
+        status=company_schema.ReferralStatuses.in_review,
+        date=data.date,
     )
 
     db.add(referral)

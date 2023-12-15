@@ -49,12 +49,11 @@ class Location(Base):
 class Referral(Base):
     __tablename__ = "referrals"
     id = Column(Integer, primary_key=True)
-    status = Column(Enum(company_schema.ReferralStatuses))
-    year = Column(Integer, nullable=False)
-    role = Column(String, nullable=True)
+    date = Column(String, nullable=False)
+    role = Column(String, nullable=False)
     request_note = Column(String, nullable=True)
     review_note = Column(String, nullable=True)
-    active = Column(Boolean, nullable=True)
+    status = Column(Enum(company_schema.ReferralStatuses))
 
     # Relationships
     user_id = Column(Integer, ForeignKey("users.id"))

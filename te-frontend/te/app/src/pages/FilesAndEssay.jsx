@@ -69,7 +69,7 @@ const Files = () => {
                                             :
                                             <ul className="divide-y divide-gray-100 rounded-md border border-gray-200">
                                                 {
-                                                    resumes.map((resume) => (<li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+                                                    resumes.map((resume) => (<li key={resume.id} className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
                                                         <div className="flex w-0 flex-1 items-center">
                                                             <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
                                                             <div className="ml-4 flex min-w-0 flex-1 gap-2">
@@ -92,11 +92,11 @@ const Files = () => {
 
                                 <h3 className="text-base text-left mt-6 ml-4  font-semibold leading-7 text-cyan-800">Other Files</h3>
                                 <ul className="flex mb-6">
-                                    {otherFiles.map((resume) => {
-                                        return (<li key={resume.id} className="flex rounded-md w-40 px-3 py-3 mr-3 justify-center hover:bg-gray-100 ">
-                                            <a href={resume.link}>
-                                                <img className="m-auto" width="100" height="100" src="https://img.icons8.com/plasticine/100/pdf.png" alt={resume.name} />
-                                                <span className="text-gray-600  line-clamp-2 hover:line-clamp-none">{resume.name}</span>
+                                    {otherFiles.map((otherFile) => {
+                                        return (<li key={otherFile.id} className="flex rounded-md w-40 px-3 py-3 mr-3 justify-center hover:bg-gray-100 ">
+                                            <a href={otherFile.link}>
+                                                <img className="m-auto" width="100" height="100" src="https://img.icons8.com/plasticine/100/pdf.png" alt={otherFile.name} />
+                                                <span className="text-gray-600  line-clamp-2 hover:line-clamp-none">{otherFile.name}</span>
                                             </a>
                                         </li>)
                                     })

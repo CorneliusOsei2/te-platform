@@ -1,5 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { useAuth } from './AuthContext';
+import { createContext, useContext, useState } from 'react';
 
 const DataContext = createContext();
 
@@ -16,6 +15,7 @@ export const DataProvider = ({ children }) => {
     const [applications, setApplications] = useState([]);
     const [fetchApplications, setFetchApplications] = useState(true);
 
+    const [referrals, setReferrals] = useState([]);
     const [fetchReferralCompanies, setFetchReferralCompanies] = useState(true);
     const [referralCompanies, setReferralCompanies] = useState([]);
 
@@ -48,6 +48,8 @@ export const DataProvider = ({ children }) => {
             setFetchApplications,
             applications,
             setApplications,
+            referrals,
+            setReferrals,
             fetchReferralCompanies,
             setFetchReferralCompanies,
             referralCompanies,

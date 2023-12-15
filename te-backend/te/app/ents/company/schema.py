@@ -1,5 +1,5 @@
 from enum import Enum
-
+from datetime import date
 from pydantic import BaseModel
 
 
@@ -22,18 +22,19 @@ class ReferralMaterials(BaseModel):
 class CompanyBase(BaseModel):
     name: str
     image: str = ""
-    can_refer: bool = True
 
 
 class CompanyCreate(CompanyBase):
     domain: str
     location: LocationBase
+    can_refer: bool = True
     referral_materials: ReferralMaterials = None
 
 
 class CompanyReadBase(CompanyBase):
     id: int
     domain: str
+    can_refer: bool = True
 
 
 class LocationRead(LocationBase):
@@ -48,22 +49,27 @@ class ReferralRequest(BaseModel):
     company_id: int
     role: str
     request_note: str
-    active: bool = True
+    resume: str
+    date: str = date.today().strftime("%Y-%m-%d")
 
 
 class ReferralStatuses(Enum):
-    requested = "Requested"
     completed = "Completed"
-    review = "In review"
+    in_review = "In review"
+    cancelled = "Cancelled"
 
 
-class Referral(BaseModel):
+class ReferralReadBase(BaseModel):
     user_id: int
     role: str
+    review_note: str | None = ""
+    date: str
     status: ReferralStatuses
 
 
+class ReferralRead(ReferralReadBase):
+    company: CompanyBase
+
+
 class CompanyReadForReferrals(CompanyReadBase):
-    countries: set[str]
     referral_materials: ReferralMaterials
-    referral: Referral | None

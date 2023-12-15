@@ -36,7 +36,6 @@ const Workspace = ({ setLogin }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [content, setContent] = useState("Applications")
 
-
     useEffect(() => {
         let prevContent = sessionStorage.getItem('content');
         console.log(prevContent)
@@ -44,7 +43,6 @@ const Workspace = ({ setLogin }) => {
             setContent(prevContent);
         }
     }, [content]);
-
 
 
     const getUserFilesRequest = useCallback(async () => {
@@ -69,11 +67,11 @@ const Workspace = ({ setLogin }) => {
         const fetchData = async () => {
             await getUserFilesRequest();
         }
-        console.log(fetchFiles)
         if (accessToken && fetchFiles) {
             fetchData();
+            setFetchFiles(false);
         }
-    }, [accessToken, fetchFiles, getUserFilesRequest])
+    }, [accessToken, fetchFiles, getUserFilesRequest, setFetchFiles])
 
     const setContentHandler = (value) => {
         setContent(value);

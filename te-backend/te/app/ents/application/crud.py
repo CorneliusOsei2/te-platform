@@ -231,12 +231,12 @@ def create_file(db, kind, file, user_id):
     uploaded_file = upload_file(
         file=file,
         parent=settings.GDRIVE_RESUMES
-        if kind == "Resume"
+        if kind == application_schema.FileKind.Resume
         else settings.GDRIVE_OTHER_FILES,
     )
 
     new_file = None
-    if kind == "Resume":
+    if kind == application_schema.FileKind.Resume:
         new_file = application_models.Resume(
             file_id=uploaded_file.file_id,
             name=uploaded_file.name,

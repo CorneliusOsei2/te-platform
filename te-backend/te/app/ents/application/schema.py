@@ -3,7 +3,10 @@ from enum import Enum
 from pydantic import BaseModel
 import app.ents.company.schema as company_schema
 
-
+class FileKind(str, Enum):
+    Resume: str = "Resume"
+    OtherFile: str = "OtherFile"
+    
 class Essay(BaseModel):
     essay: str
 
