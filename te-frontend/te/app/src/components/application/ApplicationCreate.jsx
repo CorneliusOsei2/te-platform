@@ -8,7 +8,7 @@ import { countries, jobRoles, jobTitles } from '../../data/data'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
 import SuccessFeedback from '../custom/Alert/SuccessFeedback'
-import { FormSelect, FormInputWithValidation, TextArea } from '../custom/FormInputs'
+import { FormSelect, FormInput, FormTextArea } from '../custom/FormInputs'
 
 
 export const customInputMap = {
@@ -87,7 +87,7 @@ const ApplicationCreate = ({ setAddApplication }) => {
 
                         <FormSelect label="Company" field="company" data={[...companies, "Other....."]} handleInputChange={handleInputChange} required={true} />
                         {appData.company === "Other....." &&
-                            <FormInputWithValidation
+                            <FormInput
                                 placeholder="Specify company: "
                                 field="company_other"
                                 handleInputChange={handleInputChange}
@@ -102,7 +102,7 @@ const ApplicationCreate = ({ setAddApplication }) => {
 
                         <div className='flex justify-between'>
                             {appData.title === "Other....." &&
-                                <FormInputWithValidation
+                                <FormInput
                                     placeholder="Specify title: "
                                     field="title_other"
                                     handleInputChange={handleInputChange}
@@ -111,7 +111,7 @@ const ApplicationCreate = ({ setAddApplication }) => {
                             }
 
                             {appData.role === "Other....." &&
-                                <FormInputWithValidation
+                                <FormInput
                                     placeholder="Specify role: "
                                     field="role_other"
                                     handleInputChange={handleInputChange}
@@ -124,10 +124,10 @@ const ApplicationCreate = ({ setAddApplication }) => {
 
                         <div className="flex justify-between">
                             <FormSelect label="Country" field="location.country" data={countries} handleInputChange={handleInputChange} required={false} />
-                            <FormInputWithValidation label="City" field="location.city" data={[]} handleInputChange={handleInputChange} required={false} />
+                            <FormInput label="City" field="location.city" data={[]} handleInputChange={handleInputChange} required={false} />
                         </div>
 
-                        <TextArea label="Notes" field="notes" handleInputChange={handleInputChange} required={true} />
+                        <FormTextArea label="Notes" field="notes" handleInputChange={handleInputChange} required={true} />
                     </div>
                 </div>
             </div >}

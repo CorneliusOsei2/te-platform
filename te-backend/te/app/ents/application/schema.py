@@ -19,7 +19,7 @@ class File(FileBase):
 
 class FileRead(FileBase):
     id: int
-    file_id: int
+    file_id: str
     link: str
 
 

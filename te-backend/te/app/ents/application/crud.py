@@ -27,7 +27,9 @@ def read_application_by_id(
 def read_application_multi(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[application_models.Application]:
-    return db.query(application_models.Application).offset(skip).limit(limit).all()
+    return (
+        db.query(application_models.Application).offset(skip).limit(limit).all()
+    )
 
 
 def create_application(
@@ -53,7 +55,10 @@ def create_application(
 
     if not location:
         for loc in company.locations:
-            if loc.country == data.location.country and loc.city == data.location.city:
+            if (
+                loc.country == data.location.country
+                and loc.city == data.location.city
+            ):
                 location = loc
                 break
             if loc.country == data.location.country:
@@ -130,7 +135,10 @@ def update_application(
 
     location = None
     for loc in application.company.locations:
-        if loc.country == data.location.country and loc.city == data.location.city:
+        if (
+            loc.country == data.location.country
+            and loc.city == data.location.city
+        ):
             location = loc
             break
         if loc.country == data.location.country:
@@ -219,21 +227,42 @@ def upload_file(file, parent) -> application_schema.FileUpload:
     )
 
 
-def create_resume(db, file, user_id):
-    data = upload_file(file=file, parent=settings.GDRIVE_RESUMES)
-    resume = application_models.Resume(
-        file_id=data.file_id,
-        name=data.name,
-        link=data.link[: data.link.find("&export=download")],
-        date=date.today().strftime("%Y-%m-%d"),
-        user_id=user_id,
+def create_file(db, kind, file, user_id):
+    uploaded_file = upload_file(
+        file=file,
+        parent=settings.GDRIVE_RESUMES
+        if kind == "Resume"
+        else settings.GDRIVE_OTHER_FILES,
     )
 
-    db.add(resume)
-    db.commit()
-    db.refresh(resume)
+    new_file = None
+    if kind == "Resume":
+        new_file = application_models.Resume(
+            file_id=uploaded_file.file_id,
+            name=uploaded_file.name,
+            link=uploaded_file.link[
+                : uploaded_file.link.find("&export=download")
+            ],
+            date=date.today().strftime("%Y-%m-%d"),
+            user_id=user_id,
+        )
 
-    return resume
+    else:
+        new_file = application_models.OtherFiles(
+            file_id=uploaded_file.file_id,
+            name=uploaded_file.name,
+            link=uploaded_file.link[
+                : uploaded_file.link.find("&export=download")
+            ],
+            date=date.today().strftime("%Y-%m-%d"),
+            user_id=user_id,
+        )
+
+    db.add(new_file)
+    db.commit()
+    db.refresh(new_file)
+
+    return new_file
 
 
 def get_user_resumes(db: Session, user_id) -> list[application_models.Resume]:

@@ -7,7 +7,7 @@ import axiosInstance from '../../axiosConfig';
 
 import { useAuth } from '../../context/AuthContext'
 import SlideOverUpdate from '../custom/SlideOver/SlideOverUpdate'
-import { FormSelect, FormInputWithValidation } from '../custom/FormInputs'
+import { FormSelect, FormInput } from '../custom/FormInputs'
 import { setNestedPropertyValue } from '../../utils'
 import { jobStatuses } from './ApplicationInfo'
 import { customInputMap } from './ApplicationCreate'
@@ -135,7 +135,7 @@ const ApplicationUpdate = ({ application, setApplication, setUpdateApplication }
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">City</dt>
                                         <dd className="text-gray-900 -mt-3">
-                                            <FormInputWithValidation
+                                            <FormInput
                                                 type='text'
                                                 field="location.city"
                                                 value={updateData.location.city}
@@ -169,7 +169,7 @@ const ApplicationUpdate = ({ application, setApplication, setUpdateApplication }
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Recruiter Name</dt>
                                         <dd className="text-gray-900 -mt-3">
-                                            <FormInputWithValidation
+                                            <FormInput
                                                 type='text'
                                                 field="recruiter_name"
                                                 handleInputChange={handleInputChange}
@@ -179,7 +179,7 @@ const ApplicationUpdate = ({ application, setApplication, setUpdateApplication }
                                     <div className="flex justify-between py-3 text-sm font-medium">
                                         <dt className="text-sky-800">Recruiter Email</dt>
                                         <dd className="text-gray-900 -mt-3">
-                                            <FormInputWithValidation
+                                            <FormInput
                                                 type="email"
                                                 field="recruiter_email"
                                                 value={updateData.recruiter_email}

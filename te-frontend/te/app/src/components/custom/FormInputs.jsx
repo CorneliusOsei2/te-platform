@@ -33,7 +33,7 @@ export const FormSelect = ({ field, label, data, handleInputChange, value, requi
 }
 
 
-export const FormInputWithValidation = ({ type, label, field, placeholder, handleInputChange, validation, value, required }) => {
+export const FormInput = ({ type, label, field, placeholder, handleInputChange, validation, value, required }) => {
     return (
         <div className="relative mt-2 rounded-md shadow-sm">
             <label
@@ -62,7 +62,7 @@ export const FormInputWithValidation = ({ type, label, field, placeholder, handl
     )
 }
 
-export const TextArea = ({ label, field, handleInputChange }) => {
+export const FormTextArea = ({ label, field, handleInputChange }) => {
     return (
         <div>
             <label

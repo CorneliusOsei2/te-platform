@@ -24,7 +24,9 @@ class Posting(Base):
     recruiter_email = Column(String, nullable=False)
     active = Column(Boolean, nullable=False)
     role = Column(Enum(company_schema.JobRoles), nullable=False)
-    status = Column(Enum(application_schema.ApplicationStatuses), nullable=False)
+    status = Column(
+        Enum(application_schema.ApplicationStatuses), nullable=False
+    )
 
     # Relationships
     company_id = Column(Integer, ForeignKey("companies.id"))
@@ -50,7 +52,9 @@ class Referral(Base):
     status = Column(Enum(company_schema.ReferralStatuses))
     year = Column(Integer, nullable=False)
     role = Column(String, nullable=True)
-    notes = Column(String, nullable=True)
+    request_note = Column(String, nullable=True)
+    review_note = Column(String, nullable=True)
+    active = Column(Boolean, nullable=True)
 
     # Relationships
     user_id = Column(Integer, ForeignKey("users.id"))

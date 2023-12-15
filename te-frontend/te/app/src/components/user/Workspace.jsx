@@ -30,7 +30,7 @@ const navigation = [
 
 
 const Workspace = ({ setLogin }) => {
-    const { userId, accessToken } = useAuth();
+    const { userId, accessToken, logout } = useAuth();
     const { setResumes, setOtherFiles, fetchFiles, setFetchFiles } = useData();
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -45,33 +45,47 @@ const Workspace = ({ setLogin }) => {
         }
     }, [content]);
 
-    const getUserResumesRequest = useCallback(() => {
-        axiosInstance.get(`/users.${userId}.applications.files.list`, {
+
+
+    const getUserFilesRequest = useCallback(async () => {
+        axiosInstance.get(`/users.${userId}.files.list`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         })
             .then((response) => {
                 setResumes(response.data.files.resumes);
-                setOtherFiles(response.data.files.other_files)
+                setOtherFiles(response.data.files.other_files);
             })
             .catch((error) => {
-                console.log(error);
+                if (error.response.status === 401) {
+                    logout();
+                }
             })
-    });
+    }, [accessToken, logout, setOtherFiles, setResumes, userId]);
 
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await getUserFilesRequest();
+        }
+        console.log(fetchFiles)
+        if (accessToken && fetchFiles) {
+            fetchData();
+        }
+    }, [accessToken, fetchFiles, getUserFilesRequest])
 
     const setContentHandler = (value) => {
         setContent(value);
         sessionStorage.setItem('content', value);
     }
 
-    useEffect(() => {
-        if (fetchFiles && accessToken) {
-            getUserResumesRequest();
-            setFetchFiles(false);
-        }
-    }, [accessToken, fetchFiles, getUserResumesRequest, setFetchFiles])
+    // useEffect(() => {
+    //     if (fetchFiles && accessToken) {
+    //         getUserResumesRequest();
+    //         setFetchFiles(false);
+    //     }
+    // }, [accessToken, fetchFiles, getUserResumesRequest, setFetchFiles])
 
 
     return (

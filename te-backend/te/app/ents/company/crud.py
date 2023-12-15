@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+import app.ents.user.crud as user_crud
 
 import app.ents.company.models as company_models
 import app.ents.company.schema as company_schema
@@ -6,7 +7,9 @@ from app.core.config import settings
 from datetime import date
 
 
-def read_company_by_name(db: Session, *, name: str) -> company_models.Company | None:
+def read_company_by_name(
+    db: Session, *, name: str
+) -> company_models.Company | None:
     return (
         db.query(company_models.Company)
         .filter(company_models.Company.name == name)
@@ -26,7 +29,9 @@ def create_company(
     company = company_models.Company(
         **(data.dict(exclude={"location", "referral_materials"}))
     )
-    company.image = (settings.CLEAR_BIT_BASE_URL + data.domain) if data.domain else ""
+    company.image = (
+        (settings.CLEAR_BIT_BASE_URL + data.domain) if data.domain else ""
+    )
     location = company_models.Location(**data.location.dict())
     company.locations.append(location)
 
@@ -68,17 +73,40 @@ def read_referral_companies(
 ) -> list[company_models.Company]:
     return [
         company
-        for company in db.query(company_models.Company).offset(skip).limit(limit).all()
+        for company in db.query(company_models.Company)
+        .offset(skip)
+        .limit(limit)
+        .all()
         if company.can_refer
     ]
+
+
+def read_user_referrals(
+    db: Session, *, user_id: int
+) -> list[company_models.Referral]:
+    user = user_crud.read_user_by_id(db, id=user_id)
+    if not user:
+        ...
+
+    return (
+        db.query(company_models.Referral)
+        .filter(
+            company_models.Referral.user_id == user_id,
+            company_models.Referral.active is True,
+        )
+        .all()
+    )
 
 
 def request_referral(
     db: Session,
     user_id: int,
-    company_id: int,
     data: company_schema.ReferralRequest,
 ) -> company_models.Referral:
+    user = user_crud.read_user_by_id(db, id=user_id)
+    if not user:
+        ...
+
     referral = company_models.Referral(
         user_id=user_id,
         company_id=data.company_id,

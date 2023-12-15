@@ -8,29 +8,12 @@ import FileCreate from "../components/file/FileCreate";
 import MissingData from "../components/custom/Alert/MissingData";
 
 const Files = () => {
-    const { userId, accessToken, logout } = useAuth();
-    const { resumes, otherFiles, setResumes } = useData();
+    const { accessToken } = useAuth();
+
+    const { resumes, otherFiles } = useData();
 
     const [addFile, setAddFile] = useState(false);
     const [reviewResume, setReviewResume] = useState(false);
-
-
-    const uploadFileRequest = useCallback(async () => {
-        axiosInstance.get(`/users.${userId}.applications.files.create`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
-            .then((response) => {
-                console.log(response.data)
-                setResumes(response.data.files.resumes);
-            })
-            .catch((error) => {
-                if (error.response.status === 401) {
-                    logout();
-                }
-            })
-    }, [accessToken, logout, setResumes, userId]);
 
 
     return (
@@ -90,13 +73,13 @@ const Files = () => {
                                                         <div className="flex w-0 flex-1 items-center">
                                                             <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
                                                             <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                                                                <span className="truncate font-medium">{resume.title}</span>
+                                                                <span className="truncate font-medium">{resume.name}</span>
                                                                 <span className="flex-shrink-0 text-gray-400">2.4mb</span>
                                                             </div>
                                                         </div>
                                                         <div className="ml-4 flex-shrink-0">
-                                                            <a href={resume.link} className="font-medium text-indigo-600 hover:text-indigo-500">
-                                                                Download
+                                                            <a href={resume.link} className="font-medium text-sky-600 hover:text-sky-500">
+                                                                View
                                                             </a>
                                                         </div>
                                                     </li>))}
@@ -104,17 +87,6 @@ const Files = () => {
                                     </dd>
                                 </div>
 
-                                <ul className="flex mb-6">
-                                    {resumes.map((resume) => {
-                                        return (<li key={resume.id} className="flex rounded-md w-40 px-3 py-3 mr-3 justify-center hover:bg-gray-100 ">
-                                            <a href={resume.link}>
-                                                <img className="m-auto" width="100" height="100" src="https://img.icons8.com/plasticine/100/pdf.png" alt={resume.name} />
-                                                <span className="text-gray-600  line-clamp-2 hover:line-clamp-none">{resume.title}</span>
-                                            </a>
-                                        </li>)
-                                    })
-                                    }
-                                </ul>
 
                                 <hr />
 
@@ -134,7 +106,7 @@ const Files = () => {
                         </div>
                     </div>
 
-                    {addFile && <FileCreate addFile={setAddFile} />}
+                    {addFile && <FileCreate setFileUpload={setAddFile} />}
 
                 </div>}
         </>

@@ -12,7 +12,9 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
             timeoutId = setTimeout(() => {
                 setHandler(false);
             }, 700);
+            window.location.reload();
         }
+
         return () => clearTimeout(timeoutId);
     }, [open, setHandler]);
 

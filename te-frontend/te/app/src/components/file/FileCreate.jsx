@@ -12,21 +12,21 @@ import { Loading } from "../custom/Loading";
 
 
 const FileCreate = ({ setFileUpload }) => {
-    const { accessToken } = useAuth();
+    const { userId, accessToken } = useAuth();
+    const { setFetchFiles } = useData();
 
     const [status, setStatus] = useState(null);
     const [fileData, setFileData] = useState({ type: "", file: null })
     const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
 
     const uploadFileRequest = async () => {
-        const formData = new FormData();
-        formData.append('title', fileData.file.name);
-        formData.append('type', fileData.type);
-        formData.append('file', fileData.file);
+        const data = new FormData();
+        data.append('kind', fileData.type);
+        data.append('file', fileData.file);
 
         setStatus("Loading...")
 
-        axiosInstance.post("/learning.file.upload", formData, {
+        axiosInstance.post(`/users.${userId}.files.create`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${accessToken}`,
@@ -34,6 +34,7 @@ const FileCreate = ({ setFileUpload }) => {
         }).then((_) => {
             setShowSuccessFeedback(true);
             setStatus(null);
+            setFetchFiles(true);
         }
         ).catch((error) => {
             console.log(error);

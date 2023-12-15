@@ -47,7 +47,8 @@ class CompanyRead(CompanyReadBase):
 class ReferralRequest(BaseModel):
     company_id: int
     role: str
-    notes: str
+    request_note: str
+    active: bool = True
 
 
 class ReferralStatuses(Enum):

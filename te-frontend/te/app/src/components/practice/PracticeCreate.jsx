@@ -6,7 +6,7 @@ import { setNestedPropertyValue } from '../../utils'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
 import SuccessFeedback from '../custom/Alert/SuccessFeedback'
-import { FormSelect, FormInputWithValidation } from '../custom/FormInputs'
+import { FormSelect, FormInput } from '../custom/FormInputs'
 
 const lessonFormats = {
     "Video": "video", "Document (File)": "document", "Document (Link)": "document", "Web page": "html"
@@ -85,7 +85,7 @@ const LessonCreate = ({ setAddLesson, lessonCategories }) => {
                             />
                         }
 
-                        <FormInputWithValidation label="Topic" field="topic" handleInputChange={handleInputChange} required={true} />
+                        <FormInput label="Topic" field="topic" handleInputChange={handleInputChange} required={true} />
                         <FormSelect label="Category" field="category" data={Object.keys(lessonCategories)} handleInputChange={handleInputChange} required={true} />
 
                         {lessonData?.category && (lessonData.category === "Workshops" ?
@@ -99,7 +99,7 @@ const LessonCreate = ({ setAddLesson, lessonCategories }) => {
                         {
                             lessonData?.category === "Workshops" &&
                             <>
-                                <FormInputWithValidation label="Instructor" field="instructor" handleInputChange={handleInputChange} />
+                                <FormInput label="Instructor" field="instructor" handleInputChange={handleInputChange} />
                             </>
                         }
 
@@ -122,7 +122,7 @@ const LessonCreate = ({ setAddLesson, lessonCategories }) => {
                                         <button onClick={() => handleInputChange({ field: "link", value: "" })}>X</button>
                                     </div>
                                 ) :
-                                <FormInputWithValidation label="Link" field="link" handleInputChange={handleInputChange} />
+                                <FormInput label="Link" field="link" handleInputChange={handleInputChange} />
                         }
 
                         {(lessonData.format === "Document (File)" && uploadingFile) &&

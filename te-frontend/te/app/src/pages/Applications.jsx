@@ -126,7 +126,6 @@ const Applications = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-
             if (fetchApplications && accessToken) {
                 await getUserApplicationsRequest();
                 setTimeout(() => setFetchApplications(false), 1000);
@@ -225,7 +224,6 @@ const Applications = () => {
                                 </div>
                             </>
                         }
-
                     </div>
 
                     <ul className="divide-y divide-white/5 list-none mt-3">
