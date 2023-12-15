@@ -22,12 +22,6 @@ const ApplicationCreate = ({ setAddApplication }) => {
     const { setFetchApplications, companies } = useData();
 
     const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
-    const [showCustomInputs, setShowCustomInputs] = useState({
-        showCustomCompany: false,
-        showCustomJobTitle: false,
-        showCustomJobRole: false,
-        showCustomStatus: false,
-    })
 
     const [appData, setAppData] = useState({
         company: "",
@@ -46,7 +40,13 @@ const ApplicationCreate = ({ setAddApplication }) => {
     })
 
     const createUserApplicationRequest = () => {
-        axiosInstance.post("/applications.create", { ...appData, company: appData.company_other ? appData.company_other : appData.company },
+        axiosInstance.post("/applications.create",
+            {
+                ...appData,
+                company: appData.company_other ? appData.company_other : appData.company,
+                title: appData.title_other ? appData.title_other : appData.title,
+                role: appData.role_other ? appData.role_other : appData.role
+            },
             {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -101,18 +101,19 @@ const ApplicationCreate = ({ setAddApplication }) => {
                         </div>
 
                         <div className='flex justify-between'>
-                            {showCustomInputs.showCustomJobTitle &&
+                            {appData.title === "Other....." &&
                                 <FormInputWithValidation
                                     placeholder="Specify title: "
-                                    field="title"
+                                    field="title_other"
                                     handleInputChange={handleInputChange}
+                                    required={true}
                                 />
                             }
 
-                            {showCustomInputs.showCustomJobRole &&
+                            {appData.role === "Other....." &&
                                 <FormInputWithValidation
                                     placeholder="Specify role: "
-                                    field="role"
+                                    field="role_other"
                                     handleInputChange={handleInputChange}
                                     required={true}
                                 />

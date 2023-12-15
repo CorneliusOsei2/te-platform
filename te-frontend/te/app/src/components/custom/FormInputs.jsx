@@ -84,3 +84,31 @@ export const TextArea = ({ label, field, handleInputChange }) => {
         </div>
     )
 }
+
+export const FileUpload = ({ label, field, handleFileUploadChange, uploadFileRequest, required }) => {
+    return (
+        <div className="">
+            <p className="text-sm leading-6 text-gray-600">{label}</p>
+            <div className="mt-6 flex rounded-lg border border-dashed  border-gray-900/25 px-3 py-3">
+                <input
+                    type="file"
+                    id={field}
+                    name="filename"
+                    accept=".pdf"
+                    className='w-2/3 font-serif'
+                    onChange={handleFileUploadChange}
+                    required={required}
+                />
+
+                {uploadFileRequest &&
+                    <button
+                        type='button'
+                        className="flex rounded-full mx-auto text-green-600 bg-green-400/10 ring-green-400/30 ring-1 ring-inset ring-green-500  px-2  py-1.5 text-xs  shadow-sm hover:bg-green-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                        onClick={uploadFileRequest} >
+                        Upload
+                    </button>}
+
+            </div>
+        </div>
+    )
+}

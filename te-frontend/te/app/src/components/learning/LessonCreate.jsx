@@ -7,7 +7,7 @@ import { setNestedPropertyValue } from '../../utils'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
 import SuccessFeedback from '../custom/Alert/SuccessFeedback'
-import { FormSelect, FormInputWithValidation } from '../custom/FormInputs'
+import { FormSelect, FormInputWithValidation, FileUpload } from '../custom/FormInputs'
 
 const lessonFormats = {
     "Video": "video", "Document (File)": "document", "Document (Link)": "document", "Web page": "html"
@@ -43,7 +43,7 @@ const LessonCreate = ({ setAddLesson, lessonCategories }) => {
             setUploadingFile(true)
             const formData = new FormData();
             formData.append('file', file);
-            console.log(formData, file)
+
             axiosInstance.post("/learning.file.upload", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -108,16 +108,10 @@ const LessonCreate = ({ setAddLesson, lessonCategories }) => {
                         {
                             lessonData.format === "Document (File)" ?
                                 (lessonData.link === "" ?
-                                    <div className=" ">
-                                        <p className="text-sm leading-6 text-gray-600">Please upload the File first.</p>
-                                        <div className="flex">
-                                            <input type="file" id="myFile" name="filename" accept=".pdf" className='w-2/3 font-serif' onChange={handleFileUploadChange} />
-                                            <button
-                                                type='button'
-                                                className="flex rounded-full mx-auto text-green-600 bg-green-400/10 ring-green-400/30 ring-1 ring-inset ring-green-500  px-2  py-1.5 text-xs  shadow-sm hover:bg-green-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-                                                onClick={uploadFileRequest} > Upload</button>
-                                        </div>
-                                    </div> :
+                                    <FileUpload
+                                        label={"Please upload file first"} field={"file"}
+                                        handleFileUploadChange={handleFileUploadChange}
+                                        uploadFileRequest={uploadFileRequest} /> :
                                     <div className='flex'>
                                         <p className="mt-1 text-sm  text-gray-600 w-2/3">{file.name ?? ""}</p>
                                         <button onClick={() => handleInputChange({ field: "link", value: "" })}>X</button>

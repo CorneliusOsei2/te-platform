@@ -10,12 +10,15 @@ import ApplicationInfo from '../components/application/ApplicationInfo'
 import ApplicationUpdate from '../components/application/ApplicationUpdate'
 import Modal from '../components/custom/Modal'
 import { useData } from '../context/DataContext'
+import { Loading } from '../components/custom/Loading'
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
 const Applications = () => {
     const { userId, accessToken, logout } = useAuth();
     const { fetchApplications, setFetchApplications, applications, setApplications } = useData();
+
+    const [loading, setLoading] = useState(true);
 
     const [applicationId, setApplicationId] = useState(null);
     const [application, setApplication] = useState(null);
@@ -123,9 +126,10 @@ const Applications = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+
             if (fetchApplications && accessToken) {
                 await getUserApplicationsRequest();
-                setFetchApplications(false);
+                setTimeout(() => setFetchApplications(false), 1000);
             }
         };
 
@@ -137,14 +141,29 @@ const Applications = () => {
 
     return (
         <>
-            {accessToken === null ?
-                <div className="flex flex-col  justify-center w-full  h-full overflow-hidden '">
-                    {/* Account for smaller screens */}
-                    <img
-                        src="applicationsImg.png" alt=""
-                        className='hidden xl:flex mx-auto w-full h-full   opacity-50 transition-opacity'
-                    />
+            <div className="lg:pr-36 ">
+                <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+                    <h1 className="text-base ml-4  font-semibold leading-7 text-cyan-800">Applications</h1>
+                    {!fetchApplications &&
+                        (accessToken &&
+                            <>
+                                <button
+                                    type="button"
+                                    className="mt-1 animate-bounce rounded-full bg-green-400 p-1 text-gray-900 shadow-sm hover:bg-green-600 hover:animate-none"
+                                    onClick={() => setAddApplication(true)}
+                                >
+                                    <PlusIcon className="h-5 w-5 " aria-hidden="true" />
+                                </button>
+                                <MenuViewOptionsDropdown sortOptions={sortOptions} handler={handleApplicationsSortBy} />
+                            </>)}
+                </header>
+            </div>
 
+            {fetchApplications && <Loading />}
+
+            {
+                (!fetchApplications && !accessToken) &&
+                <div className="flex flex-col  justify-center w-full  h-full overflow-hidden '">
                     <Modal
                         content={
                             <a href='/login' className="mt-3 m-auto sm:ml-4 flex  py-12 justify-center sm:mt-0 sm:text-left">
@@ -161,29 +180,22 @@ const Applications = () => {
                             </a>
                         } />
                 </div>
+            }
 
-                : <div className="lg:pr-36 ">
-                    <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-                        <h1 className="text-base ml-4  font-semibold leading-7 text-cyan-800">Applications</h1>
-                        <button
-                            type="button"
-                            className="mt-1 animate-bounce rounded-full bg-green-400 p-1 text-gray-900 shadow-sm hover:bg-green-600 hover:animate-none"
-                            onClick={() => setAddApplication(true)}
-                        >
-                            <PlusIcon className="h-5 w-5 " aria-hidden="true" />
-                        </button>
-                        <MenuViewOptionsDropdown sortOptions={sortOptions} handler={handleApplicationsSortBy} />
-                    </header>
-
+            {
+                !fetchApplications &&
+                (<div className="lg:pr-36 ">
                     <div className="flex w-full justify-between">
                         <button
                             type="button"
                             className="ml-3   justify-between px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset text-sky-600 bg-sky-400/10 ring-sky-400/20 hover:bg-sky-700 hover:text-white"
                             onClick={handleSelection}
                         >
-                            {allowSelection ?
-                                <>Disable Selection <XMarkIcon className="h-5 w-5 ml-3" aria-hidden="true" /></> :
-                                <>Enable Selection <ArchiveBoxIcon className="h-5 w-5 ml-3" aria-hidden="true" /></>
+                            {
+                                !fetchApplications &&
+                                (allowSelection ?
+                                    <>Disable Selection <XMarkIcon className="h-5 w-5 ml-3" aria-hidden="true" /></> :
+                                    <>Enable Selection <ArchiveBoxIcon className="h-5 w-5 ml-3" aria-hidden="true" /></>)
                             }
                         </button>
 
@@ -213,6 +225,7 @@ const Applications = () => {
                                 </div>
                             </>
                         }
+
                     </div>
 
                     <ul className="divide-y divide-white/5 list-none mt-3">
@@ -250,9 +263,11 @@ const Applications = () => {
                         setApplication={setApplication}
                         setUpdateApplication={setUpdateApplication}
                     />}
+                </div >
+                )
+            }
 
 
-                </div >}
         </>
     )
 }

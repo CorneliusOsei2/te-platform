@@ -1,17 +1,13 @@
-
 import { Tab } from '@headlessui/react'
 import { useEffect, useState, useCallback } from 'react'
 import { XMarkIcon, ClipboardIcon } from '@heroicons/react/20/solid'
-import { ExclamationTriangleIcon, PencilIcon } from '@heroicons/react/20/solid'
+import { PencilIcon } from '@heroicons/react/20/solid'
 import { copyTextToClipboard } from '../../utils'
 import { useData } from '../../context/DataContext'
 import axiosInstance from '../../axiosConfig'
 import { useAuth } from '../../context/AuthContext'
 import MissingData from '../custom/Alert/MissingData'
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
 
 const Essay = () => {
     const { userId, accessToken } = useAuth();
@@ -48,7 +44,7 @@ const Essay = () => {
             .catch((error) => {
                 console.log(error);
             })
-    });
+    }, [accessToken, setEssay, userId]);
 
     useEffect(() => {
         if (fetchEssay && accessToken) {
@@ -119,14 +115,14 @@ const Essay = () => {
                                     cols={100}
                                     name="comment"
                                     id="comment"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
                                     defaultValue={essay}
                                     onChange={(e) => { setEssayBody(e.target.value) }}
                                 />
                                 <div className="mt-2 flex justify-center">
                                     <button
                                         type="button"
-                                        className="inline-flex items-center rounded-full bg-yellow-100 px-3 py-2 text-sm font-semibold text-yellow-700 shadow-sm hover:bg-yellow-500 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                        className="inline-flex items-center rounded-full bg-yellow-100 px-3 py-2 text-sm font-semibold text-yellow-700 shadow-sm hover:bg-yellow-500 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
                                         onClick={(_) => { setUpdateEssay(false); updateEssayRequest(); }}
                                     >
                                         Save

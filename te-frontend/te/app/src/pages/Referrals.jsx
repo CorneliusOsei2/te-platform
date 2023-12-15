@@ -5,6 +5,7 @@ import { useData } from '../context/DataContext'
 import ReferralCreate from '../components/referral/ReferralCreate'
 import { ArchiveBoxIcon } from '@heroicons/react/20/solid'
 import MenuViewOptionsDropdown from '../components/custom/MenuViewOptionsDropdown'
+import { Loading } from '../components/custom/Loading'
 
 const referralStatuses = {
     "Requested": "bg-blue-50 text-blue-700  ring-blue-600/20",
@@ -104,7 +105,7 @@ const Referrals = () => {
     useEffect(() => {
         const fetchData = async () => {
             await referralCompaniesRequest();
-            setFetchReferralCompanies(false);
+            setTimeout(() => setFetchReferralCompanies(false), 1000);
         }
         if (fetchReferralCompanies && accessToken) {
             fetchData();
@@ -113,12 +114,15 @@ const Referrals = () => {
 
     return (
         <>
-            {accessToken === null ?
+            <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+                <h1 className="text-base ml-4  font-semibold leading-7 text-cyan-800">Resume and Essay (Cover Letter)</h1>
+            </header>
+
+            {fetchReferralCompanies && <Loading />}
+
+            {
+                (!fetchReferralCompanies && !accessToken) &&
                 <div className="flex flex-col  justify-center  h-full overflow-hidden'">
-                    <img
-                        src="loginParrotReferrals.png" alt=""
-                        className='transition-shadow mx-auto opacity-80  animate-pulse  h-2/3'
-                    />
                     <button
                         type="button"
                         className="mt-12 mx-auto w-36 justify-center px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset  bg-sky-700 text-white hover:bg-white hover:text-sky-700"
@@ -127,12 +131,10 @@ const Referrals = () => {
                     </button>
 
                 </div>
-                : <div className="lg:pr-72 ">
-                    <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-                        <h1 className="text-base ml-4  font-semibold leading-7 text-cyan-800">Resume and Essay (Cover Letter)</h1>
+            }
 
-                    </header>
-
+            {(!fetchReferralCompanies && accessToken) &&
+                <div className="lg:pr-72 ">
                     <div className="flex justify-end mr-6">
                         <MenuViewOptionsDropdown sortOptions={showOptions} handler={handleShowReferrals} />
                     </div>

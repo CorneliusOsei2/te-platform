@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import Essay from "../components/file/Essay";
-import { ExclamationTriangleIcon, PaperClipIcon, MagnifyingGlassIcon, DocumentIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
+import { PlusIcon, PaperClipIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import axiosInstance from "../axiosConfig";
 import { useData } from "../context/DataContext";
 import { useAuth } from "../context/AuthContext";
-import FileUpload from "../components/file/FileUpload";
+import FileCreate from "../components/file/FileCreate";
 import MissingData from "../components/custom/Alert/MissingData";
 
 const Files = () => {
     const { userId, accessToken, logout } = useAuth();
     const { resumes, otherFiles, setResumes } = useData();
-    const [showResume, setShowResume] = useState(true);
-    const [uploadFile, setUploadFile] = useState(false)
+
+    const [addFile, setAddFile] = useState(false);
+    const [reviewResume, setReviewResume] = useState(false);
 
 
     const uploadFileRequest = useCallback(async () => {
@@ -48,7 +49,7 @@ const Files = () => {
                     </button>
                 </div>
                 :
-                <div className="lg:pr-72 ">
+                <div className="">
                     <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
                         <h1 className="text-base ml-4  font-semibold leading-7 text-cyan-800">Resume and Other Files</h1>
                     </header>
@@ -56,41 +57,29 @@ const Files = () => {
                     <div className="flex mx-6">
                         <div className="w-full lg:grid lg:grid-cols-12 lg:gap-x-8">
                             <div className="pb-24  sm:pb-32 lg:col-span-5 lg:px-0 lg:pb-56  h-screen ">
-                                <div className="w-full lg:mx-0">
-                                    <div className="mt-10 w-full flex flex-col">
-                                        <div className="mt-3 text-lg sm:w-96  lg:w-72 xl:w-96 mx-auto  text-gray-600 ">
-                                            <Essay />
-                                        </div>
-                                    </div>
-                                    <div className="flex mt-10">
-                                        <button
-                                            type="button"
-                                            className="flex rounded-full mx-auto text-green-600 bg-green-400/10 ring-green-400/30 ring-1 ring-inset ring-green-500  px-4 py-2.5 text-xs font-semibold  shadow-sm hover:bg-green-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-                                            onClick={() => setShowResume(!showResume)}>
-                                            Download Resume <ArrowDownIcon className="ml-3 h-5 w-5" />
-                                        </button>
-                                    </div>
-                                    <div className="flex mt-10">
-                                        <button
-                                            type="button"
-                                            className="flex rounded-full mx-auto text-red-600 bg-red-400/10 ring-red-400/30 ring-1 ring-inset ring-red-500  px-4 py-2.5 text-xs font-semibold  shadow-sm hover:bg-red-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                                            onClick={() => setUploadFile(true)}>
-                                            Upload new resume <DocumentIcon className="ml-3 h-5 w-5" />
-                                        </button>
-                                    </div>
-                                    <div className="flex mt-10">
-                                        <button
-                                            type="button"
-                                            className="flex rounded-full mx-auto text-yellow-600 bg-yellow-400/10 ring-yellow-400/30 ring-1 ring-inset ring-yellow-500  px-4 py-2.5 text-xs font-semibold  shadow-sm hover:bg-yellow-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
-                                            onClick={() => setShowResume(!showResume)}>
-                                            Request Resume Review <MagnifyingGlassIcon className="ml-3 h-5 w-5" />
-                                        </button>
-                                    </div>
+                                <div className="mt-3 text-lg sm:w-96  lg:w-72 xl:w-96 mx-auto  text-gray-600 ">
+                                    <Essay />
                                 </div>
                             </div>
 
                             <div className="w-full  lg:col-span-7 xl:relative xl:inset-0  xl:mr-6 h-screen">
-                                <h3 className="text-base text-left mt-6 ml-4  font-semibold leading-7 text-cyan-800">Resumes</h3>
+                                <header className="flex items-center justify-between border-b border-white /5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+                                    <h1 className="text-base  font-semibold  text-cyan-800">Resumes</h1>
+                                    <button
+                                        type="button"
+                                        className="mt-1 mr-3 animate-bounce rounded-full bg-green-400 p-1 text-gray-900 shadow-sm hover:bg-green-600 hover:animate-none"
+                                        onClick={() => setAddFile(true)}
+                                    >
+                                        <PlusIcon className="h-5 w-5 " aria-hidden="true" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="flex rounded-full text-xs text-yellow-600 bg-yellow-400/10 ring-yellow-400/30 ring-1 ring-inset ring-yellow-500 pl-2  px-1 py-1 font-semibold  shadow-sm hover:bg-yellow-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600"
+                                        onClick={() => setReviewResume(true)}
+                                    >
+                                        Request a review <MagnifyingGlassIcon className="ml-1 h-5 w-5 " aria-hidden="true" />
+                                    </button>
+                                </header>
                                 <div className=" px-4 py-6 sm:col-span-2 sm:px-0">
                                     <dd className="mt-2 text-sm text-gray-900">
                                         {resumes.length === 0 ? <MissingData info="No resume(s) uploaded." />
@@ -145,7 +134,8 @@ const Files = () => {
                         </div>
                     </div>
 
-                    {uploadFile && <FileUpload setFileUpload={setUploadFile} />}
+                    {addFile && <FileCreate addFile={setAddFile} />}
+
                 </div>}
         </>
     )
