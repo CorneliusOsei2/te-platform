@@ -47,10 +47,11 @@ class CompanyRead(CompanyReadBase):
 
 class ReferralRequest(BaseModel):
     company_id: int
+    job_title: str
     role: str
     request_note: str
     resume: str
-    date: str = date.today().strftime("%Y-%m-%d")
+    date: str = date.today().strftime("%d-%m-%Y")
 
 
 class ReferralStatuses(Enum):
@@ -61,6 +62,7 @@ class ReferralStatuses(Enum):
 
 class ReferralReadBase(BaseModel):
     user_id: int
+    job_title: str
     role: str
     review_note: str | None = ""
     date: str

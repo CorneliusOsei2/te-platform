@@ -90,7 +90,7 @@ def read_user_referrals(
 
     return (
         db.query(company_models.Referral)
-        .filter(company_models.Referral.user_id == user_id )
+        .filter(company_models.Referral.user_id == user_id)
         .all()
     )
 
@@ -107,6 +107,7 @@ def request_referral(
     referral = company_models.Referral(
         user_id=user_id,
         company_id=data.company_id,
+        job_title=data.job_title,
         role=data.role,
         request_note=data.request_note,
         status=company_schema.ReferralStatuses.in_review,

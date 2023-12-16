@@ -7,7 +7,7 @@ import { FormInput, FormSelect, FormTextArea } from "../custom/FormInputs";
 import { setNestedPropertyValue } from "../../utils";
 import MissingData from "../custom/Alert/MissingData";
 import { useAuth } from "../../context/AuthContext";
-import { jobRoles } from "../../data/data";
+import { jobRoles, jobTitles } from "../../data/data";
 
 
 const referralAction = (resumes, essay, contact) => {
@@ -42,6 +42,7 @@ const ReferralCreate = ({ company, setReferralCompanyId }) => {
     const [referralData, setReferralData] = useState({
         company_id: company.id,
         resume: "",
+        job_title: "",
         role: "",
         request_note: ""
     });
@@ -53,11 +54,13 @@ const ReferralCreate = ({ company, setReferralCompanyId }) => {
     )
 
     const createReferralRequest = async () => {
-        await axiosInstance.post(`/users.${userId}.referrals.create`, referralData, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
+        console.log(referralData)
+        await axiosInstance.post(`/users.${userId}.referrals.create`, referralData,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                }
             }
-        }
         ).then((response) => {
             let data = response.data;
             console.log(data);
@@ -73,7 +76,6 @@ const ReferralCreate = ({ company, setReferralCompanyId }) => {
             setNestedPropertyValue({ ...prevAppData }, field, value)
         );
     };
-
 
 
     return (
@@ -105,6 +107,16 @@ const ReferralCreate = ({ company, setReferralCompanyId }) => {
                                     </div>
                                 </div>
 
+                                <FormSelect label="Title" field="job_title" data={jobTitles} handleInputChange={handleInputChange} required={true} />
+                                {referralData.role === "Other....." &&
+                                    <FormInput
+                                        placeholder="Specify job title: "
+                                        field="job_title_other"
+                                        handleInputChange={handleInputChange}
+                                        required={true}
+                                    />
+                                }
+
                                 <FormSelect label="Role" field="role" data={jobRoles} handleInputChange={handleInputChange} required={true} />
                                 {referralData.role === "Other....." &&
                                     <FormInput
@@ -114,6 +126,7 @@ const ReferralCreate = ({ company, setReferralCompanyId }) => {
                                         required={true}
                                     />
                                 }
+
 
                                 <FormSelect
                                     label={"Select Resume"}

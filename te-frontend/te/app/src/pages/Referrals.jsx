@@ -12,6 +12,7 @@ import ReferralActivity from '../components/referral/ReferralActivity'
 const Referrals = () => {
     const { accessToken, userId } = useAuth();
     const {
+        setReferrals,
         fetchReferralCompanies,
         setFetchReferralCompanies,
         referralCompanies,
@@ -49,26 +50,13 @@ const Referrals = () => {
             },
         })
             .then((response) => {
-                setUserReferralCompanies(response.data.referrals);
-                console.log(response.data.referrals);
+                setReferrals(response.data.referrals);
             })
             .catch((error) => {
                 console.log(error);
             });
-    }, [accessToken, userId]);
+    }, [accessToken, setReferrals, userId]);
 
-    const handleShowReferrals = (option) => {
-        switch (option) {
-            case "Referred to":
-                setShownCompanies(referralCompanies.filter((company) => company.referred === true))
-                break
-            case "Not referred to":
-                setShownCompanies(referralCompanies.filter((company) => company.referred === false))
-                break
-            default:
-                setShownCompanies(referralCompanies)
-        }
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -91,7 +79,7 @@ const Referrals = () => {
 
             {
                 (!fetchReferralCompanies && !accessToken) &&
-                <div className="flex flex-col  justify-center  h-fu96'">
+                <div className="flex flex-col  justify-center '">
                     <button
                         type="button"
                         className="mt-12 mx-auto w-36 justify-center px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset  bg-sky-700 text-white hover:bg-white hover:text-sky-700"
@@ -104,7 +92,7 @@ const Referrals = () => {
 
             {(!fetchReferralCompanies && accessToken) &&
                 <>
-                    <div className="lg:pr-96 overflow-hidden">
+                    <div className="lg:w-3/6 overflow-hidden">
                         <div className="px-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                             <div className="inline-block w-full lg:w-11/12 py-2 align-middle sm:px-6 lg:px-8">
                                 <table className="min-w-full divide-y divide-gray-300">
@@ -127,7 +115,7 @@ const Referrals = () => {
                                                 <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                     <div className="flex items-center">
                                                         <div className="mr-3">
-                                                            <img className="h-5 w-5 rounded-full" src={company.image} alt="" />
+                                                            <img className="h-5 w-5" src={company.image} alt="" />
                                                         </div>
                                                         <div className="font-medium text-gray-900">{company.name}</div>
                                                     </div>

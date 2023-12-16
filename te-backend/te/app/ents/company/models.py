@@ -51,6 +51,7 @@ class Referral(Base):
     id = Column(Integer, primary_key=True)
     date = Column(String, nullable=False)
     role = Column(String, nullable=False)
+    job_title = Column(String, nullable=False)
     request_note = Column(String, nullable=True)
     review_note = Column(String, nullable=True)
     status = Column(Enum(company_schema.ReferralStatuses))

@@ -12,7 +12,6 @@ import Sidebar from '../custom/Sidebar'
 import FilesAndEssay from '../../pages/FilesAndEssay'
 import Referrals from '../../pages/Referrals'
 import Learning from '../../pages/Learning'
-import { BrowserRouter, Routes } from 'react-router-dom'
 import { useData } from '../../context/DataContext'
 import { useAuth } from '../../context/AuthContext'
 import Profile from './Profile'
@@ -31,19 +30,27 @@ const navigation = [
 
 const Workspace = ({ setLogin }) => {
     const { userId, accessToken, logout } = useAuth();
-    const { setResumes, setOtherFiles, fetchFiles, setFetchFiles } = useData();
+    const { setUserInfo, setResumes, setOtherFiles, fetchFiles, setFetchFiles } = useData();
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [content, setContent] = useState("Applications")
 
-    useEffect(() => {
-        let prevContent = sessionStorage.getItem('content');
-        console.log(prevContent)
-        if (prevContent) {
-            setContent(prevContent);
-        }
-    }, [content]);
-
+    const getUserInfoRequest = useCallback(async () => {
+        axiosInstance.get(`/users.${userId}.info`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        })
+            .then((response) => {
+                setUserInfo(response.data.user)
+                console.log(response.data.user)
+            })
+            .catch((error) => {
+                if (error.response.status === 401) {
+                    logout();
+                }
+            })
+    }, [accessToken, logout, setUserInfo, userId]);
 
     const getUserFilesRequest = useCallback(async () => {
         axiosInstance.get(`/users.${userId}.files.list`, {
@@ -64,6 +71,22 @@ const Workspace = ({ setLogin }) => {
 
 
     useEffect(() => {
+        let prevContent = sessionStorage.getItem('content');
+        if (prevContent) {
+            setContent(prevContent);
+        }
+    }, [content]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await getUserInfoRequest();
+        }
+        if (accessToken) {
+            fetchData();
+        }
+    }, [])
+
+    useEffect(() => {
         const fetchData = async () => {
             await getUserFilesRequest();
         }
@@ -73,18 +96,14 @@ const Workspace = ({ setLogin }) => {
         }
     }, [accessToken, fetchFiles, getUserFilesRequest, setFetchFiles])
 
+
+
+
+
     const setContentHandler = (value) => {
         setContent(value);
         sessionStorage.setItem('content', value);
     }
-
-    // useEffect(() => {
-    //     if (fetchFiles && accessToken) {
-    //         getUserResumesRequest();
-    //         setFetchFiles(false);
-    //     }
-    // }, [accessToken, fetchFiles, getUserResumesRequest, setFetchFiles])
-
 
     return (
         <>
