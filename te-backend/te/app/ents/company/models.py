@@ -17,7 +17,7 @@ class Posting(Base):
     __tablename__ = "postings"
     id = Column(Integer, primary_key=True)
     date = Column(String, nullable=False)
-    deadline = Column(String, nullable=False)
+    deadline = Column(String, nullable=True)
     notes = Column(String, nullable=False)
     sponsor = Column(Boolean, nullable=False)
     recruiter_name = Column(String, nullable=False)

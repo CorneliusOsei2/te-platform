@@ -58,7 +58,7 @@ const Learning = () => {
         const fetchData = async () => {
             if (fetchLessons) {
                 await getLessonsRequest();
-                setTimeout(() => setFetchLessons(false), 1000);
+                setTimeout(() => setFetchLessons(false), 700);
             }
         };
 

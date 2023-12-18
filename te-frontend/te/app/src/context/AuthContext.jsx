@@ -18,7 +18,7 @@ const authReducer = (state, action) => {
 }
 
 export const AuthProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, { userId: null, accessToken: null });
+  const [state, dispatch] = useReducer(authReducer, { currentUser: null, userId: null, accessToken: null });
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');

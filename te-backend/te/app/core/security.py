@@ -44,14 +44,8 @@ def create_access_token(
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Checks if `plain_password` is `hashed_password`.
-
-    Args:
-        plain_password (str): User input password.
-        hashed_password (str): Hashed password with passlib
-
-    Returns:
-        bool: If the two passwords are same.
+    """
+    Checks if `plain_password` is `hashed_password`.
     """
     return pwd_context.verify(plain_password, hashed_password)
 

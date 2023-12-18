@@ -54,7 +54,6 @@ const ReferralCreate = ({ company, setReferralCompanyId }) => {
     )
 
     const createReferralRequest = async () => {
-        console.log(referralData)
         await axiosInstance.post(`/users.${userId}.referrals.create`, referralData,
             {
                 headers: {

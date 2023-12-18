@@ -91,7 +91,7 @@ def read_user_applications(
 ) -> list[application_models.Application]:
     user = user_crud.read_user_by_id(db, id=user_id)
     if not user:
-        ...
+        raise
     return user.applications
 
 

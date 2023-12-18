@@ -2,7 +2,6 @@ import { Fragment, useCallback, useState } from 'react'
 import { LinkIcon, PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/20/solid'
 import { useEffect } from 'react'
 import axiosInstance from '../../axiosConfig';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
 import SlideOverInfo from '../custom/SlideOver/SlideOverInfo'
 import { useAuth } from '../../context/AuthContext'
@@ -28,11 +27,13 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
     const { setFetchApplications } = useData();
 
     const getUserApplicationRequest = useCallback(async () => {
-        axiosInstance.get(`/users.${userId}.applications.${applicationId}.info`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
+        console.log(userId);
+        axiosInstance.get(`/users.${userId}.applications.${applicationId}.info`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
             .then((response) => {
                 setApplication(response.data.application)
             })

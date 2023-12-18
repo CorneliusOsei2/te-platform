@@ -33,7 +33,7 @@ class UserBase(BaseModel):
     mentor_id: int | None = None
     is_active: bool = True
     role: UserRoles = UserRoles.mentee
-    start_date: str = date.today().strftime("%Y-%m-%d")
+    start_date: str = date.today().strftime("%d-%m-%Y")
     end_date: str = ""
 
 

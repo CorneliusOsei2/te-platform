@@ -72,12 +72,14 @@ const Applications = () => {
         }).then((response) => {
             let apps = response.data.applications.map((application) => ({ ...application, selected: false }));
             setApplications(apps);
+            setFetchApplications(false);
         }).catch((error) => {
             if (error.response.status === 401) {
                 logout();
             }
+            setFetchApplications(false);
         })
-    }, [userId, accessToken, setApplications, logout]);
+    }, [userId, accessToken, setApplications, setFetchApplications, logout]);
 
     const archiveUserApplicationRequest = useCallback((applicationIds) => {
         axiosInstance.put(`/users.${userId}.applications.archive`, applicationIds, {
@@ -128,7 +130,7 @@ const Applications = () => {
         const fetchData = async () => {
             if (fetchApplications && accessToken) {
                 await getUserApplicationsRequest();
-                setTimeout(() => setFetchApplications(false), 1000);
+                setTimeout(() => setFetchApplications(false), 700);
             }
         };
 
@@ -245,7 +247,7 @@ const Applications = () => {
                         />
                     }
 
-                    {(applicationId !== null && !updateApplication) &&
+                    {(applicationId && !updateApplication) &&
                         <ApplicationInfo
                             applicationId={applicationId}
                             setApplicationId={setApplicationId}

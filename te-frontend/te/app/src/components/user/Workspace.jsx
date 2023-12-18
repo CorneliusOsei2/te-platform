@@ -84,7 +84,7 @@ const Workspace = ({ setLogin }) => {
         if (accessToken) {
             fetchData();
         }
-    }, [])
+    }, [accessToken, getUserInfoRequest])
 
     useEffect(() => {
         const fetchData = async () => {
