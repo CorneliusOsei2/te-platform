@@ -26,13 +26,11 @@ export const DataProvider = ({ children }) => {
     const [resumes, setResumes] = useState([]);
     const [otherFiles, setOtherFiles] = useState([]);
 
-    const [fetchEssay, setFetchEssay] = useState(true);
-    const [essay, setEssay] = useState([]);
-
-    const [contact, setContact] = useState("");
 
     const [fetchCompanies, setFetchCompanies] = useState(true);
     const [companies, setCompanies] = useState(["Microsoft", "Google", "Meta"]);
+
+
 
 
     return (
@@ -65,12 +63,6 @@ export const DataProvider = ({ children }) => {
             setResumes,
             otherFiles,
             setOtherFiles,
-            fetchEssay,
-            setFetchEssay,
-            essay,
-            setEssay,
-            contact,
-            setContact
         }}>
             {children}
         </DataContext.Provider>

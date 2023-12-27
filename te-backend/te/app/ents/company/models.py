@@ -100,6 +100,5 @@ class Company(Base):
 
 class CompanyLocationRel(Base):
     __tablename__ = "companies_locations_rel"
-    __table_args__ = {"extend_existing": True}
     company_id = Column(Integer, ForeignKey("companies.id"), primary_key=True)
     location_id = Column(Integer, ForeignKey("locations.id"), primary_key=True)

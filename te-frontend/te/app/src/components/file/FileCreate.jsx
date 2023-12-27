@@ -4,11 +4,11 @@ import { DocumentIcon } from '@heroicons/react/20/solid'
 import axiosInstance from "../../axiosConfig";
 import { useData } from "../../context/DataContext";
 import { useAuth } from "../../context/AuthContext";
-import SlideOverForm from "../custom/SlideOver/SlideOverCreate";
-import { FileUpload, FormSelect } from "../custom/FormInputs";
+import SlideOverForm from "../_custom/SlideOver/SlideOverCreate";
+import { FileUpload, FormSelect } from "../_custom/FormInputs";
 import { setNestedPropertyValue } from "../../utils";
-import SuccessFeedback from "../custom/Alert/SuccessFeedback";
-import { Loading } from "../custom/Loading";
+import SuccessFeedback from "../_custom/Alert/SuccessFeedback";
+import { Loading } from "../_custom/Loading";
 
 
 const FileCreate = ({ setFileUpload }) => {

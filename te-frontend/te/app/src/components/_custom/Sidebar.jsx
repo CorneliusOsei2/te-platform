@@ -3,9 +3,12 @@ import { Dialog, Transition } from '@headlessui/react'
 import {
     Bars3Icon,
     XMarkIcon,
+    PlusIcon
 
 } from '@heroicons/react/24/outline'
 import { useAuth } from '../../context/AuthContext'
+import { useData } from '../../context/DataContext'
+import CompanyCreate from '../company/CompanyCreate'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -13,7 +16,12 @@ function classNames(...classes) {
 
 const Sidebar = ({ navigation, content, setContent, setLogin }) => {
     const { accessToken, logout } = useAuth();
+    const { userInfo } = useData();
     const [sidebarOpen, setSidebarOpen] = useState(false)
+
+    const [createCompany, setCreateCompany] = useState(false);
+
+
     return (
         <>
             <div className="">
@@ -104,12 +112,19 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                 {/* Static sidebar for desktop */}
                 <div className="hidden md:fixed md:inset-y-0 lg:z-50 md:flex md:w-72 lg:flex-col bg-sky-900">
                     <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200  px-6">
-                        <div className="flex h-16 shrink-0 items-center">
+                        <div className="flex h-16 shrink-0 items-center justify-between">
                             <img
                                 className="h-8 w-auto"
                                 src="https://media.licdn.com/dms/image/C560BAQF-SVzS4qtXJQ/company-logo_100_100/0/1660174624525?e=1707350400&v=beta&t=IFZNDSfFIjzoJ6e657Oh4kEoyKRPvfnigmVojlINTC8"
                                 alt="Your Company"
                             />
+                            <button
+                                type="button"
+                                className="mt-1  rounded-full bg-red-400 p-1 text-gray-900 shadow-sm hover:bg-red-600 hover:animate-none"
+                                onClick={() => setCreateCompany(true)}
+                            >
+                                <PlusIcon className="h-5 w-5 " aria-hidden="true" />
+                            </button>
                         </div>
                         <nav className="flex flex-1 flex-col">
                             <ul className="flex flex-1 flex-col gap-y-7">
@@ -195,20 +210,20 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                     </ul>
                                 </li>
 
-                                <li className="-mx-6 mt-auto flex"></li>
+                                <li className="mt-auto flex"></li>
 
-                                <li className='flex justify-between'>
+                                <li className='-mx-6  flex justify-between'>
                                     <button
                                         className="flex items-center gap-x-4 py-3 text-sm font-semibold leading-6 text-gray-900"
                                         onClick={() => setContent("Profile")}
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-50"
-                                            src=''
+                                            src={userInfo.image}
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true" className='text-gray-100'>Tom Cook</span>
+                                        <span aria-hidden="true" className='text-gray-100'>{(userInfo?.first_name ?? "") + " " + (userInfo?.last_name ?? "")}</span>
                                     </button>
 
                                     {!accessToken &&
@@ -237,12 +252,19 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                         <span className="sr-only">Open sidebar</span>
                         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     </button>
-                    <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">
+                    <div className="flex-1 text-sm font-semibold leading-6 text-gray-900 justify-between flex-row">
                         <img
                             className="h-8 mx-auto"
                             src="https://media.licdn.com/dms/image/C560BAQF-SVzS4qtXJQ/company-logo_100_100/0/1660174624525?e=1707350400&v=beta&t=IFZNDSfFIjzoJ6e657Oh4kEoyKRPvfnigmVojlINTC8"
                             alt="Your Company"
                         />
+                        <button
+                            type="button"
+                            className="mt-1 animate-spin rounded-full bg-red-400 p-1 text-gray-900 shadow-sm hover:bg-red-600 hover:animate-none"
+                            onClick={() => setCreateCompany(true)}
+                        >
+                            <PlusIcon className="h-5 w-5 " aria-hidden="true" />
+                        </button>
                     </div>
                     <a href="/">
                         <span className="sr-only">Your profile</span>
@@ -253,8 +275,9 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                         />
                     </a>
                 </div>
-
             </div>
+
+            {createCompany && <CompanyCreate />}
 
         </>
     )

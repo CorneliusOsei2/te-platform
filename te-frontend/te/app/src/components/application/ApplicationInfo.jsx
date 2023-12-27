@@ -3,7 +3,7 @@ import { LinkIcon, PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/20/s
 import { useEffect } from 'react'
 import axiosInstance from '../../axiosConfig';
 
-import SlideOverInfo from '../custom/SlideOver/SlideOverInfo'
+import SlideOverInfo from '../_custom/SlideOver/SlideOverInfo'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
 

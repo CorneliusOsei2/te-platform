@@ -6,8 +6,8 @@ import { useEffect } from 'react'
 import axiosInstance from '../../axiosConfig';
 
 import { useAuth } from '../../context/AuthContext'
-import SlideOverUpdate from '../custom/SlideOver/SlideOverUpdate'
-import { FormSelect, FormInput } from '../custom/FormInputs'
+import SlideOverUpdate from '../_custom/SlideOver/SlideOverUpdate'
+import { FormSelect, FormInput } from '../_custom/FormInputs'
 import { setNestedPropertyValue } from '../../utils'
 import { jobStatuses } from './ApplicationInfo'
 import { customInputMap } from './ApplicationCreate'

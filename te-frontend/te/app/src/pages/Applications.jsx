@@ -3,14 +3,15 @@ import { PlusIcon, ArchiveBoxIcon, TrashIcon, XMarkIcon } from '@heroicons/react
 import { useAuth } from '../context/AuthContext'
 import { sortByField } from '../utils'
 import axiosInstance from '../axiosConfig'
-import MenuViewOptionsDropdown from '../components/custom/MenuViewOptionsDropdown'
+import MenuViewOptionsDropdown from '../components/_custom/MenuViewOptionsDropdown'
 import ApplicationItem from '../components/application/ApplicationItem'
 import ApplicationCreate from '../components/application/ApplicationCreate'
 import ApplicationInfo from '../components/application/ApplicationInfo'
 import ApplicationUpdate from '../components/application/ApplicationUpdate'
-import Modal from '../components/custom/Modal'
+import Modal from '../components/_custom/Modal'
 import { useData } from '../context/DataContext'
-import { Loading } from '../components/custom/Loading'
+import { Loading } from '../components/_custom/Loading'
+import { HttpStatusCode } from 'axios'
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
@@ -18,7 +19,7 @@ const Applications = () => {
     const { userId, accessToken, logout } = useAuth();
     const { fetchApplications, setFetchApplications, applications, setApplications } = useData();
 
-    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(true);
 
     const [applicationId, setApplicationId] = useState(null);
     const [application, setApplication] = useState(null);
@@ -70,16 +71,16 @@ const Applications = () => {
                 Authorization: `Bearer ${accessToken}`,
             },
         }).then((response) => {
-            let apps = response.data.applications.map((application) => ({ ...application, selected: false }));
-            setApplications(apps);
-            setFetchApplications(false);
+            setApplications(response.data.applications.map((application) => ({ ...application, selected: false })));
         }).catch((error) => {
-            if (error.response.status === 401) {
+            if (error.response.status === HttpStatusCode.Unauthorized && userId) {
                 logout();
             }
-            setFetchApplications(false);
+            else {
+                setError(error.response.data.detail);
+            }
         })
-    }, [userId, accessToken, setApplications, setFetchApplications, logout]);
+    }, [userId, accessToken, setApplications, logout]);
 
     const archiveUserApplicationRequest = useCallback((applicationIds) => {
         axiosInstance.put(`/users.${userId}.applications.archive`, applicationIds, {
@@ -90,8 +91,11 @@ const Applications = () => {
                 setApplicationId(null);
             })
             .catch(error => {
-                if (error.response.status === 401) {
+                if (error.response.status === HttpStatusCode.Unauthorized && userId) {
                     logout();
+                }
+                else {
+                    setError(error.response.data.detail);
                 }
             });
     }, [userId, accessToken, setFetchApplications, logout]);
@@ -105,15 +109,15 @@ const Applications = () => {
                 setApplicationId(null);
             })
             .catch(error => {
-                if (error.response.status === 401) {
+                if (error.response.status === HttpStatusCode.Unauthorized && userId) {
                     logout();
+                }
+                else {
+                    setError(error.response.data.detail);
                 }
             });
     }, [userId, accessToken, setFetchApplications, logout]);
 
-    const handleSelection = () => {
-        setAllowSelection(!allowSelection);
-    }
 
     const handleUserApplicationsArchive = () => {
         const applicationsToArchive = Object.entries(selectedApplications)
@@ -128,7 +132,7 @@ const Applications = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (fetchApplications && accessToken) {
+            if (fetchApplications) {
                 await getUserApplicationsRequest();
                 setTimeout(() => setFetchApplications(false), 700);
             }
@@ -190,7 +194,7 @@ const Applications = () => {
                         <button
                             type="button"
                             className="ml-3   justify-between px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset text-sky-600 bg-sky-400/10 ring-sky-400/20 hover:bg-sky-700 hover:text-white"
-                            onClick={handleSelection}
+                            onClick={() => setAllowSelection(!allowSelection)}
                         >
                             {
                                 !fetchApplications &&

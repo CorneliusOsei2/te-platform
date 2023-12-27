@@ -3,9 +3,9 @@ from enum import Enum
 from pydantic import BaseModel
 import app.ents.company.schema as company_schema
 
-class FileKind(str, Enum):
-    Resume: str = "Resume"
-    OtherFile: str = "OtherFile"
+class FileType(str, Enum):
+    resume: str = "Resume"
+    otherFile: str = "Other File"
     
 class Essay(BaseModel):
     essay: str
@@ -42,7 +42,7 @@ class ApplicationStatuses(Enum):
     oa: str = "OA"
     phone_interview: str = "Phone interview"
     final_interview: str = "Final interview"
-    hr_call: str = "HR"
+    hr: str = "HR"
     recruiter_call: str = "Recruiter call"
     offer: str = "Offer"
     not_now: str = "Not now"

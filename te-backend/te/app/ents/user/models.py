@@ -36,7 +36,11 @@ class User(Base):
     mentor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     company = relationship("Company", back_populates="users")
     company_id = Column(Integer, ForeignKey("companies.id"), nullable=True)
-    resumes = relationship("Resume", back_populates="user")
-    other_files = relationship("OtherFiles", back_populates="user")
+    files = relationship("File", back_populates="user")
     applications = relationship("Application", back_populates="user")
     referrals = relationship("Referral", back_populates="user")
+    resume_review_requests = relationship("ResumeReview", back_populates="requester", foreign_keys="[ResumeReview.requester_id]")
+    resume_reviews = relationship("ResumeReview", back_populates="reviewers", foreign_keys="[ResumeReview.reviewers_id]")
+
+
+    

@@ -112,3 +112,12 @@ export const FileUpload = ({ label, field, handleFileUploadChange, uploadFileReq
         </div>
     )
 }
+
+export const FormCheckBox = ({ label, field, handleInputChange }) => {
+    return (
+        <div className="block text-sm  leading-6 text-black font-semibold">
+            <label htmlFor={field} className='mr-2'>{label}</label>
+            <input id={field} type="checkbox" onChange={handleInputChange} />
+        </div>
+    )
+}

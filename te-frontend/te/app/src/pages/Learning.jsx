@@ -6,7 +6,7 @@ import axiosInstance from '../axiosConfig'
 import { useAuth } from '../context/AuthContext'
 import LessonCreate from '../components/learning/LessonCreate'
 import { useData } from '../context/DataContext'
-import { Loading } from '../components/custom/Loading'
+import { Loading } from '../components/_custom/Loading'
 
 let baseCategories = {
     "Fundamentals": ["Recursion", "Classes and Objects", "Mutability"],

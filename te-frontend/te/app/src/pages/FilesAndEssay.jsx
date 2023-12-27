@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import Essay from "../components/file/Essay";
 import { PlusIcon, PaperClipIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import axiosInstance from "../axiosConfig";
 import { useData } from "../context/DataContext";
 import { useAuth } from "../context/AuthContext";
 import FileCreate from "../components/file/FileCreate";
-import MissingData from "../components/custom/Alert/MissingData";
+import MissingData from "../components/_custom/Alert/MissingData";
 
 const Files = () => {
     const { accessToken } = useAuth();
@@ -14,6 +13,13 @@ const Files = () => {
 
     const [addFile, setAddFile] = useState(false);
     const [reviewResume, setReviewResume] = useState(false);
+
+    useEffect(() => {
+        if (accessToken) {
+            setTimeout(() => { }, 700);
+        }
+
+    }, []);
 
 
     return (

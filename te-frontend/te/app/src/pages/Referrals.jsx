@@ -4,21 +4,21 @@ import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import ReferralCreate from '../components/referral/ReferralCreate'
 import { XMarkIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid'
-import MenuViewOptionsDropdown from '../components/custom/MenuViewOptionsDropdown'
-import { Loading } from '../components/custom/Loading'
+import MenuViewOptionsDropdown from '../components/_custom/MenuViewOptionsDropdown'
+import { Loading } from '../components/_custom/Loading'
 import ReferralActivity from '../components/referral/ReferralActivity'
 
 
 const Referrals = () => {
     const { accessToken, userId } = useAuth();
     const {
+        userInfo,
         setReferrals,
         fetchReferralCompanies,
         setFetchReferralCompanies,
         referralCompanies,
         setReferralCompanies,
         resumes,
-        essay,
         contact
     } = useData();
 
@@ -62,7 +62,7 @@ const Referrals = () => {
         const fetchData = async () => {
             await getReferralCompaniesRequest();
             await getUserReferralCompaniesRequest();
-            setTimeout(() => setFetchReferralCompanies(false), 1000);
+            setTimeout(() => setFetchReferralCompanies(false), 700);
         }
         if (fetchReferralCompanies && accessToken) {
             fetchData();
@@ -129,7 +129,7 @@ const Referrals = () => {
                                                                 Resume
                                                             </li>}
                                                         {company.referral_materials.essay &&
-                                                            <li key="essay" className='flex'> {essay.length !== 0 ?
+                                                            <li key="essay" className='flex'> {userInfo?.essay?.length !== 0 ?
                                                                 <CheckCircleIcon className='text-green-600 mt-1' width="15" height="15" /> :
                                                                 <XCircleIcon className='text-red-600 mt-1' width="15" height="15" />}
                                                                 Essay

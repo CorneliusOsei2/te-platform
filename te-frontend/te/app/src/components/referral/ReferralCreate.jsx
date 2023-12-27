@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { DocumentIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import axiosInstance from "../../axiosConfig";
-import SlideOverForm from "../custom/SlideOver/SlideOverCreate";
+import SlideOverForm from "../_custom/SlideOver/SlideOverCreate";
 import { useData } from "../../context/DataContext";
-import { FormInput, FormSelect, FormTextArea } from "../custom/FormInputs";
+import { FormInput, FormSelect, FormTextArea } from "../_custom/FormInputs";
 import { setNestedPropertyValue } from "../../utils";
-import MissingData from "../custom/Alert/MissingData";
+import MissingData from "../_custom/Alert/MissingData";
 import { useAuth } from "../../context/AuthContext";
 import { jobRoles, jobTitles } from "../../data/data";
 
@@ -60,9 +60,7 @@ const ReferralCreate = ({ company, setReferralCompanyId }) => {
                     Authorization: `Bearer ${accessToken}`,
                 }
             }
-        ).then((response) => {
-            let data = response.data;
-            console.log(data);
+        ).then((_) => {
             setReferralCompanyId(null);
         })
             .catch((error) => {

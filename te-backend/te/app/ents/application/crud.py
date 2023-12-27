@@ -27,9 +27,7 @@ def read_application_by_id(
 def read_application_multi(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[application_models.Application]:
-    return (
-        db.query(application_models.Application).offset(skip).limit(limit).all()
-    )
+    return db.query(application_models.Application).offset(skip).limit(limit).all()
 
 
 def create_application(
@@ -55,10 +53,7 @@ def create_application(
 
     if not location:
         for loc in company.locations:
-            if (
-                loc.country == data.location.country
-                and loc.city == data.location.city
-            ):
+            if loc.country == data.location.country and loc.city == data.location.city:
                 location = loc
                 break
             if loc.country == data.location.country:
@@ -108,12 +103,12 @@ def read_user_application(
 
 def read_user_application_files(
     db: Session, *, user_id
-) -> tuple[application_models.Resume, application_models.OtherFiles]:
+) -> tuple[application_models.File]:
     user = user_crud.read_user_by_id(db, id=user_id)
     if not user:
         ...
 
-    return user.resumes, user.other_files
+    return user.files
 
 
 def update_application(
@@ -135,10 +130,7 @@ def update_application(
 
     location = None
     for loc in application.company.locations:
-        if (
-            loc.country == data.location.country
-            and loc.city == data.location.city
-        ):
+        if loc.country == data.location.country and loc.city == data.location.city:
             location = loc
             break
         if loc.country == data.location.country:
@@ -198,6 +190,19 @@ def delete_application(
     return application
 
 
+def read_user_application_file_by_id(
+    db: Session, *, file_id: int, file_type: application_schema.FileType
+) -> application_models.Application | None:
+    return (
+        db.query(application_models.File)
+        .filter(
+            application_models.File.id == file_id,
+            application_models.File.type == file_type,
+        )
+        .first()
+    )
+
+
 def upload_file(file, parent) -> application_schema.FileUpload:
     drive_service = service.get_drive_service()
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
@@ -231,32 +236,19 @@ def create_file(db, kind, file, user_id):
     uploaded_file = upload_file(
         file=file,
         parent=settings.GDRIVE_RESUMES
-        if kind == application_schema.FileKind.Resume
+        if kind == application_schema.FileType.Resume
         else settings.GDRIVE_OTHER_FILES,
     )
 
-    new_file = None
-    if kind == application_schema.FileKind.Resume:
-        new_file = application_models.Resume(
-            file_id=uploaded_file.file_id,
-            name=uploaded_file.name,
-            link=uploaded_file.link[
-                : uploaded_file.link.find("&export=download")
-            ],
-            date=date.today().strftime("%Y-%m-%d"),
-            user_id=user_id,
-        )
+    new_file = application_models.File(
+        file_id=uploaded_file.file_id,
+        name=uploaded_file.name,
+        link=uploaded_file.link[: uploaded_file.link.find("&export=download")],
+        date=date.today().strftime("%Y-%m-%d"),
+        user_id=user_id,
+        type = application_schema.FileType.resume if kind == "Resume" else application_schema.FileType.otherFile
+    )
 
-    else:
-        new_file = application_models.OtherFiles(
-            file_id=uploaded_file.file_id,
-            name=uploaded_file.name,
-            link=uploaded_file.link[
-                : uploaded_file.link.find("&export=download")
-            ],
-            date=date.today().strftime("%Y-%m-%d"),
-            user_id=user_id,
-        )
 
     db.add(new_file)
     db.commit()
@@ -265,13 +257,23 @@ def create_file(db, kind, file, user_id):
     return new_file
 
 
-def get_user_resumes(db: Session, user_id) -> list[application_models.Resume]:
-    resumes = (
-        db.query(application_models.Resume)
-        .filter(application_models.Resume.user_id == user_id)
+def get_user_files(
+    db: Session, user_id: int, file_type: application_schema.FileType
+) -> list[application_models.File]:
+    files = (
+        db.query(application_models.File)
+        .filter(
+            application_models.File.user_id == user_id,
+            application_models.File.type == file_type,
+        )
         .all()
     )
-    return [resume for resume in resumes if resume.active]
+    return [file for file in files if file.active]
+
+
+def resume_review(db: Session, resume_id: int):
+    resume = db.application_models.File
+    ...
 
 
 def update_essay(db: Session, user_id, *, data) -> str:
@@ -302,3 +304,8 @@ def update_essay(db: Session, user_id, *, data) -> str:
 #         del update_data["password"]
 #         update_data["hashed_password"] = hashed_password
 #     return super().update(db, db_obj=db_obj, data=update_data)
+
+
+
+    
+    

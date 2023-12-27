@@ -37,6 +37,14 @@ class Settings(BaseSettings):
         if len(v) == 0:
             return None
         return v
+    
+    SMTP_USER: str
+    SMTP_HOST: str
+    SMTP_PORT: str
+    SMTP_TLS: str
+    SMTP_PASSWORD: str
+    EMAILS_FROM_NAME: str
+    EMAILS_FROM_EMAIL: str
 
     DATABASE_PORT: int
     POSTGRES_HOST: str

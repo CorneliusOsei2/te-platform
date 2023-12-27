@@ -4,11 +4,12 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Enum
 )
 from sqlalchemy.orm import relationship
 
 from app.database.base_class import Base
-
+import app.ents.application.schema as application_schema
 
 class Application(Base):
     __tablename__ = "applications"
@@ -20,10 +21,9 @@ class Application(Base):
     # role = Column(Enum(company_schema.JobRoles), nullable=False)
     role = Column(String, nullable=False)
     title = Column(String, nullable=False)
-    # status = Column(
-    #     Enum(application_schema.ApplicationStatuses), nullable=False
-    # )
-    status = Column(String, nullable=False)
+    status = Column(
+        Enum(application_schema.ApplicationStatuses), nullable=False
+    )
     referred = Column(Boolean, nullable=False)
     active = Column(Boolean, default=True, nullable=False)
     archived = Column(Boolean, nullable=False)
@@ -37,9 +37,8 @@ class Application(Base):
     location = relationship("Location", back_populates="application")
 
 
-class Resume(Base):
-    __tablename__ = "resumes"
-    __table_args__ = {"extend_existing": True}
+class File(Base):
+    __tablename__ = "files"
     id = Column(Integer, primary_key=True, index=True)
     file_id = Column(String, nullable=False)
     date = Column(String, nullable=False)
@@ -47,16 +46,25 @@ class Resume(Base):
     name = Column(String, nullable=False)
     reviewed = Column(Boolean, nullable=False, default=False)
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="resumes")
+    user = relationship("User", back_populates="files")
     active = Column(Boolean, nullable=False, default=True)
+    type = Column(
+        Enum(application_schema.FileType), nullable=False
+    )
 
-
-class OtherFiles(Base):
-    __tablename__ = "other_files"
-    __table_args__ = {"extend_existing": True}
+    
+class ResumeReview(Base):
+    __tablename__ = "resume_review"
     id = Column(Integer, primary_key=True, index=True)
     date = Column(String, nullable=False)
     link = Column(String, nullable=False)
     name = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="other_files")
+    
+    # Relationships
+    requester_id = Column(Integer, ForeignKey("users.id"))
+    reviewers_id = Column(Integer, ForeignKey("users.id"))
+    requester = relationship("User", back_populates="resume_review_requests", foreign_keys=[requester_id])
+    reviewers = relationship("User", back_populates="resume_reviews", foreign_keys=[reviewers_id])
+
+    
+    

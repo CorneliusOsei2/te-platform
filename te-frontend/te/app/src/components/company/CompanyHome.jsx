@@ -1,4 +1,4 @@
-import CreateCompany from "./CreateCompany"
+import CreateCompany from "./CompanyCreate"
 const CompanyHome = () => {
     return (
         <>

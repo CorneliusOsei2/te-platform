@@ -16,7 +16,7 @@ router = APIRouter(prefix="/users")
 
 @router.post(".login")
 def login_user(
-    response: Response, token=Depends(user_auth.login_access_token)
+    token=Depends(user_auth.login_access_token)
 ) -> Any:
     """
     Log User in.
@@ -129,14 +129,14 @@ def get_users_by_role(
     *,
     skip: int = 0,
     limit: int = 100,
-    role: user_schema.UserRoles,
+    role: user_schema.UserRoles = user_schema.UserRoles.mentee,
     _: user_models.User = Depends(user_dependencies.get_current_user_by_role),
 ) -> Any:
     """
     Retrieve all active admins.
     """
     users = user_crud.read_users_by_role(
-        db, skip=skip, limit=limit, role=user_schema.UserRoles.admin
+        db, role=role, skip=skip, limit=limit
     )
     return {"users": [user_schema.UserRead(**vars(user)) for user in users]}
 

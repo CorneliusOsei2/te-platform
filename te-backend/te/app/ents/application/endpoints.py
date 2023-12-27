@@ -24,14 +24,10 @@ def create_application(
     user=Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
-    Create an application.
+    Create an application for  `user`.
     """
-    application = application_crud.create_application(
-        db, data=data, user_id=user.id
-    )
-    return {
-        "application": application_dependencies.parse_application(application)
-    }
+    application = application_crud.create_application(db, data=data, user_id=user.id)
+    return {"application": application_dependencies.parse_application(application)}
 
 
 @user_app_router.get(
@@ -75,9 +71,7 @@ def get_user_application(
         db, user_id=user_id, application_id=application_id
     )
 
-    return {
-        "application": application_dependencies.parse_application(application)
-    }
+    return {"application": application_dependencies.parse_application(application)}
 
 
 @user_app_router.put(
@@ -100,9 +94,7 @@ def update_user_application(
         db, user_id=user_id, application_id=application_id, data=data
     )
 
-    return {
-        "application": application_dependencies.parse_application(application)
-    }
+    return {"application": application_dependencies.parse_application(application)}
 
 
 @user_app_router.put(".archive", status_code=status.HTTP_204_NO_CONTENT)
@@ -138,30 +130,24 @@ def delete_user_application(
         _ = application_crud.delete_application(db, application_id=app_id)
 
 
-@user_files_router.get(
-    ".list", response_model=dict[str, application_schema.FilesRead]
-)
+@user_files_router.get(".list", response_model=dict[str, application_schema.FilesRead])
 def get_user_application_files(
     db: Session = Depends(session.get_db),
     *,
     user_id: int,
-    current_user=Depends(user_dependencies.get_current_user),
+    _=Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Retrieve application files (resume and other files)
     """
-    resumes, other_files = application_crud.read_user_application_files(
+    files = application_crud.read_user_application_files(
         db, user_id=user_id
     )
     return {
         "files": application_schema.FilesRead(
-            resumes=[
-                application_schema.FileRead(**vars(resume))
-                for resume in resumes
-            ],
+            resumes=[application_schema.FileRead(**vars(file)) for file in files if file.type == application_schema.FileType.resume],
             other_files=[
-                application_schema.FileRead(**vars(file))
-                for file in other_files
+                application_schema.FileRead(**vars(file)) for file in files if file.type == application_schema.FileType.resume
             ],
         )
     }
@@ -174,7 +160,7 @@ def add_file(
     db: Session = Depends(session.get_db),
     *,
     user_id: int,
-    kind: application_schema.FileKind = Form(),
+    kind: application_schema.FileType = Form(),
     file: UploadFile = Form(),
     _=Depends(user_dependencies.get_current_user),
 ) -> Any:
@@ -192,16 +178,34 @@ def get_user_resumes(
     db: Session = Depends(session.get_db),
     *,
     user_id: int,
-    user=Depends(user_dependencies.get_current_user),
+    _=Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Get all resumes of user `user_id`
     """
-    resumes = application_crud.get_user_resumes(db, user_id)
+    resumes = application_crud.get_user_files(
+        db, user_id, application_schema.FileType.resume
+    )
     return {
-        "resumes": [
-            application_schema.FileRead(**vars(resume)) for resume in resumes
-        ]
+        "resumes": [application_schema.FileRead(**vars(resume)) for resume in resumes]
+    }
+
+
+@user_files_router.get(
+    ".resumes.list", response_model=dict[str, list[application_schema.FileRead]]
+)
+def resume_review(
+    db: Session = Depends(session.get_db),
+    *,
+    user_id: int,
+    _=Depends(user_dependencies.get_current_user),
+) -> Any:
+    """
+    Get all resumes of user `user_id`
+    """
+    resumes = application_crud.resume_review(db, user_id)
+    return {
+        "resumes": [application_schema.FileRead(**vars(resume)) for resume in resumes]
     }
 
 

@@ -2,13 +2,13 @@ import { useState } from 'react'
 import axiosInstance from '../../axiosConfig';
 import { jobStatuses } from './ApplicationInfo'
 
-import SlideOverForm from '../custom/SlideOver/SlideOverCreate'
+import SlideOverForm from '../_custom/SlideOver/SlideOverCreate'
 import { setNestedPropertyValue } from '../../utils'
 import { countries, jobRoles, jobTitles } from '../../data/data'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
-import SuccessFeedback from '../custom/Alert/SuccessFeedback'
-import { FormSelect, FormInput, FormTextArea } from '../custom/FormInputs'
+import SuccessFeedback from '../_custom/Alert/SuccessFeedback'
+import { FormSelect, FormInput, FormTextArea } from '../_custom/FormInputs'
 
 
 export const customInputMap = {

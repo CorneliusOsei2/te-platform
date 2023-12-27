@@ -2,12 +2,12 @@ import { useState } from 'react'
 import axiosInstance from '../../axiosConfig';
 import { ChevronDownIcon, DocumentIcon } from '@heroicons/react/20/solid'
 
-import SlideOverForm from '../custom/SlideOver/SlideOverCreate'
+import SlideOverForm from '../_custom/SlideOver/SlideOverCreate'
 import { setNestedPropertyValue } from '../../utils'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
-import SuccessFeedback from '../custom/Alert/SuccessFeedback'
-import { FormSelect, FormInput, FileUpload } from '../custom/FormInputs'
+import SuccessFeedback from '../_custom/Alert/SuccessFeedback'
+import { FormSelect, FormInput, FileUpload } from '../_custom/FormInputs'
 
 const lessonFormats = {
     "Video": "video", "Document (File)": "document", "Document (Link)": "document", "Web page": "html"

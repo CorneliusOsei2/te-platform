@@ -73,7 +73,7 @@ def get_companies(
     # _: str = Depends(dependencies.get_current_user),
 ) -> Any:
     """
-    Retrieve Companies.
+    Retrieve all companies.
     """
     companies = company_crud.read_company_multi(db, skip=skip, limit=limit)
     return {
