@@ -11,6 +11,7 @@ from sqlalchemy.types import Enum
 import app.ents.company.schema as company_schema
 import app.ents.application.schema as application_schema
 from app.database.base_class import Base
+from core.config import DEFAULT_COMPANY_IMAGE
 
 
 class Posting(Base):
@@ -19,10 +20,10 @@ class Posting(Base):
     date = Column(String, nullable=False)
     deadline = Column(String, nullable=True)
     notes = Column(String, nullable=False)
-    sponsor = Column(Boolean, nullable=False)
+    can_sponsor = Column(Boolean, nullable=False)
     recruiter_name = Column(String, nullable=False)
     recruiter_email = Column(String, nullable=False)
-    active = Column(Boolean, nullable=False)
+    is_active = Column(Boolean, nullable=False, default=True)
     role = Column(Enum(company_schema.JobRoles), nullable=False)
     status = Column(
         Enum(application_schema.ApplicationStatuses), nullable=False
@@ -78,7 +79,7 @@ class ReferralMaterials(Base):
 class Company(Base):
     __tablename__ = "companies"
     id = Column(Integer, primary_key=True)
-    image = Column(String, nullable=True)
+    image = Column(String, nullable=True, default=DEFAULT_COMPANY_IMAGE)
     name = Column(String, nullable=False)
     domain = Column(String, nullable=True)
     can_refer = Column(Boolean, nullable=True)

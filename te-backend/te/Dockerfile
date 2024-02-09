@@ -13,5 +13,3 @@ COPY . /app
 ENV PYTHONPATH=/app
 
 EXPOSE 8000
-
-

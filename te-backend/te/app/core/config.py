@@ -84,3 +84,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# Default image to pass if a company doesn't have any
+DEFAULT_COMPANY_IMAGE = ""
