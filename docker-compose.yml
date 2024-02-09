@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./te-frontend/te/app
+      dockerfile: Dockerfile
+    command: 
+      npm run start
+    ports:
+      - "${FORWARD_APP_PORT:-3001}:3000"
+    volumes:
+      - type: bind
+        source: ./te-frontend/te/app
+        target: /app
+      - type: volume
+        target: /app/node_modules

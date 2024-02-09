@@ -11,6 +11,7 @@ from sqlalchemy.types import Enum
 import app.ents.company.schema as company_schema
 import app.ents.application.schema as application_schema
 from app.database.base_class import Base
+from core.config import DEFAULT_COMPANY_IMAGE
 
 
 class Posting(Base):
@@ -37,7 +38,7 @@ class Location(Base):
     __tablename__ = "locations"
     id = Column(Integer, primary_key=True)
     country = Column(String, nullable=False, index=True)
-    city = Column(String, nullable=False, index=True)
+    city = Column(String, nullable=False)
     companies = relationship(
         "Company",
         secondary="companies_locations_rel",
@@ -78,7 +79,7 @@ class ReferralMaterials(Base):
 class Company(Base):
     __tablename__ = "companies"
     id = Column(Integer, primary_key=True)
-    image = Column(String, nullable=True, default="url_to_default_image") # What I mean here is anytime a company is created, if no image is provided, then we use a default image
+    image = Column(String, nullable=True, default=DEFAULT_COMPANY_IMAGE)
     name = Column(String, nullable=False)
     domain = Column(String, nullable=True)
     can_refer = Column(Boolean, nullable=True)
