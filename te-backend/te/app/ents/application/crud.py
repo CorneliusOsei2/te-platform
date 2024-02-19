@@ -246,9 +246,10 @@ def create_file(db, kind, file, user_id):
         link=uploaded_file.link[: uploaded_file.link.find("&export=download")],
         date=date.today().strftime("%Y-%m-%d"),
         user_id=user_id,
-        type = application_schema.FileType.resume if kind == "Resume" else application_schema.FileType.otherFile
+        type=application_schema.FileType.resume
+        if kind == "Resume"
+        else application_schema.FileType.otherFile,
     )
-
 
     db.add(new_file)
     db.commit()
@@ -304,8 +305,3 @@ def update_essay(db: Session, user_id, *, data) -> str:
 #         del update_data["password"]
 #         update_data["hashed_password"] = hashed_password
 #     return super().update(db, db_obj=db_obj, data=update_data)
-
-
-
-    
-    

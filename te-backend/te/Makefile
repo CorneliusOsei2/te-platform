@@ -28,4 +28,4 @@ run:
 	docker-compose up
 
 format:
-	ruff .
+	ruff . --fix

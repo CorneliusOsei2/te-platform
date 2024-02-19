@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from app.ents.home.endpoints import home_router
 from app.ents.application.endpoints import app_router
 from app.ents.application.endpoints import user_app_router
 from app.ents.application.endpoints import user_files_router
@@ -14,6 +15,8 @@ from app.ents.company.endpoints import (
 )
 
 api_router = APIRouter()
+
+api_router.include_router(home_router, tags=["Home Endpoints"])
 
 api_router.include_router(company_router, tags=["Company Endpoints"])
 api_router.include_router(referral_router, tags=["Referral Endpoints"])

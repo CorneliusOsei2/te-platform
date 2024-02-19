@@ -1,7 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, Query, HTTPException, status
-from fastapi.responses import Response
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 import app.database.session as session
@@ -123,7 +122,7 @@ def login_user(
 #     }
 
 
-@router.get(".list", response_model=dict[str, list[user_schema.UserRead]])
+@router.get(".role.list", response_model=dict[str, list[user_schema.UserRead]])
 def get_users_by_role(
     db: Session = Depends(session.get_db),
     *,
@@ -186,7 +185,7 @@ def create_user(
     return {"user": user_schema.UserRead(**vars(new_user))}
 
 
-@router.get(".{user_id}.essay", response_model=dict[str, str])
+@router.get(".{user_id}.essay", response_model=user_schema.Essay)
 def get_essay(
     db: Session = Depends(session.get_db),
     *,
@@ -194,16 +193,16 @@ def get_essay(
     _: user_models.User = Depends(user_dependencies.get_current_user),
 ):
     essay = user_crud.read_user_essay(db, user_id=user_id)
-    return {"essay": essay}
+    return user_schema.Essay(essay=essay)
 
 
-@router.post(".{user_id}.essay", response_model=dict[str, str])
+@router.post(".{user_id}.essay", response_model=user_schema.Essay)
 def update_essay(
     db: Session = Depends(session.get_db),
     *,
     user_id: int,
-    data: dict[str, str],
+    data: user_schema.Essay,
     _: user_models.User = Depends(user_dependencies.get_current_user),
 ):
     essay = user_crud.add_user_essay(db, user_id=user_id, data=data)
-    return {"essay": essay}
+    return user_schema.Essay(essay=essay)

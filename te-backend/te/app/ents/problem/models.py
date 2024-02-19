@@ -1,17 +1,14 @@
 from sqlalchemy import (
     Boolean,
     Column,
-    Float,
     ForeignKey,
     Integer,
     String,
     Table,
 )
 from sqlalchemy.orm import relationship
-from sqlalchemy.types import Enum
 
 from app.database.base_class import Base
-from app.ents.problems.schema import PlatformRoles
 
 problems_platforms = Table(
     "problems_platforms",

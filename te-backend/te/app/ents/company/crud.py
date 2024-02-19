@@ -4,7 +4,6 @@ import app.ents.user.crud as user_crud
 import app.ents.company.models as company_models
 import app.ents.company.schema as company_schema
 from app.core.config import settings
-from datetime import date
 
 
 def read_company_by_name(

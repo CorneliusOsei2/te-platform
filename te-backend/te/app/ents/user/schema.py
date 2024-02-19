@@ -43,3 +43,7 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     ...
+
+
+class Essay(BaseModel):
+    essay:str
