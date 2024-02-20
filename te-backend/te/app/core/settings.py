@@ -12,10 +12,15 @@ from pydantic import (
 
 class Settings(BaseSettings):
     API_STR: str
+    PROJECT_NAME: str = "TechElevate"
+    SERVER_HOST: str
+
+    # Security
     SECRET_KEY: str
     AUTHJWT_SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
-    SERVER_HOST: str
+
+    # CORS
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = [
         "http://localhost:3000",
     ]
@@ -28,8 +33,7 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    PROJECT_NAME: str = "TechElevate"
-
+    # Sentry
     SENTRY_DSN: Optional[HttpUrl] = ""
 
     @validator("SENTRY_DSN", pre=True)
@@ -37,7 +41,8 @@ class Settings(BaseSettings):
         if len(v) == 0:
             return None
         return v
-    
+
+    # SMTP
     SMTP_USER: str
     SMTP_HOST: str
     SMTP_PORT: str
@@ -46,6 +51,7 @@ class Settings(BaseSettings):
     EMAILS_FROM_NAME: str
     EMAILS_FROM_EMAIL: str
 
+    # Database
     DATABASE_PORT: int
     POSTGRES_HOST: str
     POSTGRES_USER: str
@@ -66,14 +72,14 @@ class Settings(BaseSettings):
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
 
+    # Superuser
     FIRST_SUPERUSER_EMAIL: EmailStr
     FIRST_SUPERUSER_FIRST_NAME: str
     FIRST_SUPERUSER_LAST_NAME: str
     FIRST_SUPERUSER_PASSWORD: str
     USERS_OPEN_REGISTRATION: bool
 
-    CLEAR_BIT_BASE_URL: str = "https://logo.clearbit.com/"
-
+    # Google Drive
     GDRIVE_RESUMES: str
     GDRIVE_OTHER_FILES: str
     GDRIVE_LESSONS: str

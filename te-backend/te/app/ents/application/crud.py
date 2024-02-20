@@ -11,7 +11,7 @@ import app.ents.application.schema as application_schema
 import app.ents.company.crud as company_crud
 import app.ents.company.schema as company_schema
 import app.ents.user.crud as user_crud
-from app.core.config import settings
+from app.core.settings import settings
 
 
 def read_application_by_id(

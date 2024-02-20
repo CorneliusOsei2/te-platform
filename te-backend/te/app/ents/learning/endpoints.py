@@ -10,7 +10,7 @@ import app.ents.learning.crud as learning_crud
 import app.ents.learning.schema as learning_schema
 import app.ents.user.dependencies as user_dependencies
 import app.ents.user.models as user_models
-from app.core.config import settings
+from app.core.settings import settings
 
 router = APIRouter(prefix="/learning")
 
@@ -29,9 +29,7 @@ def get_lessons(
     """
     lessons = learning_crud.read_lessons(db, skip=skip, limit=limit)
     return {
-        "lessons": [
-            learning_schema.LessonRead(**vars(lesson)) for lesson in lessons
-        ]
+        "lessons": [learning_schema.LessonRead(**vars(lesson)) for lesson in lessons]
     }
 
 
@@ -64,9 +62,7 @@ def lesson_file_upload(
     *,
     db: Session = Depends(session.get_db),
     file: UploadFile,
-    current_user: user_models.User = Depends(
-        user_dependencies.get_current_user
-    ),
+    current_user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Create other lesson.

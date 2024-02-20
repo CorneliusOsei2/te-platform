@@ -4,8 +4,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 import app.database.session as session
-from utilities import utils
-from app.core.config import settings
+from app.core.settings import settings
 import app.core.security as security
 import app.ents.user.crud as user_crud
 import app.ents.user.schema as user_schema
@@ -34,7 +33,7 @@ def login_access_token(
         "type": "bearer",
         "access_token": security.create_access_token(
             user.id, expires_delta=access_token_expires
-        )
+        ),
     }
 
 
@@ -58,10 +57,10 @@ def recover_password(email: str, db: Session = Depends(session.get_db)) -> Any:
             status_code=404,
             detail="The user with this username does not exist in the system.",
         )
-        
+
     password_reset_token = utils.generate_password_reset_token(email=email)
     utils.send_reset_password_email(
-        email_to=user.email, email=email, token=password_reset_token  
+        email_to=user.email, email=email, token=password_reset_token
     )
     return {"schemas.Msg": "Password recovery email sent"}
 

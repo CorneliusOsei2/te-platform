@@ -3,7 +3,7 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from app.core.config import Settings
+from app.core.settings import settings
 from app.database.base import Base
 
 # this is the Alembic Config object, which provides
@@ -28,7 +28,7 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    user = Settings.POSTGRES_USER
+    user = settings.POSTGRES_USER
     password = settings.POSTGRES_PASSWORD
     server = settings.POSTGRES_HOST
     db = settings.POSTGRES_DB
