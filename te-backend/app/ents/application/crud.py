@@ -159,11 +159,14 @@ def update_application(
 
 
 def archive_application(
-    db: Session, *, application_id: int
+    db: Session, *, user_id: int, application_id: int
 ) -> application_models.Application:
     application = read_application_by_id(db, application_id=application_id)
     if not application:
         ...
+
+    if application.user_id != user_id:
+        return None
 
     application.archived = True
 

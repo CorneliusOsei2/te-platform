@@ -10,7 +10,7 @@ import app.ents.home.schema as home_schema
 home_router = APIRouter(prefix="/home")
 
 
-@home_router.get(".team", response_model=dict[str, list[home_schema.UserRead]])
+@home_router.get(".team", response_model=dict[str, list[home_schema.Team]])
 def get_team(db: Session = Depends(session.get_db)) -> Any:
     """
     Retrieve all active team.

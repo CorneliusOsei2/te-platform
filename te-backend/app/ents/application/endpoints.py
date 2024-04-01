@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, Form, status, UploadFile
 from sqlalchemy.orm import Session
 
 import app.database.session as session
+from app.utilities.errors import OperationCompleted, UnauthorizedUser
 import app.ents.application.crud as application_crud
 import app.ents.application.dependencies as application_dependencies
 import app.ents.application.schema as application_schema
@@ -97,7 +98,7 @@ def update_user_application(
     return {"application": application_dependencies.parse_application(application)}
 
 
-@user_app_router.put(".archive", status_code=status.HTTP_204_NO_CONTENT)
+@user_app_router.put(".archive", status_code=status.HTTP_202_ACCEPTED)
 def archive_user_application(
     db: Session = Depends(session.get_db),
     *,
@@ -109,10 +110,15 @@ def archive_user_application(
     Archive user applications
     """
     for app_id in applications:
-        _ = application_crud.archive_application(db, application_id=app_id)
+        if not application_crud.archive_application(
+            db, user_id=user_id, application_id=app_id
+        ):
+            return {"error": UnauthorizedUser()}
+
+    return {"data": OperationCompleted()}
 
 
-@user_app_router.delete(".delete", status_code=status.HTTP_204_NO_CONTENT)
+@user_app_router.delete(".delete", status_code=status.HTTP_202_ACCEPTED)
 def delete_user_application(
     db: Session = Depends(session.get_db),
     *,
@@ -127,7 +133,12 @@ def delete_user_application(
         applications = [applications]
 
     for app_id in applications:
-        _ = application_crud.delete_application(db, application_id=app_id)
+        if not application_crud.delete_application(
+            db, user_id=user_id, application_id=app_id
+        ):
+            return {"error": UnauthorizedUser()}
+
+    return {"data": OperationCompleted()}
 
 
 @user_files_router.get(".list", response_model=dict[str, application_schema.FilesRead])
@@ -140,14 +151,18 @@ def get_user_application_files(
     """
     Retrieve application files (resume and other files)
     """
-    files = application_crud.read_user_application_files(
-        db, user_id=user_id
-    )
+    files = application_crud.read_user_application_files(db, user_id=user_id)
     return {
         "files": application_schema.FilesRead(
-            resumes=[application_schema.FileRead(**vars(file)) for file in files if file.type == application_schema.FileType.resume],
+            resumes=[
+                application_schema.FileRead(**vars(file))
+                for file in files
+                if file.type == application_schema.FileType.resume
+            ],
             other_files=[
-                application_schema.FileRead(**vars(file)) for file in files if file.type == application_schema.FileType.resume
+                application_schema.FileRead(**vars(file))
+                for file in files
+                if file.type == application_schema.FileType.resume
             ],
         )
     }

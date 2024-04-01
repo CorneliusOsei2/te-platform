@@ -14,6 +14,7 @@ from app.database.base_class import Base
 
 class User(Base):
     __tablename__ = "users"
+    __table_args__ = {"extend_existing": True}
     id = Column(Integer, primary_key=True, index=True)
     image = Column(String, nullable=True)
     first_name = Column(String, index=True, nullable=False)
@@ -39,8 +40,13 @@ class User(Base):
     files = relationship("File", back_populates="user")
     applications = relationship("Application", back_populates="user")
     referrals = relationship("Referral", back_populates="user")
-    resume_review_requests = relationship("ResumeReview", back_populates="requester", foreign_keys="[ResumeReview.requester_id]")
-    resume_reviews = relationship("ResumeReview", back_populates="reviewers", foreign_keys="[ResumeReview.reviewers_id]")
-
-
-    
+    resume_review_requests = relationship(
+        "ResumeReview",
+        back_populates="requester",
+        foreign_keys="[ResumeReview.requester_id]",
+    )
+    resume_reviews = relationship(
+        "ResumeReview",
+        back_populates="reviewers",
+        foreign_keys="[ResumeReview.reviewers_id]",
+    )
