@@ -1,14 +1,13 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-
 import app.database.session as session
 import app.ents.user.auth as user_auth
 import app.ents.user.crud as user_crud
 import app.ents.user.dependencies as user_dependencies
 import app.ents.user.models as user_models
 import app.ents.user.schema as user_schema
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/users")
 

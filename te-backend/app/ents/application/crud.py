@@ -2,9 +2,6 @@ import os
 import tempfile
 from datetime import date
 
-from googleapiclient.http import MediaFileUpload
-from sqlalchemy.orm import Session
-
 import app.core.service as service
 import app.ents.application.models as application_models
 import app.ents.application.schema as application_schema
@@ -12,6 +9,8 @@ import app.ents.company.crud as company_crud
 import app.ents.company.schema as company_schema
 import app.ents.user.crud as user_crud
 from app.core.settings import settings
+from googleapiclient.http import MediaFileUpload
+from sqlalchemy.orm import Session
 
 
 def read_application_by_id(

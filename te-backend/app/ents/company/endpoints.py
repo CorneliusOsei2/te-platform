@@ -1,15 +1,13 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 import app.database.session as session
-
+import app.ents.company.crud as company_crud
+import app.ents.company.dependencies as company_dependencies
+import app.ents.company.schema as company_schema
 import app.ents.user.dependencies as user_dependencies
 import app.ents.user.models as user_models
-
-import app.ents.company.dependencies as company_dependencies
-import app.ents.company.crud as company_crud
-import app.ents.company.schema as company_schema
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 company_router = APIRouter(prefix="/companies")
 referral_router = APIRouter(prefix="/referrals")

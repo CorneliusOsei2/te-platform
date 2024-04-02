@@ -1,18 +1,14 @@
-from fastapi import APIRouter
-
+from app.ents.application.endpoints import (app_router, user_app_router,
+                                            user_files_router)
+from app.ents.company.endpoints import company_router, referral_router
+from app.ents.company.endpoints import \
+    user_referral_router as user_referral_router
 from app.ents.home.endpoints import home_router
-from app.ents.application.endpoints import app_router
-from app.ents.application.endpoints import user_app_router
-from app.ents.application.endpoints import user_files_router
-from app.ents.user.endpoints import router as user_router
-from app.ents.user.auth import router as login_router
-from app.ents.problem.endpoints import router as problem_router
 from app.ents.learning.endpoints import router as learning_router
-from app.ents.company.endpoints import company_router
-from app.ents.company.endpoints import referral_router
-from app.ents.company.endpoints import (
-    user_referral_router as user_referral_router,
-)
+from app.ents.problem.endpoints import router as problem_router
+from app.ents.user.auth import router as login_router
+from app.ents.user.endpoints import router as user_router
+from fastapi import APIRouter
 
 api_router = APIRouter()
 

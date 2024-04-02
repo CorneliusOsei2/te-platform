@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
 import app.ents.home.models as home_models
+from sqlalchemy.orm import Session
 
 
 def read_team(db: Session) -> home_models.Team | None:

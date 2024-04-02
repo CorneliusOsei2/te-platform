@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Any
 
 import emails
-from emails.template import JinjaTemplate
 from app.core.settings import settings
+from emails.template import JinjaTemplate
 
 
 def send_email(

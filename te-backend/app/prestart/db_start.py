@@ -1,13 +1,12 @@
 import logging
 
+from app.database.session import SessionLocal
 from sqlalchemy import text
 from tenacity import retry
 from tenacity.after import after_log
 from tenacity.before import before_log
 from tenacity.stop import stop_after_attempt
 from tenacity.wait import wait_fixed
-
-from app.database.session import SessionLocal
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

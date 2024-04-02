@@ -1,14 +1,13 @@
 from datetime import datetime, timedelta
 from typing import Any
 
+import app.ents.user.crud as user_crud
+import app.ents.user.models as user_models
+from app.core.settings import settings
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-
-from app.core.settings import settings
-import app.ents.user.crud as user_crud
-import app.ents.user.models as user_models
 
 
 class Token(BaseModel):

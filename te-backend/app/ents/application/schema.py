@@ -1,7 +1,8 @@
 from enum import Enum
 
-from pydantic import BaseModel
 import app.ents.company.schema as company_schema
+from pydantic import BaseModel
+
 
 class FileType(str, Enum):
     resume: str = "Resume"

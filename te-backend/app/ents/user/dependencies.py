@@ -1,16 +1,15 @@
+import app.core.security as security
+import app.database.session as session
+import app.ents.user.crud as user_crud
+import app.ents.user.models as user_models
+import app.ents.user.schema as user_schema
+from app.core.settings import settings
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from jose.exceptions import JWTError
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
-
-import app.ents.user.crud as user_crud
-import app.ents.user.models as user_models
-import app.ents.user.schema as user_schema
-from app.core.settings import settings
-import app.core.security as security
-import app.database.session as session
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_STR}/login/access-token"

@@ -1,14 +1,13 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, Form, status, UploadFile
-from sqlalchemy.orm import Session
-
 import app.database.session as session
-from app.utilities.errors import OperationCompleted, UnauthorizedUser
 import app.ents.application.crud as application_crud
 import app.ents.application.dependencies as application_dependencies
 import app.ents.application.schema as application_schema
 import app.ents.user.dependencies as user_dependencies
+from app.utilities.errors import OperationCompleted, UnauthorizedUser
+from fastapi import APIRouter, Depends, Form, UploadFile, status
+from sqlalchemy.orm import Session
 
 app_router = APIRouter(prefix="/applications")
 user_app_router = APIRouter(prefix="/users.{user_id}.applications")

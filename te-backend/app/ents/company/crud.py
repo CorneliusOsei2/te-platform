@@ -1,8 +1,7 @@
-from sqlalchemy.orm import Session
-import app.ents.user.crud as user_crud
-
 import app.ents.company.models as company_models
 import app.ents.company.schema as company_schema
+import app.ents.user.crud as user_crud
+from sqlalchemy.orm import Session
 
 
 def read_company_by_name(db: Session, *, name: str) -> company_models.Company | None:

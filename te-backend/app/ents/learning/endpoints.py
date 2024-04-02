@@ -1,8 +1,5 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, UploadFile
-from sqlalchemy.orm import Session
-
 import app.database.session as session
 import app.ents.application.crud as application_crud
 import app.ents.application.schema as application_schema
@@ -11,6 +8,8 @@ import app.ents.learning.schema as learning_schema
 import app.ents.user.dependencies as user_dependencies
 import app.ents.user.models as user_models
 from app.core.settings import settings
+from fastapi import APIRouter, Depends, UploadFile
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/learning")
 

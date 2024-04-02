@@ -1,8 +1,23 @@
 version: '3.10'
 
+volumes:
+  te_data:
+
+networks:
+  te_network:
+  
 services:
+  frontend:
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    restart: always
+    build:
+      context: ./te-frontend/
+      dockerfile: Dockerfile
+    networks:
+      - te_network
+
   backend:
-    container_name: te_backend
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     restart: always
@@ -15,33 +30,16 @@ services:
       - .env
     networks:
       - te_network
-    command: uvicorn app.main:app --host 0.0.0.0 --port ${BACKEND_PORT}
-
-  frontend:
-    container_name: te_frontend
-    ports:
-      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
-    restart: always
-    build:
-      context: ./te-frontend/
-      dockerfile: Dockerfile
-    networks:
-      - te_network
-    command: npm start
 
   db:
-    container_name: te_db
-    image: postgres:latest
+    image: postgres:15
     restart: always
     env_file:
       - .env
     volumes:
-      - te_volume:/var/lib/postgresql/data
-    networks:
-      - te_network
+      - te_data:/var/lib/postgresql/data
 
-volumes:
-  te_volume:
+  
 
-networks:
-  te_network:
+
+

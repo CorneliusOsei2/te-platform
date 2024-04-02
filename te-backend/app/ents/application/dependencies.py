@@ -1,6 +1,6 @@
-import app.ents.company.schema as company_schema
-import app.ents.application.schema as application_schema
 import app.ents.application.models as application_models
+import app.ents.application.schema as application_schema
+import app.ents.company.schema as company_schema
 
 
 def parse_application(application: application_models.Application):

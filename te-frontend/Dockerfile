@@ -23,7 +23,7 @@ FROM nginx:1.21.3-alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Expose port 80 to the outside world
-EXPOSE 80
+EXPOSE 3000
 
 # Command to start NGINX server when the container starts
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,14 +1,6 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    ForeignKey,
-    Integer,
-    String,
-    Table,
-)
-from sqlalchemy.orm import relationship
-
 from app.database.base_class import Base
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
+from sqlalchemy.orm import relationship
 
 problems_platforms = Table(
     "problems_platforms",

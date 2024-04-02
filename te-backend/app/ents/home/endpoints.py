@@ -1,11 +1,10 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-
 import app.database.session as session
 import app.ents.home.crud as home_crud
 import app.ents.home.schema as home_schema
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 home_router = APIRouter(prefix="/home")
 

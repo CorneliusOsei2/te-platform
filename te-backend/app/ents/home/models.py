@@ -1,11 +1,5 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    Integer,
-    String,
-)
-
 from app.database.base_class import Base
+from sqlalchemy import Boolean, Column, Integer, String
 
 
 class Team(Base):

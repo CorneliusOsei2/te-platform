@@ -1,15 +1,8 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    ForeignKey,
-    Integer,
-    String,
-)
-from sqlalchemy.orm import relationship
-from sqlalchemy.types import Enum
-
 import app.ents.user.schema as user_schema
 from app.database.base_class import Base
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+from sqlalchemy.types import Enum
 
 
 class User(Base):

@@ -1,15 +1,8 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    ForeignKey,
-    Integer,
-    String,
-    Enum
-)
+import app.ents.application.schema as application_schema
+from app.database.base_class import Base
+from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from app.database.base_class import Base
-import app.ents.application.schema as application_schema
 
 class Application(Base):
     __tablename__ = "applications"

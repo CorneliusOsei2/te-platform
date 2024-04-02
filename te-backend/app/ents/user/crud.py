@@ -1,9 +1,9 @@
 
-from sqlalchemy.orm import Session
-from fastapi import status, HTTPException
+import app.core.security as security
 import app.ents.user.models as user_models
 import app.ents.user.schema as user_schema
-import app.core.security as security
+from fastapi import HTTPException, status
+from sqlalchemy.orm import Session
 
 
 def read_user_by_email(db: Session, *, email: str) -> user_models.User | None:

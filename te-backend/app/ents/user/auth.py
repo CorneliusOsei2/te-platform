@@ -1,14 +1,13 @@
 from datetime import timedelta
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-import app.database.session as session
-from app.core.settings import settings
 import app.core.security as security
+import app.database.session as session
 import app.ents.user.crud as user_crud
 import app.ents.user.schema as user_schema
-
+from app.core.settings import settings
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/users")
 

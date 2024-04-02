@@ -1,8 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.types import Enum
-
-from app.database.base_class import Base
 import app.ents.learning.schema as learning_schema
+from app.database.base_class import Base
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.types import Enum
 
 
 class Lesson(Base):

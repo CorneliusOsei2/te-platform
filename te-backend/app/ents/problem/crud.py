@@ -1,8 +1,7 @@
 
-from sqlalchemy.orm import Session
-
 import app.core.security as security
 from app.ents.user import models, schema
+from sqlalchemy.orm import Session
 
 
 def read_multi(db: Session, *, skip: int = 0, limit: int = 100) -> list[models.User]:

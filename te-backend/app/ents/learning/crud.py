@@ -1,7 +1,6 @@
-from sqlalchemy.orm import Session
-
 import app.ents.learning.models as learning_models
 import app.ents.learning.schema as learning_schema
+from sqlalchemy.orm import Session
 
 
 def read_lessons(

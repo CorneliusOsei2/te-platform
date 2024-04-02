@@ -1,16 +1,9 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    ForeignKey,
-    Integer,
-    String,
-)
+import app.ents.application.schema as application_schema
+import app.ents.company.schema as company_schema
+from app.database.base_class import Base
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import Enum
-
-import app.ents.company.schema as company_schema
-import app.ents.application.schema as application_schema
-from app.database.base_class import Base
 
 
 class Posting(Base):
