@@ -1,11 +1,9 @@
-#! /usr/bin/env bash
-
 # Let the DB start
 python ./app/prestart/db_start.py
 
 alembic revision --autogenerate -m "Tables revision"
 
-# Run migrations
+# # Run migrations
 alembic upgrade head
 
 # # Create initial data in DB

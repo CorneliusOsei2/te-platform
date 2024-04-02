@@ -1,7 +1,9 @@
 from logging.config import fileConfig
 
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
+
 from alembic import context
-from sqlalchemy import engine_from_config, pool
 
 from app.core.settings import settings
 from app.database.base import Base
@@ -30,23 +32,30 @@ target_metadata = Base.metadata
 def get_url():
     user = settings.POSTGRES_USER
     password = settings.POSTGRES_PASSWORD
-    server = settings.POSTGRES_HOST
+    host = settings.POSTGRES_HOST
     db = settings.POSTGRES_DB
-    return f"postgresql://{user}:{password}@{server}/{db}"
+    port = settings.DATABASE_PORT
+    return f"postgresql://{user}:{password}@{host}:{port}/{db}"
 
 
-def run_migrations_offline():
+def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
+
     This configures the context with just a URL
     and not an Engine, though an Engine is acceptable
     here as well.  By skipping the Engine creation
     we don't even need a DBAPI to be available.
+
     Calls to context.execute() here emit the given string to the
     script output.
+
     """
     url = get_url()
     context.configure(
-        url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
     )
 
     with context.begin_transaction():
