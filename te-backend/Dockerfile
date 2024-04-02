@@ -1,11 +1,13 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.10
 
-ENV CONTAINER_HOME=/var/www
+WORKDIR /app
 
-ADD . $CONTAINER_HOME
-WORKDIR $CONTAINER_HOME
+COPY requirements.txt .
 
-RUN pip install -r $CONTAINER_HOME/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY init.json $CONTAINER_HOME/
+COPY . /app
 
+ENV PYTHONPATH=/app
+
+EXPOSE 8000
