@@ -1,7 +1,7 @@
 version: '3.10'
 
 volumes:
-  te_data:
+  db_data:
 
 networks:
   te_network:
@@ -33,11 +33,13 @@ services:
 
   db:
     image: postgres:15
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     restart: always
     env_file:
       - .env
     volumes:
-      - te_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
 
   
 
