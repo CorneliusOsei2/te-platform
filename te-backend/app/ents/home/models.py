@@ -3,7 +3,7 @@ from sqlalchemy import Boolean, Column, Integer, String
 
 
 class Team(Base):
-    __tablename__ = "users"
+    __tablename__ = "teams"
     id = Column(Integer, primary_key=True, index=True)
     image = Column(String, nullable=True)
     name = Column(String, index=True, nullable=False)

@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 router = APIRouter(prefix="/users")
 
 
-@router.post("/login/access-token", response_model=security.Token)
+@router.post("/login/access-token")
 def login_access_token(
     db: Session = Depends(session.get_db), data: user_schema.UserLogin = None
 ) -> Any:

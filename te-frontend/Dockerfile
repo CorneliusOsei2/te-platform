@@ -16,14 +16,15 @@ COPY . .
 # Build the React app for production
 RUN npm run build
 
-# Use nginx as the web server for serving the React app
-FROM nginx:alpine
 
-# Copy the built React app from the previous stage to the nginx html directory
-COPY --from=build /app/build /usr/share/nginx/html
+# # Use nginx as the web server for serving the React app
+# FROM nginx:alpine
 
-# Expose port 80
-EXPOSE 80
+# # Copy the built React app from the previous stage to the nginx html directory
+# COPY --from=build /app/build /usr/share/nginx/html
 
-# Command to run nginx when the container starts
-CMD ["nginx", "-g", "daemon off;"]
+# # Expose port 3000
+# EXPOSE 3000
+
+# # Command to run nginx when the container starts
+# CMD ["nginx", "-g", "daemon off;"]

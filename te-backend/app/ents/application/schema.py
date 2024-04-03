@@ -7,7 +7,8 @@ from pydantic import BaseModel
 class FileType(str, Enum):
     resume: str = "Resume"
     otherFile: str = "Other File"
-    
+
+
 class Essay(BaseModel):
     essay: str
 
@@ -57,8 +58,8 @@ class ApplicationBase(BaseModel):
     active: bool = True
     archived: bool = False
     date: str = None
-    # role: company_schema.JobRoles
-    # status: ApplicationStatuses
+    role: company_schema.JobRoles
+    status: ApplicationStatuses
     role: str
     status: str
     referred: bool = False
