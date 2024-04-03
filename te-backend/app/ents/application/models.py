@@ -14,9 +14,7 @@ class Application(Base):
     # role = Column(Enum(company_schema.JobRoles), nullable=False)
     role = Column(String, nullable=False)
     title = Column(String, nullable=False)
-    status = Column(
-        Enum(application_schema.ApplicationStatuses), nullable=False
-    )
+    status = Column(Enum(application_schema.ApplicationStatuses), nullable=False)
     referred = Column(Boolean, nullable=False)
     active = Column(Boolean, default=True, nullable=False)
     archived = Column(Boolean, nullable=False)
@@ -41,23 +39,22 @@ class File(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="files")
     active = Column(Boolean, nullable=False, default=True)
-    type = Column(
-        Enum(application_schema.FileType), nullable=False
-    )
+    type = Column(Enum(application_schema.FileType), nullable=False)
 
-    
+
 class ResumeReview(Base):
     __tablename__ = "resume_review"
     id = Column(Integer, primary_key=True, index=True)
     date = Column(String, nullable=False)
     link = Column(String, nullable=False)
     name = Column(String, nullable=False)
-    
+
     # Relationships
     requester_id = Column(Integer, ForeignKey("users.id"))
     reviewers_id = Column(Integer, ForeignKey("users.id"))
-    requester = relationship("User", back_populates="resume_review_requests", foreign_keys=[requester_id])
-    reviewers = relationship("User", back_populates="resume_reviews", foreign_keys=[reviewers_id])
-
-    
-    
+    requester = relationship(
+        "User", back_populates="resume_review_requests", foreign_keys=[requester_id]
+    )
+    reviewers = relationship(
+        "User", back_populates="resume_reviews", foreign_keys=[reviewers_id]
+    )

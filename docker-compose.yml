@@ -2,6 +2,7 @@ version: '3.10'
 
 volumes:
   db_data:
+  alembic_data:
 
 networks:
   te_network:
@@ -12,7 +13,7 @@ services:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     restart: always
     build:
-      context: ./te-frontend/
+      context: ./te-frontend
       dockerfile: Dockerfile
     networks:
       - te_network
@@ -24,12 +25,17 @@ services:
     build:
       context: ./te-backend
       dockerfile: Dockerfile
-    depends_on:
-      - db
     env_file:
       - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./te-backend/alembic:/app/alembic  # Mount Alembic directory
+      - alembic_data:/app/alembic_data  # Mount Alembic data directory
     networks:
       - te_network
+    
 
   db:
     image: postgres:15
@@ -38,10 +44,10 @@ services:
     restart: always
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "${POSTGRES_HOST}", "-p", "${POSTGRES_PORT}", "-q", "-U", "${POSTGRES_USER}"]
     volumes:
       - db_data:/var/lib/postgresql/data
-
-  
-
-
-
+    networks:
+      - te_network
+    
