@@ -1,4 +1,3 @@
-
 import app.core.security as security
 import app.ents.user.models as user_models
 import app.ents.user.schema as user_schema
@@ -7,11 +6,7 @@ from sqlalchemy.orm import Session
 
 
 def read_user_by_email(db: Session, *, email: str) -> user_models.User | None:
-    return (
-        db.query(user_models.User)
-        .filter(user_models.User.email == email)
-        .first()
-    )
+    return db.query(user_models.User).filter(user_models.User.email == email).first()
 
 
 def read_user_by_id(db: Session, *, id: int) -> user_models.User | None:
@@ -50,9 +45,7 @@ def get_user_full_name(first_name, middle_name, last_name) -> str:
     return f"{first_name} {middle_name} {last_name}"
 
 
-def create_user(
-    db: Session, *, data: user_schema.UserCreate
-) -> user_models.User:
+def create_user(db: Session, *, data: user_schema.UserCreate) -> user_models.User:
     user = read_user_by_email(db, email=data.email)
     if user:
         raise HTTPException(
@@ -85,12 +78,12 @@ def read_user_essay(db: Session, *, user_id) -> str:
     return user.essay
 
 
-def add_user_essay(db: Session, *, user_id, data: dict[str, str]) -> str:
+def add_user_essay(db: Session, *, user_id, data: user_schema.Essay) -> str:
     user = read_user_by_id(db, id=user_id)
     if not user:
         ...
 
-    user.essay = data["essay"]
+    user.essay = data.essay
 
     db.commit()
     db.refresh(user)

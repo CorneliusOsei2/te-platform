@@ -24,7 +24,13 @@ def create_company(
     company = company_models.Company(
         **(data.dict(exclude={"location", "referral_materials"}))
     )
-    company.image = ("https://logo.clearbit.com/" + data.domain) if data.domain else ""
+
+    # company.image = ("https://logo.clearbit.com/" + data.domain) if data.domain else ""
+    company.image = (
+        f"https://logo.clearbit.com/{data.domain.replace(r"/\s+/g", '').lower()}?size=20"
+        if data.domain
+        else ""
+    )
     location = company_models.Location(**data.location.dict())
     company.locations.append(location)
 

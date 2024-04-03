@@ -1,8 +1,8 @@
 """Tables revision
 
-Revision ID: a9c79cda550a
+Revision ID: 563647654091
 Revises: 
-Create Date: 2024-04-03 08:25:09.944955
+Create Date: 2024-04-03 16:15:06.593607
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a9c79cda550a'
+revision = '563647654091'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -103,7 +103,7 @@ def upgrade() -> None:
     sa.Column('recruiter_email', sa.String(), nullable=False),
     sa.Column('role', sa.String(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
-    sa.Column('status', sa.Enum('submitted', 'oa', 'phone_interview', 'final_interview', 'hr', 'recruiter_call', 'offer', 'not_now', name='applicationstatuses'), nullable=False),
+    sa.Column('status', sa.String(), nullable=False),
     sa.Column('referred', sa.Boolean(), nullable=False),
     sa.Column('active', sa.Boolean(), nullable=False),
     sa.Column('archived', sa.Boolean(), nullable=False),
