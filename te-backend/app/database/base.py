@@ -1,15 +1,12 @@
-# Import all the models, so that Base has them before being
-# imported by Alembic
-
-from app.database.base_class import Base
-from app.ents.user.models import User
-from app.ents.application.models import Application, File, ResumeReview
+from app.database.base_class import Base  # noqa
+from app.ents.user.models import User  # noqa
+from app.ents.application.models import Application, File, ResumeReview  # noqa
 from app.ents.company.models import (
-    Company,
-    Location,
-    Posting,
-    CompanyLocationRel,
-    Referral,
-    ReferralMaterials,
+    Company,  # noqa
+    Location,  # noqa
+    Posting,  # noqa
+    CompanyLocationRel,  # noqa
+    Referral,  # noqa
+    ReferralMaterials,  # noqa
 )
-from app.ents.learning.models import Lesson
+from app.ents.learning.models import Lesson  # noqa

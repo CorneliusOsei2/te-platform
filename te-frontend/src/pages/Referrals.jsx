@@ -135,7 +135,7 @@ const Referrals = () => {
                                                                 Essay
                                                             </li>}
                                                         {company.referral_materials.contact &&
-                                                            <li key="contact" className='flex'> {contact.length !== 0 ?
+                                                            <li key="contact" className='flex'> {contact?.length !== 0 ?
                                                                 <CheckCircleIcon className='text-green-600 mt-1' width="15" height="15" /> :
                                                                 <XCircleIcon className='text-red-600 mt-1' width="15" height="15" />}
                                                                 Contact

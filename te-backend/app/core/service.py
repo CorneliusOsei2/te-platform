@@ -25,9 +25,7 @@ credentials_file = "app/core/google_drive_creds.json"
 
 
 def get_drive_service():
-    # creds = service_account.Credentials.from_service_account_info(
-    #     credentials.dict(), scopes=["https://www.googleapis.com/auth/drive"]
-    # )
-    creds = service_account.Credentials.from_service_account_file(credentials_file)
+    creds = service_account.Credentials.from_service_account_info(credentials.dict())
+    # creds = service_account.Credentials.from_service_account_file(credentials_file)
     drive_service = build("drive", "v3", credentials=creds)
     return drive_service

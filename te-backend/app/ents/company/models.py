@@ -17,9 +17,7 @@ class Posting(Base):
     recruiter_email = Column(String, nullable=False)
     active = Column(Boolean, nullable=False)
     role = Column(Enum(company_schema.JobRoles), nullable=False)
-    status = Column(
-        Enum(application_schema.ApplicationStatuses), nullable=False
-    )
+    status = Column(Enum(application_schema.ApplicationStatuses), nullable=False)
 
     # Relationships
     company_id = Column(Integer, ForeignKey("companies.id"))
@@ -30,7 +28,7 @@ class Location(Base):
     __tablename__ = "locations"
     id = Column(Integer, primary_key=True)
     country = Column(String, nullable=False, index=True)
-    city = Column(String, nullable=False)
+    city = Column(String, nullable=True)
     companies = relationship(
         "Company",
         secondary="companies_locations_rel",

@@ -33,7 +33,7 @@ services:
         condition: service_healthy
     volumes:
       - ./te-backend/alembic:/app/alembic  # Mount Alembic directory
-      - alembic_data:/app/alembic_data  # Mount Alembic data directory
+      - alembic_data:/app/alembic  # Mount Alembic data directory
     networks:
       - te_network
     

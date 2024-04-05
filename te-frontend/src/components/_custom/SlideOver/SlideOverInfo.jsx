@@ -20,7 +20,7 @@ const SlideOverInfo = ({ entityId, title, setHandler, archiveRequest, deleteRequ
     return (
         <Transition.Root show={open} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                <div className="fixed inset-0  transition-opacity" />
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
                         <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
@@ -33,7 +33,7 @@ const SlideOverInfo = ({ entityId, title, setHandler, archiveRequest, deleteRequ
                                 leaveFrom="translate-x-0"
                                 leaveTo="translate-x-full"
                             >
-                                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
+                                <Dialog.Panel className="pointer-events-auto w-screen max-w-lg">
                                     <div className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
                                         <div className="h-0 flex-1 overflow-y-auto">
                                             <div className="bg-sky-800 px-4 py-6 sm:px-6">
