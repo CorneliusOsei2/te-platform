@@ -33,7 +33,7 @@ const SlideOverForm = ({ title, setHandler, requestHandler, children }) => {
 
     return (
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-20" onClose={() => { }}>
+            <Dialog as="div" className="relative z-20" onClose={() => { window.location.reload() }}>
                 <div className="fixed inset-0 transition-opacity" />
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">

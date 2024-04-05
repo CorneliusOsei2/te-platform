@@ -26,7 +26,7 @@ const FileCreate = ({ setFileUpload }) => {
 
         setStatus("Loading...")
 
-        axiosInstance.post(`/users.${userId}.files.create`, data, {
+        axiosInstance.post(`/files.create`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${accessToken}`,

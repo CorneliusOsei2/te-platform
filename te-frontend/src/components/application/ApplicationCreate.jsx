@@ -59,6 +59,7 @@ const ApplicationCreate = ({ setAddApplication }) => {
             .catch((error) => {
                 console.log(error);
             });
+
     }
 
     const handleInputChange = ({ field, value }) => {

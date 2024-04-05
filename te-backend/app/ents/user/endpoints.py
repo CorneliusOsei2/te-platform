@@ -1,5 +1,5 @@
 from typing import Any
-
+import logging
 import app.database.session as session
 import app.ents.user.auth as user_auth
 import app.ents.user.crud as user_crud
@@ -13,9 +13,7 @@ router = APIRouter(prefix="/users")
 
 
 @router.post(".login")
-def login_user(
-    token=Depends(user_auth.login_access_token)
-) -> Any:
+def login_user(token=Depends(user_auth.login_access_token)) -> Any:
     """
     Log User in.
     """
@@ -133,9 +131,7 @@ def get_users_by_role(
     """
     Retrieve all active admins.
     """
-    users = user_crud.read_users_by_role(
-        db, role=role, skip=skip, limit=limit
-    )
+    users = user_crud.read_users_by_role(db, role=role, skip=skip, limit=limit)
     return {"users": [user_schema.UserRead(**vars(user)) for user in users]}
 
 
@@ -149,6 +145,7 @@ def get_user_by_id(
     """
     Retrieve all active admins.
     """
+    logging.info("Getting user info")
     user = user_crud.read_user_by_id(db, id=user_id)
     return {"user": user_schema.UserRead(**vars(user))}
 

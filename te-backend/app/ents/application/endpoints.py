@@ -5,13 +5,13 @@ import app.ents.application.crud as application_crud
 import app.ents.application.dependencies as application_dependencies
 import app.ents.application.schema as application_schema
 import app.ents.user.dependencies as user_dependencies
+import app.ents.user.models as user_models
 from app.utilities.errors import OperationCompleted, UnauthorizedUser
 from fastapi import APIRouter, Depends, Form, UploadFile, status
 from sqlalchemy.orm import Session
 
 app_router = APIRouter(prefix="/applications")
-user_app_router = APIRouter(prefix="/users.{user_id}.applications")
-user_files_router = APIRouter(prefix="/users.{user_id}.files")
+files_router = APIRouter(prefix="/files")
 
 
 @app_router.post(
@@ -21,7 +21,7 @@ def create_application(
     *,
     db: Session = Depends(session.get_db),
     data: application_schema.ApplicationCreate,
-    user=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Create an application for  `user`.
@@ -30,19 +30,18 @@ def create_application(
     return {"application": application_dependencies.parse_application(application)}
 
 
-@user_app_router.get(
+@app_router.get(
     ".list", response_model=dict[str, list[application_schema.ApplicationRead]]
 )
 def get_user_applications(
     db: Session = Depends(session.get_db),
     *,
-    user_id: int,
-    user=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Retrieve applications of user `user_id`.
     """
-    applications = application_crud.read_user_applications(db, user_id=user_id)
+    applications = application_crud.read_user_applications(db, user_id=user.id)
 
     return {
         "applications": [
@@ -53,77 +52,73 @@ def get_user_applications(
     }
 
 
-@user_app_router.get(
+@app_router.get(
     ".{application_id}.info",
     response_model=dict[str, application_schema.ApplicationRead],
 )
 def get_user_application(
     db: Session = Depends(session.get_db),
     *,
-    user_id: int,
     application_id: int,
-    user=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Retrieve application `application_id` of user `user_id`.
     """
     application = application_crud.read_user_application(
-        db, user_id=user_id, application_id=application_id
+        db, user_id=user.id, application_id=application_id
     )
 
     return {"application": application_dependencies.parse_application(application)}
 
 
-@user_app_router.put(
+@app_router.put(
     ".{application_id}.update",
     response_model=dict[str, application_schema.ApplicationRead],
 )
 def update_user_application(
     db: Session = Depends(session.get_db),
     *,
-    user_id: int,
     application_id: int,
     data: application_schema.ApplicationUpdate,
-    current_user=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ):
     """
     Update user application
     """
 
     application = application_crud.update_application(
-        db, user_id=user_id, application_id=application_id, data=data
+        db, user_id=user.id, application_id=application_id, data=data
     )
 
     return {"application": application_dependencies.parse_application(application)}
 
 
-@user_app_router.put(".archive", status_code=status.HTTP_202_ACCEPTED)
+@app_router.put(".archive", status_code=status.HTTP_202_ACCEPTED)
 def archive_user_application(
     db: Session = Depends(session.get_db),
     *,
-    user_id: int,
     applications: list[int],
-    current_user=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ):
     """
     Archive user applications
     """
     for app_id in applications:
         if not application_crud.archive_application(
-            db, user_id=user_id, application_id=app_id
+            db, user_id=user.id, application_id=app_id
         ):
             return {"error": UnauthorizedUser()}
 
     return {"data": OperationCompleted()}
 
 
-@user_app_router.delete(".delete", status_code=status.HTTP_202_ACCEPTED)
+@app_router.delete(".delete", status_code=status.HTTP_202_ACCEPTED)
 def delete_user_application(
     db: Session = Depends(session.get_db),
     *,
-    user_id: int,
     applications: int | list[int],
-    current_user=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ):
     """
     Delete user applications
@@ -133,24 +128,23 @@ def delete_user_application(
 
     for app_id in applications:
         if not application_crud.delete_application(
-            db, user_id=user_id, application_id=app_id
+            db, user_id=user.id, application_id=app_id
         ):
             return {"error": UnauthorizedUser()}
 
     return {"data": OperationCompleted()}
 
 
-@user_files_router.get(".list", response_model=dict[str, application_schema.FilesRead])
+@files_router.get(".list", response_model=dict[str, application_schema.FilesRead])
 def get_user_application_files(
     db: Session = Depends(session.get_db),
     *,
-    user_id: int,
-    _=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Retrieve application files (resume and other files)
     """
-    files = application_crud.read_user_application_files(db, user_id=user_id)
+    files = application_crud.read_user_application_files(db, user_id=user.id)
     return {
         "files": application_schema.FilesRead(
             resumes=[
@@ -167,63 +161,58 @@ def get_user_application_files(
     }
 
 
-@user_files_router.post(
-    ".create", response_model=dict[str, application_schema.FileRead]
-)
+@files_router.post(".create", response_model=dict[str, application_schema.FileRead])
 def add_file(
     db: Session = Depends(session.get_db),
     *,
-    user_id: int,
     kind: application_schema.FileType = Form(),
     file: UploadFile = Form(),
-    _=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Upload resume for user `user_id`.
     """
-    file = application_crud.create_file(db, kind, file, user_id)
+    file = application_crud.create_file(db, kind, file, user.id)
     return {"file": application_schema.FileRead(**vars(file))}
 
 
-@user_files_router.get(
+@files_router.get(
     ".resumes.list", response_model=dict[str, list[application_schema.FileRead]]
 )
 def get_user_resumes(
     db: Session = Depends(session.get_db),
     *,
-    user_id: int,
-    _=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Get all resumes of user `user_id`
     """
     resumes = application_crud.get_user_files(
-        db, user_id, application_schema.FileType.resume
+        db, user.id, application_schema.FileType.resume
     )
     return {
         "resumes": [application_schema.FileRead(**vars(resume)) for resume in resumes]
     }
 
 
-@user_files_router.get(
+@files_router.get(
     ".resumes.list", response_model=dict[str, list[application_schema.FileRead]]
 )
 def resume_review(
     db: Session = Depends(session.get_db),
     *,
-    user_id: int,
-    _=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Get all resumes of user `user_id`
     """
-    resumes = application_crud.resume_review(db, user_id)
+    resumes = application_crud.resume_review(db, user.id)
     return {
         "resumes": [application_schema.FileRead(**vars(resume)) for resume in resumes]
     }
 
 
-@user_files_router.get(
+@files_router.get(
     ".essays.update",
     response_model=dict[str, application_schema.Essay],
 )
@@ -231,7 +220,7 @@ def update_essay(
     db: Session = Depends(session.get_db),
     *,
     data: application_schema.Essay,
-    user=Depends(user_dependencies.get_current_user),
+    user: user_models.User = Depends(user_dependencies.get_current_user),
 ) -> Any:
     """
     Update essay of user `user_id`.

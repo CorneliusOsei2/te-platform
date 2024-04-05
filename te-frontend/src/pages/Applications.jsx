@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { PlusIcon, ArchiveBoxIcon, TrashIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import { HttpStatusCode } from 'axios'
 import { useAuth } from '../context/AuthContext'
+import { useData } from '../context/DataContext'
+
 import { sortByField } from '../utils'
+import { Loading } from '../components/_custom/Loading'
+import { PlusIcon, ArchiveBoxIcon, TrashIcon, XMarkIcon } from '@heroicons/react/20/solid'
+
 import axiosInstance from '../axiosConfig'
 import MenuViewOptionsDropdown from '../components/_custom/MenuViewOptionsDropdown'
 import ApplicationItem from '../components/application/ApplicationItem'
@@ -9,9 +14,6 @@ import ApplicationCreate from '../components/application/ApplicationCreate'
 import ApplicationInfo from '../components/application/ApplicationInfo'
 import ApplicationUpdate from '../components/application/ApplicationUpdate'
 import Modal from '../components/_custom/Modal'
-import { useData } from '../context/DataContext'
-import { Loading } from '../components/_custom/Loading'
-import { HttpStatusCode } from 'axios'
 
 const sortOptions = ["Company name", "Date added", "Status"]
 
@@ -66,7 +68,7 @@ const Applications = () => {
     };
 
     const getUserApplicationsRequest = useCallback(async () => {
-        await axiosInstance.get(`/users.${userId}.applications.list`, {
+        await axiosInstance.get(`/applications.list`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -83,7 +85,7 @@ const Applications = () => {
     }, [userId, accessToken, setApplications, logout]);
 
     const archiveUserApplicationRequest = useCallback((applicationIds) => {
-        axiosInstance.put(`/users.${userId}.applications.archive`, applicationIds, {
+        axiosInstance.put(`/applications.archive`, applicationIds, {
             headers: { Authorization: `Bearer ${accessToken}` },
         })
             .then(() => {
@@ -101,7 +103,7 @@ const Applications = () => {
     }, [userId, accessToken, setFetchApplications, logout]);
 
     const deleteUserApplicationRequest = useCallback((applicationIds) => {
-        axiosInstance.put(`/users.${userId}.applications.delete`, applicationIds, {
+        axiosInstance.put(`/applications.delete`, applicationIds, {
             headers: { Authorization: `Bearer ${accessToken}` },
         })
             .then(() => {
