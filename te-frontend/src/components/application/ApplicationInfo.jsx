@@ -28,7 +28,7 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
 
     const getUserApplicationRequest = useCallback(async () => {
         console.log(userId);
-        axiosInstance.get(`/users.${userId}.applications.${applicationId}.info`,
+        axiosInstance.get(`/applications.${applicationId}.info`,
             {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,

@@ -18,7 +18,7 @@ export const customInputMap = {
 }
 
 const ApplicationCreate = ({ setAddApplication }) => {
-    const { accessToken } = useAuth();
+    const { userId, accessToken } = useAuth();
     const { setFetchApplications, companies } = useData();
 
     const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
@@ -40,7 +40,7 @@ const ApplicationCreate = ({ setAddApplication }) => {
     })
 
     const createUserApplicationRequest = () => {
-        axiosInstance.post("/applications.create",
+        axiosInstance.post(`/users.${userId}.applications.create`,
             {
                 ...appData,
                 company: appData.company_other ? appData.company_other : appData.company,

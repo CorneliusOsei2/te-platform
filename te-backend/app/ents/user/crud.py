@@ -90,6 +90,19 @@ def add_user_essay(db: Session, *, user_id, data: user_schema.Essay) -> str:
     return str(user.essay)
 
 
+def update_essay(db: Session, user_id, *, data) -> str:
+    user = read_user_by_id(db, id=user_id)
+    if not user:
+        ...
+
+    user.essay = data.get("essay")
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user.essay
+
+
 # def update(
 #     db: Session,
 #     *,

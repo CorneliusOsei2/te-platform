@@ -68,7 +68,7 @@ const Applications = () => {
     };
 
     const getUserApplicationsRequest = useCallback(async () => {
-        await axiosInstance.get(`/applications.list`, {
+        await axiosInstance.get(`/users.${userId}.applications.list`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -85,7 +85,7 @@ const Applications = () => {
     }, [userId, accessToken, setApplications, logout]);
 
     const archiveUserApplicationRequest = useCallback((applicationIds) => {
-        axiosInstance.put(`/applications.archive`, applicationIds, {
+        axiosInstance.put(`/users.${userId}.applications.archive`, applicationIds, {
             headers: { Authorization: `Bearer ${accessToken}` },
         })
             .then(() => {
@@ -103,7 +103,7 @@ const Applications = () => {
     }, [userId, accessToken, setFetchApplications, logout]);
 
     const deleteUserApplicationRequest = useCallback((applicationIds) => {
-        axiosInstance.put(`/applications.delete`, applicationIds, {
+        axiosInstance.put(`/users.${userId}.applications.delete`, applicationIds, {
             headers: { Authorization: `Bearer ${accessToken}` },
         })
             .then(() => {
@@ -134,7 +134,7 @@ const Applications = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (fetchApplications) {
+            if (fetchApplications && accessToken) {
                 await getUserApplicationsRequest();
                 setTimeout(() => setFetchApplications(false), 700);
             }

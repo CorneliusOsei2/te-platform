@@ -49,7 +49,7 @@ const ApplicationUpdate = ({ application, setApplication, setUpdateApplication }
 
     const updateUserApplicationRequest = useCallback(() => {
         updateData.referred = updateData.referred !== "Yes" ? true : false;
-        axiosInstance.put(`/users.${userId}.applications.${application.id}.update`,
+        axiosInstance.put(`/applications.${application.id}.update`,
             { ...updateData },
             {
                 headers: {

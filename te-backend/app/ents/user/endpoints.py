@@ -119,45 +119,12 @@ def login_user(token=Depends(user_auth.login_access_token)) -> Any:
 #     }
 
 
-@router.get(".role.list", response_model=dict[str, list[user_schema.UserRead]])
-def get_users_by_role(
-    db: Session = Depends(session.get_db),
-    *,
-    skip: int = 0,
-    limit: int = 100,
-    role: user_schema.UserRoles = user_schema.UserRoles.mentee,
-    _: user_models.User = Depends(user_dependencies.get_current_user_by_role),
-) -> Any:
-    """
-    Retrieve all active admins.
-    """
-    users = user_crud.read_users_by_role(db, role=role, skip=skip, limit=limit)
-    return {"users": [user_schema.UserRead(**vars(user)) for user in users]}
-
-
-@router.get(".{user_id}.info", response_model=dict[str, user_schema.UserRead])
-def get_user_by_id(
-    db: Session = Depends(session.get_db),
-    *,
-    user_id: int,
-    _: user_models.User = Depends(user_dependencies.get_current_user_by_role),
-) -> Any:
-    """
-    Retrieve all active admins.
-    """
-    logging.info("Getting user info")
-    user = user_crud.read_user_by_id(db, id=user_id)
-    return {"user": user_schema.UserRead(**vars(user))}
-
-
 # @router.get(".list", response_model=dict[str, list[user_schema.UserRead]])
 # def get_all_users(
 #     db: Session = Depends(session.get_db),
 #     skip: int = 0,
 #     limit: int = 100,
-#     current_user: user_models.User = Depends(
-#         user_dependencies.get_current_user_team
-#     ),
+#     current_user: user_models.User = Depends(user_dependencies.get_current_user_team),
 # ) -> Any:
 #     """
 #     Retrieve all active users.
@@ -166,6 +133,36 @@ def get_user_by_id(
 #         db, skip=skip, limit=limit, role=user_schema.UserRoles.guest
 #     )
 #     return {"users": [user_schema.UserRead(**vars(user)) for user in users]}
+
+
+# @router.get(".role.list", response_model=dict[str, list[user_schema.UserRead]])
+# def get_users_by_role(
+#     db: Session = Depends(session.get_db),
+#     *,
+#     skip: int = 0,
+#     limit: int = 100,
+#     role: user_schema.UserRoles = user_schema.UserRoles.mentee,
+#     _: user_models.User = Depends(user_dependencies.get_current_user_by_role),
+# ) -> Any:
+#     """
+#     Retrieve all active admins.
+#     """
+#     users = user_crud.read_users_by_role(db, role=role, skip=skip, limit=limit)
+#     return {"users": [user_schema.UserRead(**vars(user)) for user in users]}
+
+
+@router.get(".{user_id}.info", response_model=dict[str, user_schema.UserRead])
+def get_user_by_id(
+    db: Session = Depends(session.get_db),
+    *,
+    user_id: int,
+    _: user_models.User = Depends(user_dependencies.get_current_user),
+) -> Any:
+    """
+    Get user with id `user_id`
+    """
+    user = user_crud.read_user_by_id(db, id=user_id)
+    return {"user": user_schema.UserRead(**vars(user))}
 
 
 @router.post(".create", response_model=dict[str, user_schema.UserRead])

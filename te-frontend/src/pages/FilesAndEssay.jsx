@@ -19,7 +19,7 @@ const Files = () => {
             setTimeout(() => { }, 700);
         }
 
-    }, []);
+    }, [accessToken]);
 
 
     return (

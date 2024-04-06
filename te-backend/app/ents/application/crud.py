@@ -16,6 +16,8 @@ from sqlalchemy.orm import Session
 def read_application_by_id(
     db: Session, *, application_id: int
 ) -> application_models.Application | None:
+    """Returns the `Application` with id `application_id`."""
+
     return (
         db.query(application_models.Application)
         .filter(application_models.Application.id == application_id)
@@ -26,12 +28,14 @@ def read_application_by_id(
 def read_application_multi(
     db: Session, *, skip: int = 0, limit: int = 100
 ) -> list[application_models.Application]:
+    """Returns the next `limit` applications after `skip` applications."""
     return db.query(application_models.Application).offset(skip).limit(limit).all()
 
 
 def create_application(
     db: Session, *, user_id: int, data: application_schema.ApplicationCreate
 ):
+    """Create an `Application` for user `user_id` with `data`."""
     location = None
     company = company_crud.read_company_by_name(db, name=data.company)
     if not company:
@@ -83,6 +87,7 @@ def create_application(
 def read_user_applications(
     db: Session, *, user_id
 ) -> list[application_models.Application]:
+    """Read all applications of user `user_id`."""
     user = user_crud.read_user_by_id(db, id=user_id)
     if not user:
         raise
@@ -277,19 +282,6 @@ def get_user_files(
 def resume_review(db: Session, resume_id: int):
     resume = db.application_models.File
     ...
-
-
-def update_essay(db: Session, user_id, *, data) -> str:
-    user = user_crud.read_user_by_id(db, id=user_id)
-    if not user:
-        ...
-
-    user.essay = data.get("essay")
-
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user.essay
 
 
 # def update(

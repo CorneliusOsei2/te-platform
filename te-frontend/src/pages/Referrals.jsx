@@ -3,8 +3,7 @@ import axiosInstance from '../axiosConfig'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import ReferralCreate from '../components/referral/ReferralCreate'
-import { XMarkIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid'
-import MenuViewOptionsDropdown from '../components/_custom/MenuViewOptionsDropdown'
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid'
 import { Loading } from '../components/_custom/Loading'
 import ReferralActivity from '../components/referral/ReferralActivity'
 
@@ -22,7 +21,6 @@ const Referrals = () => {
         contact
     } = useData();
 
-    const [shownCompanies, setShownCompanies] = useState(referralCompanies);
     const [referralCompanyId, setReferralCompanyId] = useState(null);
     const [referralIndex, setReferralIndex] = useState(null);
 
@@ -44,7 +42,7 @@ const Referrals = () => {
     }, [accessToken, setReferralCompanies]);
 
     const getUserReferralCompaniesRequest = useCallback(async () => {
-        await axiosInstance.get(`users.${userId}.referrals.list`, {
+        await axiosInstance.get("referrals.list", {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -55,7 +53,7 @@ const Referrals = () => {
             .catch((error) => {
                 console.log(error);
             });
-    }, [accessToken, setReferrals, userId]);
+    }, [accessToken, setReferrals]);
 
 
     useEffect(() => {

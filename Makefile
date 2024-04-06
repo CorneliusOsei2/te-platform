@@ -8,15 +8,26 @@ format:
 	ruff . --fix
 	isort .
 
-# Run Pyre for static type checking
 pyre:
 	@echo "Running Pyre..."
 	watchman watch .
 	pyre
 
-# local:
-# 	@echo "Starting server..."
-# 	uvicorn app.main:app --reload
+local-frontend:
+	@echo "Starting frontend server..."
+	cd te-frontend && npm start
+
+local-backend:
+	@echo "Starting backend server..."
+	cd te-backend && ./prestart.sh
+
+build:
+	@echo "Building Docker containers..."
+	docker-compose build --no-cache
+
+run:
+	@echo "Running Docker containers..."
+	docker-compose up
 
 container:
 	@echo "Building Docker containers..."
