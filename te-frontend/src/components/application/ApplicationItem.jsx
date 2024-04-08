@@ -22,7 +22,7 @@ const ApplicationItem = ({ allowSelection, addSelectedItem, application, setAppl
                 />
             }
 
-            <div className="min-w-0 flex-auto  text-xs  md:text-sm  " onClick={() => { allowSelection ? addSelectedItem(application) : setApplicationId(application.id) }}>
+            <div className="min-w-0 flex-auto " onClick={() => { allowSelection ? addSelectedItem(application) : setApplicationId(application.id) }}>
                 <div className="flex items-center gap-x-3">
                     <div className="flex-none rounded-full p-1">
                         <img
@@ -43,7 +43,7 @@ const ApplicationItem = ({ allowSelection, addSelectedItem, application, setAppl
                         </div>
                     </div>
                 </div>
-                <div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
+                <div className="mt-3 flex items-center gap-x-2.5 text-sm leading-5 text-gray-400">
                     <p className="truncate">{application.notes}</p>
                     <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-300">
                         <circle cx={1} cy={1} r={1} />
@@ -54,7 +54,7 @@ const ApplicationItem = ({ allowSelection, addSelectedItem, application, setAppl
             <div
                 className={classNames(
                     jobStatuses[application.status],
-                    'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset  max-sm:hidden'
+                    'rounded-full flex-none py-1 px-2 text-sm font-medium ring-1 ring-inset  max-sm:hidden'
                 )}
             >
                 {application.status}

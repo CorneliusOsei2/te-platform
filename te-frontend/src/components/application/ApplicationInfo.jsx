@@ -84,7 +84,7 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
                                     <h3 className="text-base font-semibold leading-6 text-gray-900">
                                         {application.title}, {application.role}
                                     </h3>
-                                    <span className='text-sm text-slate-500'>{application.location.city}, {application.location.country}</span>
+                                    <span className='text-slate-500'>{application.location.city}, {application.location.country}</span>
                                 </div>
                                 <button
                                     type="button"
@@ -97,27 +97,27 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
 
                             <div>
                                 <dl className="mt-3 divide-y divide-gray-200 border-b border-t border-gray-200">
-                                    <div className="flex justify-between py-3 text-sm font-medium">
+                                    <div className="flex justify-between py-3 font-medium">
                                         <dt className="text-sky-800">Status</dt>
                                         <dd className={classNames(
                                             jobStatuses[application.status],
-                                            'rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'
+                                            'rounded-full flex-none py-1 px-2 text-sm font-medium ring-1 ring-inset'
                                         )}> {application.status}</dd>
 
                                     </div>
-                                    <div className="flex justify-between py-3 text-sm font-medium">
+                                    <div className="flex justify-between py-3 font-medium">
                                         <dt className="text-sky-800">Referred</dt>
                                         <dd className="text-gray-900"> {application.referred === true ? "Yes" : "No"}</dd>
                                     </div>
-                                    <div className="flex justify-between py-3 text-sm font-medium">
+                                    <div className="flex justify-between py-3 font-medium">
                                         <dt className="text-sky-800">Added on</dt>
                                         <dd className="text-gray-900">{application.date} </dd>
                                     </div>
-                                    <div className="flex justify-between py-3 text-sm font-medium">
+                                    <div className="flex justify-between py-3 font-medium">
                                         <dt className="text-sky-800">Recruiter Name</dt>
                                         <dd className="text-gray-900">{application.recruiter_name}</dd>
                                     </div>
-                                    <div className="flex justify-between py-3 text-sm font-medium">
+                                    <div className="flex justify-between py-3 font-medium">
                                         <dt className="text-sky-800">Recruiter Email</dt>
                                         <dd className="text-gray-900">{application.recruiter_email}</dd>
                                     </div>
@@ -126,7 +126,7 @@ const ApplicationInfo = ({ applicationId, setApplicationId, application, setAppl
                             <div>
                                 <h3 className="font-medium text-sky-800">Notes</h3>
                                 <div className="mt-2 flex items-center justify-between border-b">
-                                    <p className="text-sm italic text-black">{application.notes} None at the moment</p>
+                                    <p className="italic text-black">{application.notes} None at the moment</p>
                                 </div>
                             </div>
                         </div>

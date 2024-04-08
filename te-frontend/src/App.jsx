@@ -15,7 +15,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <DataProvider>
-          <div className="App">
+          <div className="App gentium-book">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/workspace" element={<Workspace setLogin={setLogin} />} />

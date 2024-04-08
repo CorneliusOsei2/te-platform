@@ -59,21 +59,21 @@ const SlideOverInfo = ({ entityId, title, setHandler, archiveRequest, deleteRequ
                                             <div className="flex bottom-0 text-center justify-between px-6">
                                                 <button
                                                     type="button"
-                                                    className="ml-3 w-1/3  justify-between px-3 flex rounded-full py-1 text-sm font-medium ring-1 ring-inset text-gray-500 bg-gray-400/10 ring-gray-400/20 hover:bg-gray-700 hover:text-white"
+                                                    className="ml-3 w-1/3  justify-between px-3 flex rounded-full py-1 font-medium ring-1 ring-inset text-gray-500 bg-gray-400/10 ring-gray-400/20 hover:bg-gray-700 hover:text-white"
                                                     onClick={() => archiveRequest([entityId])}
                                                 >
                                                     Archive <ArchiveBoxIcon className="h-5 w-5" aria-hidden="true" />
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    className="ml-3 justify-between px-auto flex w-1/3 rounded-full py-1 px-2 text-sm font-medium ring-1 ring-inset text-green-500 bg-green-400/10 ring-green-400/20 hover:bg-green-700 hover:text-white"
+                                                    className="ml-3 justify-between px-auto flex w-1/3 rounded-full py-1 px-2 font-medium ring-1 ring-inset text-green-500 bg-green-400/10 ring-green-400/20 hover:bg-green-700 hover:text-white"
                                                     onClick={setOpen}
                                                 >
                                                     Close <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    className="ml-3   justify-between px-3 flex w-1/3 rounded-full py-1 text-sm font-medium ring-1 ring-inset text-red-500 bg-red-400/10 ring-gray-400/20 hover:bg-red-700 hover:text-white"
+                                                    className="ml-3   justify-between px-3 flex w-1/3 rounded-full py-1 font-medium ring-1 ring-inset text-red-500 bg-red-400/10 ring-gray-400/20 hover:bg-red-700 hover:text-white"
                                                     onClick={() => deleteRequest([entityId])}
                                                 >
                                                     Delete <TrashIcon className="h-5 w-5" aria-hidden="true" />

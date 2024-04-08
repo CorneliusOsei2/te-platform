@@ -4,10 +4,10 @@
 
 body {
   margin: 0;
-  font-family: Georgia, 'Times New Roman', Times, serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Goudy Bookletter 1911", serif;
+  font-size: medium;
 }
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

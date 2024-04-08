@@ -84,7 +84,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                                                 (item.name === content)
                                                                     ? 'bg-gray-50  text-sky-800'
                                                                     : ' text-slate-50 hover:bg-gray-50',
-                                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                                                'group flex gap-x-3 rounded-md p-2 leading-6 font-semibold'
                                                             )} onClick={(e) => { setContent(e.target.innerText); setSidebarOpen(false) }}>
                                                                 <item.icon
                                                                     className={classNames(
@@ -131,7 +131,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                 <li>
                                     <div className="relative mt-3 mb-3">
                                         <div className="relative flex justify-start">
-                                            <span className="bg-sky-900 pr-2 text-sm text-gray-100">Learn</span>
+                                            <span className="bg-sky-900 pr-2  text-gray-100">Learn</span>
                                         </div>
                                     </div>
                                     <ul className="-mx-2 space-y-1">
@@ -140,7 +140,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                                 (item.name === content)
                                                     ? 'bg-gray-50 text-sky-900'
                                                     : 'text-gray-100 hover:text-sky-900 hover:bg-gray-300',
-                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                                'group flex gap-x-3 rounded-md p-2  leading-6 font-semibold'
                                             )}
                                                 onClick={(e) => { setContent(e.target.innerText) }}>
                                                 <item.icon
@@ -157,7 +157,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
 
                                     <div className="relative mt-3 mb-3">
                                         <div className="relative flex justify-start">
-                                            <span className="bg-sky-900 pr-2 text-sm text-gray-100">Apps</span>
+                                            <span className="bg-sky-900 pr-2  text-gray-100">Apps</span>
                                         </div>
                                     </div>
 
@@ -167,7 +167,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                                 (item.name === content)
                                                     ? 'bg-gray-50 text-sky-900'
                                                     : 'text-gray-100 hover:text-sky-900 hover:bg-gray-300',
-                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                                'group flex gap-x-3 rounded-md p-2  leading-6 font-semibold'
                                             )}
                                                 onClick={(e) => { setContent(e.target.innerText) }}>
                                                 <item.icon
@@ -184,7 +184,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
 
                                     <div className="relative mt-3 mb-3">
                                         <div className="relative flex justify-start">
-                                            <span className="bg-sky-900 pr-2 text-sm text-gray-100">Files</span>
+                                            <span className="bg-sky-900 pr-2  text-gray-100">Files</span>
                                         </div>
                                     </div>
 
@@ -194,7 +194,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                                 (item.name === content)
                                                     ? 'bg-gray-50 text-sky-900'
                                                     : 'text-gray-100 hover:text-sky-900 hover:bg-gray-300',
-                                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                                'group flex gap-x-3 rounded-md p-2  leading-6 font-semibold'
                                             )}
                                                 onClick={(e) => { setContent(e.target.innerText) }}>
                                                 <item.icon
@@ -214,7 +214,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
 
                                 <li className='-mx-6  flex justify-between'>
                                     <button
-                                        className="flex items-center gap-x-4 py-3 text-sm font-semibold leading-6 text-gray-900"
+                                        className="flex items-center gap-x-4 py-3  font-semibold leading-6 text-gray-900"
                                         onClick={() => setContent("Profile")}
                                     >
                                         <img
@@ -252,7 +252,7 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                         <span className="sr-only">Open sidebar</span>
                         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     </button>
-                    <div className="flex-1 text-sm font-semibold leading-6 text-gray-900 justify-between flex-row">
+                    <div className="flex-1 font-semibold leading-6 text-gray-900 justify-between flex-row">
                         <img
                             className="h-8 mx-auto"
                             src="https://media.licdn.com/dms/image/C560BAQF-SVzS4qtXJQ/company-logo_100_100/0/1660174624525?e=1707350400&v=beta&t=IFZNDSfFIjzoJ6e657Oh4kEoyKRPvfnigmVojlINTC8"
