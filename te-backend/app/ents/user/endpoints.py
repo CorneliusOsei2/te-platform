@@ -20,6 +20,14 @@ def login_user(token=Depends(user_auth.login_access_token)) -> Any:
     return {"token": token}
 
 
+@router.post(".login.google")
+def login_user_via_google(token=Depends(user_auth.login_access_token)) -> Any:
+    """
+    Log User in.
+    """
+    return {"token": token}
+
+
 # @router.get(
 #     ".mentee.list", response_model=dict[str, list[user_schema.UserRead]]
 # )

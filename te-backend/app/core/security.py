@@ -25,9 +25,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def create_access_token(
     subject: str | Any, expires_delta: timedelta | None = None
 ) -> str:
-    """
-    Creates an access token with `subject` that expires after `expires_delta`.
-    """
+    """Returns an access token with `subject` that expires after `expires_delta`."""
 
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
