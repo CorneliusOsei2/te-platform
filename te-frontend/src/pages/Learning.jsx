@@ -9,7 +9,7 @@ import { useData } from '../context/DataContext'
 import { Loading } from '../components/_custom/Loading'
 
 let baseCategories = {
-    "Fundamentals": ["Recursion", "Classes and Objects", "Mutability"],
+    "Programming Fundamentals": ["Python Programming", "Recursion", "Classes and Objects", "Mutability"],
     "Data Structures and Algorithms": ["Arrays and Lists", "Stacks, Queues, Deques", "Linked List", "Trees",
         "Priority Queue and Heaps", "Tries", "Graphs", "Pointers", "Intervals", "Bit Manipulation"],
     "System Design": ["Components"]

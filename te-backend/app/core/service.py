@@ -1,6 +1,6 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class GDriveCredentials(BaseSettings):

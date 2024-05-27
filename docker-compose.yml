@@ -1,9 +1,5 @@
 version: '3.10'
 
-volumes:
-  db_data:
-  alembic_data:
-
 networks:
   te_network:
   
@@ -31,9 +27,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - ./te-backend/alembic:/app/alembic  # Mount Alembic directory
-      - alembic_data:/app/alembic  # Mount Alembic data directory
     networks:
       - te_network
     
@@ -45,8 +38,6 @@ services:
       - .env
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "${POSTGRES_HOST}", "-p", "${POSTGRES_PORT}", "-q", "-U", "${POSTGRES_USER}"]
-    volumes:
-      - db_data:/var/lib/postgresql/data
     networks:
       - te_network
     
