@@ -38,7 +38,6 @@ const Learning = () => {
 
     const [addLesson, setAddLesson] = useState(false);
 
-
     const getLessonsRequest = useCallback(async () => {
         axiosInstance.get("/learning.lessons.list")
             .then((response) => {
