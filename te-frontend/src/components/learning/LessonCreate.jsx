@@ -4,7 +4,6 @@ import { ChevronDownIcon, DocumentIcon } from '@heroicons/react/20/solid'
 
 import SlideOverForm from '../_custom/SlideOver/SlideOverCreate'
 import { setNestedPropertyValue } from '../../utils'
-import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
 import SuccessFeedback from '../_custom/Alert/SuccessFeedback'
 import { FormSelect, FormInput, FileUpload } from '../_custom/FormInputs'
@@ -13,7 +12,6 @@ const lessonFormats = {
     "Video": "video", "Document (File)": "document", "Document (Link)": "document", "Web page": "html"
 };
 const LessonCreate = ({ setAddLesson, lessonCategories }) => {
-    const { accessToken } = useAuth();
     const { setFetchLessons } = useData();
 
     const [lessonData, setLessonData] = useState({ category: "", subcategory: null, format: "", link: "" });
@@ -22,12 +20,7 @@ const LessonCreate = ({ setAddLesson, lessonCategories }) => {
     const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
 
     const createLearningLessonRequest = () => {
-        axiosInstance.post("/learning.lessons.create", { ...lessonData, format: lessonFormats[lessonData.format] },
-            {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            })
+        axiosInstance.post("/learning.lessons.create", { ...lessonData, format: lessonFormats[lessonData.format] })
             .then((_) => {
                 setFetchLessons(true);
                 setShowSuccessFeedback(true);
@@ -44,19 +37,15 @@ const LessonCreate = ({ setAddLesson, lessonCategories }) => {
             const formData = new FormData();
             formData.append('file', file);
 
-            axiosInstance.post("/learning.file.upload", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            }).then((response) => {
-                console.log(response);
-                handleInputChange({ field: "link", value: response.data.file.link });
-                setUploadingFile(false);
-            }
-            ).catch((error) => {
-                console.log(error);
-            })
+            axiosInstance.post("/learning.file.upload", formData)
+                .then((response) => {
+                    console.log(response);
+                    handleInputChange({ field: "link", value: response.data.file.link });
+                    setUploadingFile(false);
+                }
+                ).catch((error) => {
+                    console.log(error);
+                })
         }
     }
 

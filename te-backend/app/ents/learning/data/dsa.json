@@ -1,0 +1,51 @@
+{
+    "dsa": {
+        "Stack": {
+            "prereqs": [
+                "Arrays (lists)"
+            ],
+            "resources": [
+                {
+                    "title": "Introduction to Stacks and Queues",
+                    "link": "https://www.youtube.com/watch?v=NKmasqr_Xkw",
+                    "type": "video"
+                }
+            ]
+        },
+        "Queue": {
+            "prereqs": [
+                "Arrays (lists)"
+            ],
+            "resources": [
+                {
+                    "title": "Introduction to Queues - Caleb Curry",
+                    "link": "https://www.youtube.com/watch?v=Y7wZO2tMjnY"
+                }
+            ]
+        },
+        "Deque": {
+            "prereqs": [
+                "Arrays (lists)"
+            ],
+            "resources": [
+                {
+                    "title": "Best Data Structure",
+                    "link": "https://www.youtube.com/watch?v=25B66fOb0GA",
+                    "type": "video"
+                }
+            ]
+        },
+        "Linked list": {
+            "prereqs": [
+                "Arrays (lists)"
+            ],
+            "resources": [
+                {
+                    "title": "Intro to linked lists - Neso Academy",
+                    "link": "https://www.youtube.com/watch?v=R9PTBwOzceo",
+                    "type": "video"
+                }
+            ]
+        }
+    }
+}

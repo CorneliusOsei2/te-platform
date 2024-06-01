@@ -1,35 +1,14 @@
 import app.ents.learning.models as learning_models
 import app.ents.learning.schema as learning_schema
-from sqlalchemy.orm import Session
-from app.core import service
-from app.core.settings import settings
-from app.utilities.constants import Constants
+import app.ents.learning.dependencies as learning_dependencies
 
 
-def read_lessons(
-    db: Session, *, skip: int = 0, limit: int = 100
-) -> list[learning_models.Lesson]:
-    return db.query(learning_models.Lesson).offset(skip).limit(limit).all()
+def read_lessons_v1(skip: int, limit: int):
+    dsa_lessons = learning_dependencies.read_lessons_v1()
+    return dsa_lessons
 
 
-def read_lessons_v1():
-    drive_service = service.get_drive_service()
-    response = drive_service.files(q=settings.GDRIVE_LESSONS)
-    files = response.get("files", [])
-
-    # DSA Textbook Chapters
-
-    #
-    for f in files:
-        print(f)
-
-
-def create_lesson(
-    db: Session, *, data: learning_schema.LessonCreate
-) -> learning_models.Lesson:
+def create_lesson_v1(data: learning_schema.LessonCreate):
     lesson = learning_models.Lesson(**data.dict())
 
-    db.add(lesson)
-    db.commit()
-    db.refresh(lesson)
     return lesson

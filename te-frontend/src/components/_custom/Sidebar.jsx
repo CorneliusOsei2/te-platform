@@ -6,17 +6,12 @@ import {
     PlusIcon
 
 } from '@heroicons/react/24/outline'
-import { useAuth } from '../../context/AuthContext'
-import { useData } from '../../context/DataContext'
-import CompanyCreate from '../company/CompanyCreate'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 const Sidebar = ({ navigation, content, setContent, setLogin }) => {
-    const { accessToken, logout } = useAuth();
-    const { userInfo } = useData();
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
     const [createCompany, setCreateCompany] = useState(false);
@@ -155,11 +150,6 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                         ))}
                                     </ul>
 
-                                    <div className="relative mt-3 mb-3">
-                                        <div className="relative flex justify-start">
-                                            <span className="bg-sky-900 pr-2  text-gray-100">Apps</span>
-                                        </div>
-                                    </div>
 
                                     <ul className="-mx-2 space-y-1">
                                         {navigation.filter((item) => item.type === "app").map((item) => (
@@ -182,11 +172,6 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                         ))}
                                     </ul>
 
-                                    <div className="relative mt-3 mb-3">
-                                        <div className="relative flex justify-start">
-                                            <span className="bg-sky-900 pr-2  text-gray-100">Files</span>
-                                        </div>
-                                    </div>
 
                                     <ul className="-mx-2 space-y-1">
                                         {navigation.filter((item) => item.type === "other").map((item) => (
@@ -213,34 +198,6 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                                 <li className="mt-auto flex"></li>
 
                                 <li className='-mx-6  flex justify-between'>
-                                    <button
-                                        className="flex items-center gap-x-4 py-3  font-semibold leading-6 text-gray-900"
-                                        onClick={() => setContent("Profile")}
-                                    >
-                                        <img
-                                            className="h-8 w-8 rounded-full bg-gray-50"
-                                            src={userInfo.image}
-                                            alt=""
-                                        />
-                                        <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true" className='text-gray-100'>{(userInfo?.first_name ?? "") + " " + (userInfo?.last_name ?? "")}</span>
-                                    </button>
-
-                                    {!accessToken &&
-                                        <a className=" py-3 flex align-right right-0" href='/login'>
-                                            <span className="text-white mr-1">Login </span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-white">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                                            </svg>
-                                        </a>}
-
-                                    {accessToken &&
-                                        <button type='submit' className=" py-3 flex align-right right-0" onClick={logout}>
-                                            <span className="text-white mr-1">Logout </span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-white">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                                            </svg>
-                                        </button>}
                                 </li>
                             </ul>
                         </nav>
@@ -277,7 +234,6 @@ const Sidebar = ({ navigation, content, setContent, setLogin }) => {
                 </div>
             </div>
 
-            {createCompany && <CompanyCreate />}
 
         </>
     )

@@ -7,68 +7,21 @@ import {
 import { Dialog, Transition } from '@headlessui/react'
 import axiosInstance from "../../axiosConfig"
 import { BriefcaseIcon, DocumentIcon, CodeBracketIcon, ComputerDesktopIcon, BookOpenIcon } from '@heroicons/react/20/solid'
-import Applications from '../../pages/Applications'
 import Sidebar from '../_custom/Sidebar'
-import FilesAndEssay from '../../pages/FilesAndEssay'
-import Referrals from '../../pages/Referrals'
 import Learning from '../../pages/Learning'
 import { useData } from '../../context/DataContext'
-import { useAuth } from '../../context/AuthContext'
-import Profile from './Profile'
 
 
 const navigation = [
-    { name: 'Applications', type: "app", icon: BriefcaseIcon },
-    { name: 'Resume and Essay', type: "app", icon: DocumentIcon },
-    { name: 'Referrals', type: "app", icon: FolderIcon },
-    { name: 'Opportunities', type: "app", icon: ComputerDesktopIcon },
     { name: 'Learning', type: "learn", icon: BookOpenIcon },
-    { name: 'Practice', type: "learn", icon: CodeBracketIcon },
-    { name: 'Other files', type: "other", icon: FolderIcon },
 ]
 
 
 const Workspace = ({ setLogin }) => {
-    const { userId, accessToken, logout } = useAuth();
     const { setUserInfo, setResumes, setOtherFiles, fetchFiles, setFetchFiles } = useData();
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [content, setContent] = useState("Applications")
-
-    const getUserInfoRequest = useCallback(async () => {
-        axiosInstance.get(`/users.${userId}.info`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
-            .then((response) => {
-                setUserInfo(response.data.user)
-                console.log(response.data.user)
-            })
-            .catch((error) => {
-                if (error.response.status === 401) {
-                    logout();
-                }
-            })
-    }, [accessToken, logout, setUserInfo, userId]);
-
-    const getUserFilesRequest = useCallback(async () => {
-        axiosInstance.get(`/users.${userId}.files.list`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        })
-            .then((response) => {
-                setResumes(response.data.files.resumes);
-                setOtherFiles(response.data.files.other_files);
-            })
-            .catch((error) => {
-                if (error.response.status === 401) {
-                    logout();
-                }
-            })
-    }, [accessToken, logout, setOtherFiles, setResumes, userId]);
-
 
     useEffect(() => {
         let prevContent = sessionStorage.getItem('content');
@@ -76,28 +29,6 @@ const Workspace = ({ setLogin }) => {
             setContent(prevContent);
         }
     }, [content]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            await getUserInfoRequest();
-        }
-        if (accessToken) {
-            fetchData();
-        }
-    }, [accessToken, getUserInfoRequest])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            await getUserFilesRequest();
-        }
-        if (accessToken && fetchFiles) {
-            fetchData();
-            setFetchFiles(false);
-        }
-    }, [accessToken, fetchFiles, getUserFilesRequest, setFetchFiles])
-
-
-
 
 
     const setContentHandler = (value) => {
@@ -160,11 +91,7 @@ const Workspace = ({ setLogin }) => {
 
                 <div className="md:pl-72 ">
                     <main className="bg-white h-screen">
-                        {
-                            content === "Profile" ? <Profile /> :
-                                content === "Applications" ? <Applications /> :
-                                    content === "Resume and Essay" ? <FilesAndEssay /> :
-                                        content === "Referrals" ? <Referrals /> : <Learning />
+                        {<Learning />
                         }
                     </main>
 

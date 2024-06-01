@@ -3,7 +3,6 @@ import { Disclosure } from '@headlessui/react'
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
 import LearningGroup from '../components/learning/LearningGroup'
 import axiosInstance from '../axiosConfig'
-import { useAuth } from '../context/AuthContext'
 import LessonCreate from '../components/learning/LessonCreate'
 import { useData } from '../context/DataContext'
 import { Loading } from '../components/_custom/Loading'
@@ -33,24 +32,25 @@ const mapSubCategoryToLessons = (lessons, property) => {
 
 
 const Learning = () => {
-    const { accessToken } = useAuth();
-    const { fetchLessons, setFetchLessons, workshopLessons, setWorkshopLessons, otherLessons, setOtherLessons } = useData();
+    const { fetchLessons, setFetchLessons, dsa, setDsa, workshopLessons, setWorkshopLessons, otherLessons, setOtherLessons } = useData();
 
     const [addLesson, setAddLesson] = useState(false);
 
     const getLessonsRequest = useCallback(async () => {
         axiosInstance.get("/learning.lessons.list")
             .then((response) => {
-                const workshops = response.data.lessons.filter((lesson) => lesson.category === "Workshops");
-                const otherLessons = response.data.lessons.filter((lesson) => lesson.category !== "Workshops")
-                console.log(response.data, workshops, otherLessons)
-                setWorkshopLessons(mapSubCategoryToLessons(workshops, "subcategory"));
-                setOtherLessons(mapSubCategoryToLessons(otherLessons, "category"));
+                console.log(response)
+                setDsa(response.data.dsa)
+                // const workshops = response.data.lessons.filter((lesson) => lesson.category === "Workshops");
+                // const otherLessons = response.data.lessons.filter((lesson) => lesson.category !== "Workshops")
+                // console.log(response.data, workshops, otherLessons)
+                // setWorkshopLessons(mapSubCategoryToLessons(workshops, "subcategory"));
+                // setOtherLessons(mapSubCategoryToLessons(otherLessons, "category"));
             })
             .catch((error) => {
                 console.log(error);
             })
-    }, [setOtherLessons, setWorkshopLessons]);
+    }, [setDsa]);
 
 
     useEffect(() => {
@@ -64,7 +64,7 @@ const Learning = () => {
         if (fetchLessons) {
             fetchData();
         }
-    }, [accessToken, fetchLessons, getLessonsRequest, setFetchLessons]);
+    }, [fetchLessons, getLessonsRequest, setFetchLessons]);
 
     return (
         <div className="bg-white">
@@ -143,6 +143,12 @@ const Learning = () => {
                                                 </h3>
                                                 <Disclosure.Panel >
                                                     <div className="space-y-6">
+
+                                                        <div>
+                                                            <h3>Stacks</h3>
+                                                        </div>
+
+
                                                         <LearningGroup
                                                             subcategory=""
                                                             rawLessons={otherLessons[subcategory] ?? []}
