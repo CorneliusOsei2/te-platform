@@ -6,6 +6,7 @@ import axiosInstance from '../axiosConfig'
 import LessonCreate from '../components/learning/LessonCreate'
 import { useData } from '../context/DataContext'
 import { Loading } from '../components/_custom/Loading'
+import LessonEntry from '../components/learning/LessonEntry'
 
 let baseCategories = {
     "Programming Fundamentals": ["Python Programming", "Recursion", "Classes and Objects", "Mutability"],
@@ -41,11 +42,6 @@ const Learning = () => {
             .then((response) => {
                 console.log(response)
                 setDsa(response.data.dsa)
-                // const workshops = response.data.lessons.filter((lesson) => lesson.category === "Workshops");
-                // const otherLessons = response.data.lessons.filter((lesson) => lesson.category !== "Workshops")
-                // console.log(response.data, workshops, otherLessons)
-                // setWorkshopLessons(mapSubCategoryToLessons(workshops, "subcategory"));
-                // setOtherLessons(mapSubCategoryToLessons(otherLessons, "category"));
             })
             .catch((error) => {
                 console.log(error);
@@ -142,17 +138,9 @@ const Learning = () => {
                                                     </Disclosure.Button>
                                                 </h3>
                                                 <Disclosure.Panel >
-                                                    <div className="space-y-6">
+                                                    <div className="flex-col">
 
-                                                        <div>
-                                                            <h3>Stacks</h3>
-                                                        </div>
-
-
-                                                        <LearningGroup
-                                                            subcategory=""
-                                                            rawLessons={otherLessons[subcategory] ?? []}
-                                                        />
+                                                        {Object.entries(dsa).map(([title, info]) => <LessonEntry lesson={{ "title": title, ...info }} />)}
                                                     </div>
                                                 </Disclosure.Panel>
                                             </>

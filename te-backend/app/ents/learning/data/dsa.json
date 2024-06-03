@@ -6,7 +6,12 @@
             ],
             "resources": [
                 {
-                    "title": "Introduction to Stacks and Queues",
+                    "label": "Introduction to Stacks and Queues",
+                    "link": "https://www.youtube.com/watch?v=NKmasqr_Xkw",
+                    "type": "video"
+                },
+                {
+                    "label": "Introduction to Stacks",
                     "link": "https://www.youtube.com/watch?v=NKmasqr_Xkw",
                     "type": "video"
                 }
@@ -18,8 +23,14 @@
             ],
             "resources": [
                 {
-                    "title": "Introduction to Queues - Caleb Curry",
-                    "link": "https://www.youtube.com/watch?v=Y7wZO2tMjnY"
+                    "label": "Introduction to Queues - Caleb Curry",
+                    "link": "https://www.youtube.com/watch?v=Y7wZO2tMjnY",
+                    "type": "video"
+                },
+                {
+                    "label": "Introduction ",
+                    "link": "https://www.youtube.com/watch?v=NKmasqr_Xkw",
+                    "type": "video"
                 }
             ]
         },
@@ -29,7 +40,7 @@
             ],
             "resources": [
                 {
-                    "title": "Best Data Structure",
+                    "label": "Best Data Structure",
                     "link": "https://www.youtube.com/watch?v=25B66fOb0GA",
                     "type": "video"
                 }
@@ -41,9 +52,99 @@
             ],
             "resources": [
                 {
-                    "title": "Intro to linked lists - Neso Academy",
+                    "label": "Intro to linked lists - Neso Academy",
                     "link": "https://www.youtube.com/watch?v=R9PTBwOzceo",
                     "type": "video"
+                },
+                {
+                    "label": "Node-Based Data Structures: Linked Lists - Jay Wengrow",
+                    "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
+                    "type": "text"
+                }
+            ]
+        },
+        "Trees": {
+            "prereqs": [
+                "Arrays (lists)"
+            ],
+            "resources": [
+                {
+                    "label": "Intro to linked lists - Neso Academy",
+                    "link": "https://www.youtube.com/watch?v=R9PTBwOzceo",
+                    "type": "video"
+                },
+                {
+                    "label": "Node-Based Data Structures: Linked Lists - Jay Wengrow",
+                    "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
+                    "type": "text"
+                }
+            ]
+        },
+        "Binary Trees and Binary Search Trees (BST)": {
+            "prereqs": [
+                "Arrays (lists)"
+            ],
+            "resources": [
+                {
+                    "label": "Intro to linked lists - Neso Academy",
+                    "link": "https://www.youtube.com/watch?v=R9PTBwOzceo",
+                    "type": "video"
+                },
+                {
+                    "label": "Speeding Up All The Things with Binary Search Trees - Jay Wengrow",
+                    "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
+                    "type": "text"
+                }
+            ]
+        },
+        "Priority Queues and Heaps": {
+            "prereqs": [
+                "Arrays (lists)"
+            ],
+            "resources": [
+                {
+                    "label": "Intro to linked lists - Neso Academy",
+                    "link": "https://www.youtube.com/watch?v=R9PTBwOzceo",
+                    "type": "video"
+                },
+                {
+                    "label": "Keeping Your Priorities Straight with Heaps - Jay Wengrow",
+                    "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
+                    "type": "text"
+                }
+            ]
+        },
+        "Tries": {
+            "prereqs": [
+                "Arrays (lists)"
+            ],
+            "resources": [
+                {
+                    "label": "Intro to linked lists - Neso Academy",
+                    "link": "https://www.youtube.com/watch?v=R9PTBwOzceo",
+                    "type": "video"
+                },
+                {
+                    "label": "It Doesn't Hurt to Trie - Jay Wengrow",
+                    "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
+                    "type": "text"
+                }
+            ]
+        },
+        "Graphs": {
+            "prereqs": [
+                "Arrays (lists)"
+            ],
+            "resources": [
+                {
+                    "label": "Intro to linked lists - Neso Academy",
+                    "link": "https://www.youtube.com/watch?v=R9PTBwOzceo",
+                    "type": "video"
+                },
+                {
+                    "label": "Node-Based Data Structures: Linked Lists - Jay Wengrow",
+                    "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
+                    "type": "text"
                 }
             ]
         }
