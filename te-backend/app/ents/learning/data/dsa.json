@@ -1,12 +1,51 @@
 {
     "dsa": {
-        "Stack": {
+        "Array (List)": {
             "prereqs": [
-                "Arrays (lists)"
+                "array/list"
             ],
             "resources": [
                 {
-                    "label": "Introduction to Stacks and Queues",
+                    "label": "Lists in Python - Neso Academy",
+                    "link": "https://www.youtube.com/watch?v=f2RATcdPcrE&list=PLBlnK6fEyqRjSgal6OIEfzK4upXvkHSxW&ab_channel=NesoAcademy",
+                    "type": "video"
+                },
+                {
+                    "label": "An Overview of Arrays and Memory - CS Dojo",
+                    "link": "https://www.youtube.com/watch?v=pmN9ExDf3yQ&list=PLBZBJbE_rGRV8D7XZ08LK6z-4zPoWzu5H&index=2&ab_channel=CSDojo",
+                    "type": "video"
+                }
+            ]
+        },
+        "Hash Tables (Dictionaries)": {
+            "prereqs": [
+                "array/list"
+            ],
+            "resources": [
+                {
+                    "label": "Introduction to Hash Tables and Dictionaries - CS Dojo",
+                    "link": "https://www.youtube.com/watch?v=sfWyugl4JWA&ab_channel=CSDojo",
+                    "type": "video"
+                },
+                {
+                    "label": "Dictionary in Python - Telusco",
+                    "link": "https://www.youtube.com/watch?v=2IsF7DEtVjg&ab_channel=Telusko",
+                    "type": "video"
+                },
+                {
+                    "label": "Blazing Fast Lookup with Hash Tables",
+                    "link": "https://drive.google.com/file/d/19Gt8AJ0IxEhqoWtdXkXcn5LvtJfWzmwZ/view?usp=drive_link",
+                    "type": "text"
+                }
+            ]
+        },
+        "Stack": {
+            "prereqs": [
+                "array/list, hash tables"
+            ],
+            "resources": [
+                {
+                    "label": "Introduction to Stacks",
                     "link": "https://www.youtube.com/watch?v=NKmasqr_Xkw",
                     "type": "video"
                 },
@@ -14,12 +53,17 @@
                     "label": "Introduction to Stacks",
                     "link": "https://www.youtube.com/watch?v=NKmasqr_Xkw",
                     "type": "video"
+                },
+                {
+                    "label": "Stack Data Structure",
+                    "link": "https://www.programiz.com/dsa/stack",
+                    "type": "text"
                 }
             ]
         },
         "Queue": {
             "prereqs": [
-                "Arrays (lists)"
+                "array/list"
             ],
             "resources": [
                 {
@@ -31,24 +75,34 @@
                     "label": "Introduction ",
                     "link": "https://www.youtube.com/watch?v=NKmasqr_Xkw",
                     "type": "video"
+                },
+                {
+                    "label": "Queue Data Structure",
+                    "link": "https://www.programiz.com/dsa/queue",
+                    "type": "video"
+                },
+                {
+                    "label": "Introduction ",
+                    "link": "https://www.youtube.com/watch?v=NKmasqr_Xkw",
+                    "type": "video"
                 }
             ]
         },
         "Deque": {
             "prereqs": [
-                "Arrays (lists)"
+                "array/list, stack, queue"
             ],
             "resources": [
                 {
                     "label": "Best Data Structure",
-                    "link": "https://www.youtube.com/watch?v=25B66fOb0GA",
-                    "type": "video"
+                    "link": "https://www.programiz.com/dsa/deque",
+                    "type": "text"
                 }
             ]
         },
         "Linked list": {
             "prereqs": [
-                "Arrays (lists)"
+                "array/list"
             ],
             "resources": [
                 {
@@ -57,7 +111,7 @@
                     "type": "video"
                 },
                 {
-                    "label": "Node-Based Data Structures: Linked Lists - Jay Wengrow",
+                    "label": "Node-Based Data Structures: Linked Lists",
                     "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
                     "type": "text"
                 }
@@ -65,7 +119,7 @@
         },
         "Trees": {
             "prereqs": [
-                "Arrays (lists)"
+                "recursion"
             ],
             "resources": [
                 {
@@ -74,7 +128,7 @@
                     "type": "video"
                 },
                 {
-                    "label": "Node-Based Data Structures: Linked Lists - Jay Wengrow",
+                    "label": "Node-Based Data Structures: Linked Lists",
                     "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
                     "type": "text"
                 }
@@ -82,7 +136,7 @@
         },
         "Binary Trees and Binary Search Trees (BST)": {
             "prereqs": [
-                "Arrays (lists)"
+                "trees, recursion, stack, queue"
             ],
             "resources": [
                 {
@@ -91,7 +145,7 @@
                     "type": "video"
                 },
                 {
-                    "label": "Speeding Up All The Things with Binary Search Trees - Jay Wengrow",
+                    "label": "Speeding Up All The Things with Binary Search Trees",
                     "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
                     "type": "text"
                 }
@@ -99,7 +153,7 @@
         },
         "Priority Queues and Heaps": {
             "prereqs": [
-                "Arrays (lists)"
+                "array/list, recursion, queue, trees"
             ],
             "resources": [
                 {
@@ -108,7 +162,7 @@
                     "type": "video"
                 },
                 {
-                    "label": "Keeping Your Priorities Straight with Heaps - Jay Wengrow",
+                    "label": "Keeping Your Priorities Straight with Heaps",
                     "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
                     "type": "text"
                 }
@@ -116,7 +170,7 @@
         },
         "Tries": {
             "prereqs": [
-                "Arrays (lists)"
+                "array/list, recursion, queue, trees"
             ],
             "resources": [
                 {
@@ -125,7 +179,7 @@
                     "type": "video"
                 },
                 {
-                    "label": "It Doesn't Hurt to Trie - Jay Wengrow",
+                    "label": "It Doesn't Hurt to Trie",
                     "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
                     "type": "text"
                 }
@@ -142,7 +196,7 @@
                     "type": "video"
                 },
                 {
-                    "label": "Node-Based Data Structures: Linked Lists - Jay Wengrow",
+                    "label": "Node-Based Data Structures: Linked Lists",
                     "link": "https://drive.google.com/drive/u/2/folders/1OpHoGudXFeRZVFq2iUuaEjD6NJ427u0g",
                     "type": "text"
                 }

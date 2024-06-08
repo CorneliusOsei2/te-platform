@@ -4,7 +4,6 @@ import app.ents.learning.crud as learning_crud
 import app.ents.learning.schema as learning_schema
 from app.core.settings import settings
 from fastapi import APIRouter, Depends, UploadFile
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/learning")
 

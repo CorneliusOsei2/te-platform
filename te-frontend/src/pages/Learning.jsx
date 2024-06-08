@@ -1,6 +1,6 @@
 import { Fragment, useState, useCallback, useEffect } from 'react'
 import { Disclosure } from '@headlessui/react'
-import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { MinusIcon, PlusIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import LearningGroup from '../components/learning/LearningGroup'
 import axiosInstance from '../axiosConfig'
 import LessonCreate from '../components/learning/LessonCreate'
@@ -84,6 +84,19 @@ const Learning = () => {
 
             {!fetchLessons &&
                 <div>
+                    <div className="rounded-md bg-yellow-50 w-1/2 mx-auto mb-3 p-4">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
+                            </div>
+                            <div className="ml-3">
+                                <h3 className="text-sm font-medium text-yellow-800">                                        Please open the page on a larger screen like a computer for better experience.
+                                </h3>
+
+                            </div>
+                        </div>
+                    </div>
+
                     <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         {
                             <Disclosure as="div" key="Workshops" className="border-t border-gray-200 py-6">
@@ -118,6 +131,8 @@ const Learning = () => {
                                 )}
                             </Disclosure>
                         }
+
+
                         {
                             Object.entries(lessonCategories)
                                 .filter((([cat, _]) => cat !== "Workshops"))
@@ -139,8 +154,8 @@ const Learning = () => {
                                                 </h3>
                                                 <Disclosure.Panel >
                                                     <div className="flex-col">
-
-                                                        {Object.entries(dsa).map(([title, info]) => <LessonEntry lesson={{ "title": title, ...info }} />)}
+                                                        <p className="flex bold flex-col items-start text-green-700">Textbook: Common Sense Guide to Data Structures and Algorithms by Jay Wengrow</p>
+                                                        <LessonEntry dsa={dsa} />
                                                     </div>
                                                 </Disclosure.Panel>
                                             </>
